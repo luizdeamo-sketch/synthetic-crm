@@ -2,6 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8" />
+<meta name="crm-versao" content="20261016-123333">
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="theme-color" content="#005071">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -145,7 +146,7 @@
   .add-form label.full{ grid-column:1/-1; font-size:10px; color:var(--ink-faint); font-family:'IBM Plex Mono',monospace; text-transform:uppercase; margin-top:4px; margin-bottom:-4px; font-weight:600; letter-spacing:.03em;}
   .add-form button{ grid-column:1/-1; justify-self:start; background:var(--ink); color:#fff; border:none; border-radius:var(--radius-sm); padding:8px 16px; font-size:12.5px; font-weight:600; margin-top:2px; transition:opacity .15s;}
   .add-form button:hover{ opacity:.85;}
-  .toast{ position:fixed; bottom:22px; right:22px; background:var(--ink); color:#fff; padding:11px 18px; border-radius:var(--radius-sm); font-size:13px; font-weight:500; box-shadow:var(--shadow-md); display:none; z-index:90; max-width:420px;}
+  .toast{ position:fixed; bottom:22px; left:50%; transform:translateX(-50%); background:var(--ink); color:#fff; padding:11px 18px; border-radius:var(--radius-sm); font-size:13px; font-weight:500; box-shadow:var(--shadow-md); display:none; z-index:90; max-width:420px;}
 
   /* ---------- agenda ---------- */
   #view-agenda.active{ grid-template-columns: 1fr 340px; overflow-y:auto;}
@@ -183,6 +184,33 @@
   .who-role{ font-size:11px; font-weight:600; color:var(--brand); background:var(--brand-soft); border-radius:999px; padding:2px 9px; margin-right:6px;}
   #view-equipe.active{ display:block; overflow-y:auto;}
   .field[hidden], #cv-form[hidden], #eqc-link[hidden]{ display:none !important;}
+  /* ---------- aviso de nova versão ---------- */
+  #nova-versao{ position:fixed; top:0; left:0; right:0; z-index:200; display:flex; align-items:center; justify-content:center; gap:14px; flex-wrap:wrap; padding:10px 16px; background:#0e3a4f; color:#fff; font-size:14px; box-shadow:var(--shadow-md);}
+  #nova-versao button{ background:#fff; color:#0e3a4f; border:0; border-radius:999px; padding:7px 18px; font-weight:700; cursor:pointer;}
+  /* ---------- acompanhante (balão 💬) ---------- */
+  #acomp{ position:fixed; right:20px; bottom:20px; z-index:120; display:flex; flex-direction:column; align-items:flex-end; gap:10px; pointer-events:none;}
+  #acomp > *{ pointer-events:auto;}
+  .ac-botao{ width:54px; height:54px; border-radius:50%; border:0; background:var(--brand); color:#fff; font-size:24px; cursor:pointer; box-shadow:0 6px 20px rgba(0,40,60,.3);}
+  .ac-botao:hover{ transform:scale(1.05);}
+  .ac-caixa{ width:min(360px, calc(100vw - 40px)); background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:16px; box-shadow:0 12px 40px rgba(0,30,50,.25); max-height:calc(100vh - 110px); overflow:auto;}
+  .ac-caixa[hidden]{ display:none;}
+  .ac-texto{ margin:0 0 12px; font-size:14.5px; line-height:1.45;} .ac-ok{ font-size:16px; font-weight:600; margin:0;}
+  .ac-acoes{ display:flex; gap:8px; flex-wrap:wrap;} .ac-acoes button, .ac-linha button, .ac-print button{ border:1px solid var(--border); background:var(--surface); border-radius:999px; padding:8px 14px; font-size:13px; cursor:pointer;}
+  .ac-acoes .ac-pri{ background:var(--brand); color:#fff; border-color:var(--brand); font-weight:600;}
+  .ac-chips{ display:flex; gap:6px; flex-wrap:wrap; margin-bottom:10px;} .ac-chips button{ border:1px solid var(--border); background:var(--surface); border-radius:999px; padding:6px 12px; font-size:12.5px; cursor:pointer;}
+  .ac-chips button.on{ background:var(--brand-soft); border-color:var(--brand); color:var(--brand); font-weight:600;}
+  #ac-txt{ width:100%; border:1px solid var(--border); border-radius:10px; padding:10px; font:inherit; font-size:14px; resize:vertical; margin-bottom:8px;}
+  .ac-linha, .ac-print{ display:flex; align-items:center; gap:10px; margin-bottom:8px;} .ac-linha button.rec{ background:#fde8e6; border-color:#c0392b; color:#c0392b;}
+  #ac-img{ width:96px; height:60px; object-fit:cover; border:1px solid var(--border); border-radius:6px;}
+  .ac-mini{ font-size:11.5px; color:var(--ink-faint); margin:0 0 10px;}
+  .ac-card{ display:flex; gap:18px; align-items:center; background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:16px 18px; margin-bottom:16px;}
+  .ac-card h3{ margin:0 0 8px; font-size:1.05rem;} .ac-card ul{ margin:0 0 12px; padding-left:18px; font-size:13.5px; line-height:1.5; color:var(--ink-soft);}
+  .ac-card-desenho{ flex:0 0 150px; display:flex; flex-direction:column; align-items:flex-end; gap:8px;}
+  .ac-card-balao{ background:var(--brand-soft); color:var(--brand); border-radius:12px 12px 2px 12px; padding:8px 10px; font-size:12px; font-weight:600; text-align:left;}
+  .ac-card-bola{ width:42px; height:42px; border-radius:50%; background:var(--brand); color:#fff; display:flex; align-items:center; justify-content:center; font-size:20px;}
+  .ac-card-min{ display:flex; align-items:center; gap:10px; font-size:13px; color:var(--ink-soft); margin-bottom:12px;} .ac-card-min button{ border:0; background:none; color:var(--brand); font-weight:600; cursor:pointer; padding:0;}
+  @media (max-width: 640px){ .ac-card{ flex-direction:column; align-items:stretch;} .ac-card-desenho{ display:none;} }
+  @media print{ #nova-versao, #acomp{ display:none !important;} }
 </style>
 </head>
 <body>
@@ -1542,6 +1570,7 @@ let selectedDay = new Date();
 function showToast(msg){
   const t = document.getElementById('toast');
   t.textContent = msg; t.style.display = 'block';
+  try{ usoAviso(msg); }catch(e){}
   clearTimeout(showToast._t); showToast._t = setTimeout(()=> t.style.display='none', 3000);
 }
 function escapeHtml(s){
@@ -1684,8 +1713,9 @@ document.getElementById('btn-reset-save').addEventListener('click', async ()=>{
   window._recovery = false;
   setTimeout(()=>{ document.getElementById('reset-screen').style.display='none'; history.replaceState(null, '', location.pathname); boot(); }, 1200);
 });
-document.getElementById('btn-logout').addEventListener('click', async ()=>{ await sb.auth.signOut(); location.reload(); });
-document.getElementById('btn-noaccess-out').addEventListener('click', async ()=>{ await sb.auth.signOut(); location.reload(); });
+// sair: envia o que falta do registro de uso e sai só deste navegador (o padrão global derrubava as outras abas)
+document.getElementById('btn-logout').addEventListener('click', async ()=>{ try{ await usoEnvia(); }catch(e){} await sb.auth.signOut({ scope:'local' }); location.reload(); });
+document.getElementById('btn-noaccess-out').addEventListener('click', async ()=>{ await sb.auth.signOut({ scope:'local' }); location.reload(); });
 async function checkSession(){
   const { data } = await sb.auth.getSession();
   if(data.session && !window._recovery) boot();
@@ -1720,6 +1750,7 @@ async function boot(){
   try{ const { data } = await sb.rpc('meu_perfil'); window._perfil = data || { role:'vendedor' }; }catch(e){ window._perfil = { role:'vendedor' }; }
   aplicarPerfil();
   if(ehGestao()) mtPctCarrega();
+  usoLiga(); acompMonta();
   ensureUserName(user);
   if(perfilEfetivo()==='master') backupReminder();
   loadSyncInfo();
@@ -5801,7 +5832,7 @@ function hj2Desenhar(){
         <button type="button" class="hj2-btn hj2-pri" data-hjat="${x.p.id}">Atender</button>
       </div>
     </article>`;
-  host.innerHTML = `
+  host.innerHTML = `${acompCardHtml()}
     <div class="hj2-top">
       <div><span class="hj2-lbl">${escapeHtml(dataTxt)}</span>
         <h1>${saud}${nome?', '+escapeHtml(nome):''}. ${fmtNum(it.length)} clientes pedem atenção hoje.</h1></div>
@@ -8132,7 +8163,7 @@ document.addEventListener('click', e=>{ if(e.target.id==='pa-wa') pvWaDialog(); 
 
 // ---------- SUGESTÕES DE MELHORIA ----------
 const SG_STATUS = [['nova','Nova','#005071'],['em_analise','Em análise','#c8790b'],['aprovada','Aprovada','#149c6b'],['em_execucao','Em execução','#7b3fe4'],['concluida','Concluída','#2f9e57'],['rejeitada','Rejeitada','#c23636'],['depois','Deixar para depois','#8990a3']];
-const SG_TIPOS = {ideia:'Ideia nova', melhoria:'Melhoria', problema:'Problema / erro'};
+const SG_TIPOS = {ideia:'Ideia nova', melhoria:'Melhoria', problema:'Problema / erro', duvida:'Dúvida'};
 const SG_TELAS = ['Carteira','Ficha do cliente','Hoje','Atender','Ranking de prioridade','Novo cliente','Painel','Mapa','Agenda','Base','Ata','Login / acesso','Outro'];
 const SG = { list:[], filter:'', q:'', rec:null, media:null, chunks:[], audioBlob:null, recording:false, files:[] };
 const sgLabel = (k)=> (SG_STATUS.find(s=>s[0]===k)||[k,k,'#666']);
@@ -8217,21 +8248,29 @@ function sgStatusDialog(r){
     Object.assign(r, upd); window._sgRespFiles = []; dlgClose(); showToast('Status atualizado'); sgDraw();
   });
 }
-async function sgMicToggle(){
-  const btn = document.getElementById('sg-mic'), st = document.getElementById('sg-mic-st'), ta = document.getElementById('sg-text');
-  if(SG.recording){ SG.recording = false; try{ SG.rec && SG.rec.stop(); }catch(e){} try{ SG.media && SG.media.state!=='inactive' && SG.media.stop(); }catch(e){} btn.textContent = '🎤 Gravar / ditar'; btn.classList.remove('rec'); st.textContent = ''; return; }
-  if(!SG_SR){ showToast('Este navegador não faz ditado por voz. Use o Chrome ou o Edge.'); return; }
+// ditado pt-BR (Chrome/Edge) + gravação do áudio original; usado nas Sugestões e no balão do acompanhante.
+// D guarda o estado: recording, rec, media, chunks, audioBlob, voz (true se algo foi ditado), onAudio(blob) opcional.
+async function ditadoAlterna(D, ta, btn, st, rotulo){
+  if(D.recording){ D.recording = false; try{ D.rec && D.rec.stop(); }catch(e){} try{ D.media && D.media.state!=='inactive' && D.media.stop(); }catch(e){}
+    if(btn){ btn.textContent = rotulo || '🎤 Falar'; btn.classList.remove('rec'); } if(st) st.textContent = ''; return; }
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if(!SR){ showToast('Este navegador não faz ditado por voz. Use o Chrome ou o Edge.'); return; }
   const base = ta.value ? ta.value.replace(/\s+$/,'')+'\n' : '';
-  SG.audioBlob = null; SG.chunks = [];
-  try{ const stream = await navigator.mediaDevices.getUserMedia({audio:true}); SG.media = new MediaRecorder(stream);
-    SG.media.ondataavailable = e=>{ if(e.data.size) SG.chunks.push(e.data); };
-    SG.media.onstop = ()=>{ stream.getTracks().forEach(t=>t.stop()); SG.audioBlob = new Blob(SG.chunks,{type:SG.media.mimeType||'audio/webm'}); const p = document.getElementById('sg-audio-prev'); p.src = URL.createObjectURL(SG.audioBlob); p.hidden = false; };
-    SG.media.start(); }catch(e){ SG.media = null; }
-  const rec = new SG_SR(); rec.lang = 'pt-BR'; rec.continuous = true; rec.interimResults = true; SG.rec = rec; let fin = '';
-  rec.onresult = ev=>{ let interim = ''; for(let i=ev.resultIndex;i<ev.results.length;i++){ const t = ev.results[i][0].transcript; if(ev.results[i].isFinal) fin += t+' '; else interim += t; } ta.value = base + fin + interim; SG.voz = true; };
+  D.audioBlob = null; D.chunks = [];
+  try{ const stream = await navigator.mediaDevices.getUserMedia({audio:true}); D.media = new MediaRecorder(stream);
+    D.media.ondataavailable = e=>{ if(e.data.size) D.chunks.push(e.data); };
+    D.media.onstop = ()=>{ stream.getTracks().forEach(t=>t.stop()); D.audioBlob = new Blob(D.chunks,{type:D.media.mimeType||'audio/webm'}); if(D.onAudio) D.onAudio(D.audioBlob); };
+    D.media.start(); }catch(e){ D.media = null; }
+  const rec = new SR(); rec.lang = 'pt-BR'; rec.continuous = true; rec.interimResults = true; D.rec = rec; let fin = '';
+  rec.onresult = ev=>{ let interim = ''; for(let i=ev.resultIndex;i<ev.results.length;i++){ const t = ev.results[i][0].transcript; if(ev.results[i].isFinal) fin += t+' '; else interim += t; } ta.value = base + fin + interim; D.voz = true; };
   rec.onerror = ev=>{ if(ev.error==='not-allowed') showToast('Permita o uso do microfone no navegador.'); };
-  rec.onend = ()=>{ if(SG.recording){ try{ rec.start(); }catch(e){} } };
-  rec.start(); SG.recording = true; btn.textContent = '⏹ Parar'; btn.classList.add('rec'); st.textContent = '🔴 ouvindo... fale e depois clique em Parar';
+  rec.onend = ()=>{ if(D.recording){ try{ rec.start(); }catch(e){} } };
+  rec.start(); D.recording = true;
+  if(btn){ btn.textContent = '⏹ Parar'; btn.classList.add('rec'); } if(st) st.textContent = '🔴 ouvindo... fale e depois clique em Parar';
+}
+async function sgMicToggle(){
+  SG.onAudio = blob=>{ const p = document.getElementById('sg-audio-prev'); p.src = URL.createObjectURL(blob); p.hidden = false; };
+  return ditadoAlterna(SG, document.getElementById('sg-text'), document.getElementById('sg-mic'), document.getElementById('sg-mic-st'), '🎤 Gravar / ditar');
 }
 document.getElementById('sg-mic').addEventListener('click', sgMicToggle);
 document.getElementById('sg-send').addEventListener('click', async ()=>{
@@ -8768,6 +8807,255 @@ function errAmigavel(e){
   console.warn('erro', m);
   return 'Não foi possível concluir. Tente de novo; se continuar, avise o gestor.';
 }
+
+// ---------- PEÇA 1 · AVISO DE NOVA VERSÃO ----------
+// Quem deixa a aba aberta fica na versão antiga. A publicação (publicar_web.sh) grava a versão em <meta name="crm-versao">;
+// a cada 2 min e ao voltar para a aba, lemos o index.html publicado sem cache e comparamos. Nunca recarrega sozinho.
+const VERSAO_ATUAL = (document.querySelector('meta[name="crm-versao"]') || {}).content || 'dev';
+async function versaoConfere(){
+  if(VERSAO_ATUAL === 'dev' || document.getElementById('nova-versao')) return;   // servidor local: não há versão para comparar
+  try{
+    const r = await fetch(location.pathname + '?v=' + Date.now(), { cache:'no-store' }); if(!r.ok) return;
+    const m = (await r.text()).match(/<meta name="crm-versao" content="([^"]+)"/);
+    if(!m || m[1] === VERSAO_ATUAL) return;
+    const f = document.createElement('div'); f.id = 'nova-versao'; f.setAttribute('role', 'status');
+    f.innerHTML = '<span>Saiu uma versão nova do sistema. Salve o que estiver fazendo e clique em Atualizar.</span><button type="button">Atualizar</button>';
+    f.querySelector('button').addEventListener('click', ()=> window.location.reload());
+    document.body.prepend(f);
+  }catch(e){}
+}
+setInterval(versaoConfere, 2*60000);
+document.addEventListener('visibilitychange', ()=>{ if(document.visibilityState === 'visible') versaoConfere(); });
+
+// ---------- PEÇA 2 · REGISTRO DE USO (onde o usuário tem dúvida) ----------
+// Grava só: tela aberta, rótulo do que foi clicado, 1ª célula da linha clicada, filtro escolhido, mensagens do sistema e erros.
+// NUNCA o que é digitado nos campos. O app só insere em uso_eventos; ninguém lê pelo app.
+const TELAS_NOME = { hoje:'Hoje', atender:'Atender', operacao:'Carteira', pessoas:'Ficha do cliente', produtos:'Produtos', agenda:'Agenda',
+  indicadores:'Painel', comercial:'Painel · metas', vendedores:'Painel · vendedores', regioes:'Painel · regiões', margens:'Painel · margens',
+  concorrentes:'Painel · concorrentes', estoque:'Painel · estoque', mapa:'Estratégia', equipe:'Acessos', ajustes:'Ajustes',
+  conhecimento:'Base de conhecimento', sugestoes:'Sugestões', ata:'Ata do projeto', reunioes:'Conversas registradas' };
+// seção de cada tela: abrir a ficha e voltar para a lista da mesma seção não é "vai-e-volta"
+const TELAS_SECAO = { pessoas:'operacao', comercial:'painel', vendedores:'painel', regioes:'painel', margens:'painel', concorrentes:'painel',
+  estoque:'painel', indicadores:'painel', conhecimento:'ajustes', sugestoes:'ajustes', ata:'ajustes', reunioes:'atender' };
+const USO = { on:false, sessao:(crypto.randomUUID ? crypto.randomUUID() : String(Date.now()) + Math.random()).slice(0, 36), fila:[], ultimos:[],
+  tela:null, desde:Date.now(), hist:[], cliques:[], salvoEm:0 };
+const usoRota = v=> '/' + (v || 'login');
+const usoNomeTela = v=> TELAS_NOME[v] || v || 'Entrada';
+function uso(tipo, alvo, detalhe){
+  if(!USO.on) return;
+  const ev = { em:new Date().toISOString(), sessao:USO.sessao, tipo, rota:usoRota(USO.tela), alvo: alvo == null ? null : String(alvo).replace(/\s+/g, ' ').trim().slice(0, 200), detalhe: detalhe || null };
+  USO.fila.push(ev); if(USO.fila.length > 500) USO.fila.splice(0, USO.fila.length - 500);
+  USO.ultimos.push({ em:ev.em, tipo, rota:ev.rota, alvo:ev.alvo }); if(USO.ultimos.length > 20) USO.ultimos.shift();
+}
+async function usoEnvia(){
+  if(!USO.fila.length) return;
+  const lote = USO.fila.splice(0, USO.fila.length);
+  try{ const { error } = await sb.from('uso_eventos').insert(lote); if(error) throw error; }
+  catch(e){ USO.fila = lote.concat(USO.fila).slice(-500); }   // devolve à fila
+}
+setInterval(usoEnvia, 15000);
+function usoDuvida(motivo){ document.dispatchEvent(new CustomEvent('crm-duvida', { detail:{ motivo } })); }
+// troca de tela: o CRM não tem roteador; a tela é a .view ativa (observamos a classe)
+function usoTelaAtual(){ const v = document.querySelector('.view.active'); return v ? v.id.replace(/^view-/, '') : null; }
+function usoTrocaTela(){
+  const nova = usoTelaAtual(); if(!nova || nova === USO.tela) return;
+  const ant = USO.tela, ms = Date.now() - USO.desde;
+  USO.tela = nova; USO.desde = Date.now();
+  uso('tela', usoNomeTela(nova), ant ? { anterior:usoRota(ant), ms_na_anterior:ms } : null);
+  // vai-e-volta: A → B → A, voltando em menos de 30 s (foi olhar em B e não achou), com B de outra seção
+  USO.hist.push({ v:nova, t:Date.now() }); if(USO.hist.length > 3) USO.hist.shift();
+  const [a, b, c] = USO.hist;
+  if(c && a.v === c.v && a.v !== b.v && c.t - b.t < 30000 && (TELAS_SECAO[a.v] || a.v) !== (TELAS_SECAO[b.v] || b.v)) usoDuvida('voltou');
+  document.dispatchEvent(new CustomEvent('crm-tela', { detail:{ tela:nova } }));
+}
+new MutationObserver(()=> usoTrocaTela()).observe(document.querySelector('.view-container'), { subtree:true, attributes:true, attributeFilter:['class'] });
+// rótulo do que foi clicado (nunca o valor de um campo)
+function usoRotulo(el){
+  const txt = (el.tagName === 'INPUT' ? (el.type === 'checkbox' || el.type === 'radio' ? (el.closest('label') || {}).innerText : '') : el.innerText) || '';
+  const curto = txt.replace(/\s+/g, ' ').trim();
+  const t = el.getAttribute('aria-label') || (curto && curto.length <= 60 ? curto : '') || el.getAttribute('title') || curto;   // texto visível curto é o mais legível no relatório
+  return t.replace(/\s+/g, ' ').trim().slice(0, 80);
+}
+document.addEventListener('click', ev=>{
+  if(!USO.on) return;
+  const alvoEl = ev.target.closest('button, a, [role="tab"], [data-pn], label, summary, input[type="checkbox"], input[type="radio"], tr, .ca-row');
+  // raiva: 3 cliques em 1 s no mesmo lugar (até 30 px), fora de botões que se clicam várias vezes de propósito
+  const agora = Date.now(), rep = ev.target.closest('[data-repetir], .leaflet-control, .dt-zoom, [data-dtzoom]') || (alvoEl && /^[+−\-]$/.test((alvoEl.innerText || '').trim()));
+  if(!rep){
+    USO.cliques = USO.cliques.filter(c=> agora - c.t < 1000 && Math.hypot(c.x - ev.clientX, c.y - ev.clientY) <= 30);
+    USO.cliques.push({ t:agora, x:ev.clientX, y:ev.clientY });
+    if(USO.cliques.length >= 3){ USO.cliques = []; uso('raiva', alvoEl ? usoRotulo(alvoEl) : ev.target.tagName.toLowerCase(), { x:ev.clientX, y:ev.clientY }); usoDuvida('travou'); }
+  }
+  if(!alvoEl) return;
+  if(alvoEl.tagName === 'TR' || alvoEl.classList.contains('ca-row')){
+    if(ev.target.closest('button, a, input, select')) return;            // o clique no botão da linha já é registrado
+    const c = alvoEl.querySelector('td'); uso('clique', 'linha: ' + (c ? c.innerText : '').replace(/\s+/g, ' ').trim().slice(0, 80), { elemento:'linha' }); return;
+  }
+  const r = usoRotulo(alvoEl); if(!r) return;
+  uso('clique', r, { elemento: alvoEl.tagName.toLowerCase() });
+}, true);
+document.addEventListener('change', ev=>{
+  const s = ev.target; if(!USO.on || s.tagName !== 'SELECT') return;
+  const nome = s.getAttribute('aria-label') || (s.labels && s.labels[0] && s.labels[0].innerText) || s.id || 'filtro';
+  uso('clique', nome.replace(/\s+/g, ' ').trim().slice(0, 60) + ': ' + (s.options[s.selectedIndex] ? s.options[s.selectedIndex].text : '').trim().slice(0, 100), { elemento:'select' });
+}, true);
+// mensagens que o sistema mostrou (toast e erros de formulário)
+const USO_RECUSA = /^erro|não (foi|consegui|é possível|pode)|precisa|inválid|obrigat|escolha|informe|digite|preencha|falhou|sem permiss/i;
+function usoAviso(msg){
+  if(!msg) return;
+  const erro = USO_RECUSA.test(String(msg).trim());
+  uso('aviso', msg, { erro });
+  if(erro) usoDuvida('recusa');
+  else if(/salv|criad|registrad|atualizad|enviad/i.test(msg)) USO.salvoEm = Date.now();
+  else if(/exclu|apagad|removid/i.test(msg) && Date.now() - USO.salvoEm < 5*60000){ USO.salvoEm = 0; usoDuvida('desfez'); }
+}
+new MutationObserver(muts=>{ for(const m of muts){ const t = m.target.nodeType === 1 ? m.target : m.target.parentElement;
+  const el = t && t.closest && t.closest('.om-err, .err'); if(el && el.textContent.trim() && el.dataset.usoUlt !== el.textContent){ el.dataset.usoUlt = el.textContent; if(!el.style.color || el.style.color.includes('red')) usoAviso(el.textContent.trim()); } } })
+  .observe(document.body, { subtree:true, childList:true, characterData:true });
+window.addEventListener('error', e=> uso('erro', String(e.message || 'erro').slice(0, 200), { arquivo:(e.filename || '').split('/').pop(), linha:e.lineno }));
+window.addEventListener('unhandledrejection', e=> uso('erro', String((e.reason && e.reason.message) || e.reason || 'promessa rejeitada').slice(0, 200), { tipo:'promessa' }));
+document.addEventListener('visibilitychange', ()=>{
+  if(document.visibilityState === 'hidden'){ uso('saida', null, { ms_na_tela: Date.now() - USO.desde }); usoEnvia(); }
+  else USO.desde = Date.now();
+});
+function usoLiga(){ if(USO.on) return; USO.on = true; USO.desde = Date.now(); USO.tela = null; usoTrocaTela(); }
+
+// ---------- PEÇA 3 · ACOMPANHANTE (balão que conversa com o usuário) ----------
+const ACOMP_SEM_AUTO = ['luizdeamo@gmail.com'];           // quem testa o sistema: sem balões automáticos (o 💬 continua)
+const ACOMP_RESPONSAVEL = 'Luiz';
+const ACOMP_TIPOS = [['melhoria','Ideia de melhoria'], ['problema','Algo não funciona'], ['duvida','Dúvida']];
+const ACOMP_PERGUNTAS = {
+  travou:'Parece que algo não respondeu como você esperava. O que você queria que acontecesse?',
+  recusa:'O sistema não aceitou. A mensagem ficou clara? Se não, conta o que você estava tentando fazer.',
+  desfez:'Vi que você apagou algo que tinha acabado de salvar. Ficou alguma dúvida nesta tela?',
+  voltou:'Procurando alguma coisa? Se não achou, me conta o que era que eu anoto.' };
+const ACOMP = { aberto:null, motivo:null, pergunta:null, timer:null, prim:null, print:null, voz:{}, tipo:'melhoria' };
+const acompLS = (k, v)=>{ try{ if(v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v); }catch(e){ return null; } };
+const acompChave = k=> 'crm_acomp_' + k + ':' + (window._userEmail || '');
+const acompAutoOk = ()=> USO.on && !ACOMP_SEM_AUTO.includes((window._userEmail || '').toLowerCase()) && !ACOMP.aberto && document.visibilityState === 'visible';
+function acompMonta(){
+  if(document.getElementById('acomp')) return;
+  const w = document.createElement('div'); w.id = 'acomp';
+  w.innerHTML = '<div class="ac-caixa" id="ac-caixa" hidden></div><button type="button" class="ac-botao" id="ac-botao" aria-label="Falar com quem acompanha o sistema" title="Tem algo a dizer sobre esta tela? Clique aqui">💬</button>';
+  document.body.appendChild(w);
+  w.querySelector('#ac-botao').addEventListener('click', ()=> ACOMP.aberto ? acompFecha('fechou') : acompEscrever('botao', null));
+}
+function acompPergunta(motivo, texto){
+  if(!acompAutoOk()) return;
+  ACOMP.motivo = motivo; ACOMP.pergunta = texto; ACOMP.aberto = 'pergunta';
+  uso('balao', motivo, { evento:'abriu', pergunta:texto });
+  const c = document.getElementById('ac-caixa'); c.hidden = false;
+  c.innerHTML = `<p class="ac-texto">${escapeHtml(texto)}</p><div class="ac-acoes"><button type="button" data-ac="ok">👍 Tudo certo</button><button type="button" data-ac="dizer">💬 Tenho algo a dizer</button><button type="button" data-ac="x" aria-label="Fechar">✕</button></div>`;
+  c.querySelector('[data-ac="ok"]').onclick = ()=>{ acompFecha('ok'); showToast('Obrigado! 👍'); };
+  c.querySelector('[data-ac="dizer"]').onclick = ()=> acompEscrever(motivo, texto);
+  c.querySelector('[data-ac="x"]').onclick = ()=> acompFecha('fechou');
+  clearTimeout(ACOMP.timer); ACOMP.timer = setTimeout(()=>{ if(ACOMP.aberto === 'pergunta') acompFecha('ignorou'); }, 40000);
+}
+function acompFecha(resposta){
+  if(!ACOMP.aberto) return;
+  clearTimeout(ACOMP.timer); if(ACOMP.voz.recording) ditadoAlterna(ACOMP.voz);
+  uso('balao', ACOMP.motivo, { evento:'fechou', resposta });
+  ACOMP.aberto = null; const c = document.getElementById('ac-caixa'); if(c){ c.hidden = true; c.innerHTML = ''; }
+}
+// print da área visível, sem o balão nem o aviso; até 8 s (se passar, segue sem print)
+function acompLib(){
+  if(window.htmlToImage) return Promise.resolve();
+  return acompLib._p || (acompLib._p = new Promise((ok, falha)=>{ const s = document.createElement('script');
+    s.src = 'https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.js'; s.onload = ok; s.onerror = falha; document.head.appendChild(s); }));
+}
+async function acompTiraPrint(){
+  const t = new Promise(r=> setTimeout(()=> r(null), 8000));
+  const p = (async ()=>{ await acompLib();
+    // sem <script> (o código inteiro do CRM dentro do print quebrava a imagem) e com imagem vazia no lugar de figura que não carregar
+    return window.htmlToImage.toJpeg(document.body, { quality:0.75, skipFonts:true, pixelRatio:1, width:innerWidth, height:innerHeight, backgroundColor:'#ffffff',
+      imagePlaceholder:'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==',
+      filter: n=> !(n.id === 'acomp' || n.id === 'toast' || n.id === 'nova-versao' || n.tagName === 'SCRIPT' || n.tagName === 'NOSCRIPT') }); })().catch(()=> null);
+  return Promise.race([p, t]);
+}
+async function acompEscrever(motivo, pergunta){
+  clearTimeout(ACOMP.timer);
+  if(ACOMP.aberto === 'pergunta') uso('balao', ACOMP.motivo, { evento:'fechou', resposta:'dizer' });
+  else uso('balao', motivo, { evento:'abriu', pergunta });
+  ACOMP.motivo = motivo; ACOMP.pergunta = pergunta; ACOMP.aberto = 'escrever'; ACOMP.print = null; ACOMP.voz = {};
+  ACOMP.tipo = motivo === 'travou' || motivo === 'recusa' ? 'problema' : motivo === 'desfez' || motivo === 'voltou' ? 'duvida' : 'melhoria';
+  const c = document.getElementById('ac-caixa'); c.hidden = false;
+  c.innerHTML = `<p class="ac-texto">${escapeHtml(pergunta || 'O que você quer contar sobre ' + usoNomeTela(USO.tela) + '?')}</p>
+    <div class="ac-chips" role="radiogroup" aria-label="Tipo">${ACOMP_TIPOS.map(([k, l])=> `<button type="button" role="radio" data-actipo="${k}" aria-checked="${k===ACOMP.tipo}" class="${k===ACOMP.tipo?'on':''}">${l}</button>`).join('')}</div>
+    <textarea id="ac-txt" rows="4" placeholder="Escreva aqui, ou clique em Falar"></textarea>
+    <div class="ac-linha"><button type="button" id="ac-mic">🎤 Falar</button><span id="ac-mic-st" class="ac-mini"></span></div>
+    <div class="ac-print"><img id="ac-img" alt="Print da tela" hidden><span id="ac-print-st" class="ac-mini">Tirando um print da tela…</span><button type="button" id="ac-tirar">Tirar de novo</button></div>
+    <p class="ac-mini">O print vai junto para entendermos onde você estava. Fundos de mapa podem sair em branco.</p>
+    <div class="ac-acoes"><button type="button" id="ac-enviar" class="ac-pri">Enviar</button><button type="button" id="ac-desiste">Cancelar</button></div>`;
+  c.querySelectorAll('[data-actipo]').forEach(b=> b.onclick = ()=>{ ACOMP.tipo = b.dataset.actipo; c.querySelectorAll('[data-actipo]').forEach(x=>{ const on = x === b; x.classList.toggle('on', on); x.setAttribute('aria-checked', on); }); });
+  c.querySelector('#ac-desiste').onclick = ()=> acompFecha('desistiu');
+  c.querySelector('#ac-mic').onclick = ()=> ditadoAlterna(ACOMP.voz, c.querySelector('#ac-txt'), c.querySelector('#ac-mic'), c.querySelector('#ac-mic-st'), '🎤 Falar');
+  const printa = async ()=>{ const st = c.querySelector('#ac-print-st'), img = c.querySelector('#ac-img'); st.textContent = 'Tirando um print da tela…'; img.hidden = true;
+    c.style.visibility = 'hidden'; const url = await acompTiraPrint(); c.style.visibility = '';
+    if(ACOMP.aberto !== 'escrever') return;
+    ACOMP.print = url; if(url){ img.src = url; img.hidden = false; st.textContent = ''; } else st.textContent = 'Não consegui tirar o print; dá para enviar sem ele.'; };
+  c.querySelector('#ac-tirar').onclick = printa;
+  c.querySelector('#ac-enviar').onclick = acompEnvia;
+  printa(); setTimeout(()=>{ const t = document.getElementById('ac-txt'); if(t) t.focus(); }, 50);
+}
+async function acompEnvia(ev){
+  const c = document.getElementById('ac-caixa'), ta = c.querySelector('#ac-txt'), b = ev.currentTarget;
+  if(ACOMP.voz.recording) ditadoAlterna(ACOMP.voz, ta, c.querySelector('#ac-mic'), c.querySelector('#ac-mic-st'), '🎤 Falar');
+  await new Promise(r=> setTimeout(r, 300));
+  const texto = ta.value.trim();
+  if(!texto && !ACOMP.voz.audioBlob){ c.querySelector('#ac-mic-st').textContent = 'Escreva ou fale algo antes de enviar.'; return; }
+  b.disabled = true; b.textContent = 'Enviando…';
+  try{
+    const anexos = []; let audio_path = null;
+    if(ACOMP.print){ const blob = await (await fetch(ACOMP.print)).blob(); const f = new File([blob], 'print-' + Date.now() + '.jpg', { type:'image/jpeg' });
+      anexos.push({ path: await docsUpload(f, 'sugestoes'), nome:f.name, mime:f.type, tamanho:f.size, print:true }); }
+    if(ACOMP.voz.audioBlob){ const f = new File([ACOMP.voz.audioBlob], 'balao-' + Date.now() + '.webm', { type:ACOMP.voz.audioBlob.type || 'audio/webm' }); audio_path = await docsUpload(f, 'sugestoes'); }
+    const autor = curUserName();
+    const { error } = await sb.from('crm_sugestoes').insert({ autor, texto: texto || '(ver áudio)', anexos, origem: ACOMP.voz.voz || audio_path ? 'voz' : 'texto', tipo:ACOMP.tipo,
+      tela:usoNomeTela(USO.tela), prioridade:'normal', audio_path, status:'nova', historico:[{ em:new Date().toISOString(), por:autor, de:'nova', para:'nova', nota:'Enviada pelo balão' }],
+      contexto:{ via:'balao', motivo:ACOMP.motivo, pergunta:ACOMP.pergunta, rota:usoRota(USO.tela), largura:innerWidth, ultimos:USO.ultimos.slice(-20) } });
+    if(error) throw error;
+    clearTimeout(ACOMP.timer); uso('balao', ACOMP.motivo, { evento:'fechou', resposta:'enviou' }); ACOMP.aberto = 'feito';
+    c.innerHTML = `<p class="ac-texto ac-ok">Anotado! O ${escapeHtml(ACOMP_RESPONSAVEL)} já recebeu. 🙌</p>`;
+    setTimeout(()=>{ if(ACOMP.aberto === 'feito'){ ACOMP.aberto = null; c.hidden = true; c.innerHTML = ''; } }, 3500);
+    usoEnvia();
+  }catch(e){ b.disabled = false; b.textContent = 'Enviar'; c.querySelector('#ac-mic-st').textContent = 'Não consegui enviar agora. Tente de novo.'; console.warn(e); }
+}
+// balão de primeira vez numa tela: depois de 25 s nela, uma vez por tela, no máximo um a cada 5 min
+document.addEventListener('crm-tela', e=>{
+  clearTimeout(ACOMP.prim); const tela = e.detail.tela;
+  ACOMP.prim = setTimeout(()=>{
+    if(USO.tela !== tela || !acompAutoOk()) return;
+    let vistas = []; try{ vistas = JSON.parse(acompLS(acompChave('telas')) || '[]'); }catch(x){}
+    if(vistas.includes(tela) || Date.now() - Number(acompLS(acompChave('ult')) || 0) < 5*60000) return;
+    vistas.push(tela); acompLS(acompChave('telas'), JSON.stringify(vistas)); acompLS(acompChave('ult'), String(Date.now()));
+    acompPergunta('primeira', `Primeira vez em ${usoNomeTela(tela)} no sistema novo. Está funcionando como você esperava?`);
+  }, 25000);
+});
+// sinal de dúvida vindo do registro de uso: no máximo um a cada 15 min, 1,5 s depois (a mensagem do sistema aparece antes)
+document.addEventListener('crm-duvida', e=>{
+  const motivo = e.detail.motivo; if(!ACOMP_PERGUNTAS[motivo]) return;
+  if(Date.now() - Number(acompLS(acompChave('duvida')) || 0) < 15*60000 || !acompAutoOk()) return;
+  acompLS(acompChave('duvida'), String(Date.now()));
+  setTimeout(()=> acompPergunta(motivo, ACOMP_PERGUNTAS[motivo]), 1500);
+});
+// cartão na tela Hoje explicando o balão
+function acompCardHtml(){
+  if(acompLS(acompChave('card')) === 'recolhido')
+    return '<div class="ac-card-min"><span>💬 Tem alguém do seu lado anotando.</span><button type="button" data-acomp="ver">Ver como funciona</button></div>';
+  return `<div class="ac-card"><div class="ac-card-desenho" aria-hidden="true"><span class="ac-card-balao">Está funcionando como você esperava?</span><span class="ac-card-bola">💬</span></div>
+    <div><h3>Tem alguém do seu lado anotando 💬</h3><ul>
+      <li>O botão <b>💬</b> no canto da tela abre uma caixa para você contar o que achou, ali mesmo, sem explicar onde estava.</li>
+      <li>Às vezes ele pergunta sozinho: na primeira vez numa tela, ou quando algo parece não ter funcionado.</li>
+      <li>Você pode escrever ou falar 🎤. Um print da tela vai junto, para entendermos o que você via.</li>
+      <li>O sistema anota quais telas você abre e onde clica, <b>nunca o que você digita</b>. Serve para melhorar as telas, não para avaliar ninguém.</li></ul>
+      <div class="ac-acoes"><button type="button" class="ac-pri" data-acomp="experimentar">💬 Experimentar agora</button><button type="button" data-acomp="entendi">Entendi</button></div></div></div>`;
+}
+document.addEventListener('click', e=>{
+  const b = e.target.closest('[data-acomp]'); if(!b) return;
+  const k = b.dataset.acomp;
+  if(k === 'experimentar') acompEscrever('botao', null);
+  if(k === 'entendi' || k === 'ver'){ acompLS(acompChave('card'), k === 'entendi' ? 'recolhido' : 'aberto'); const card = b.closest('.ac-card, .ac-card-min'); if(card) card.outerHTML = acompCardHtml(); }
+});
 
 sgInit();
 if(window._convite) conviteAbrir(); else checkSession();
