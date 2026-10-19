@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8" />
-<meta name="crm-versao" content="20261016-123333">
+<meta name="crm-versao" content="20261019-100835">
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="theme-color" content="#005071">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -211,6 +211,26 @@
   .ac-card-min{ display:flex; align-items:center; gap:10px; font-size:13px; color:var(--ink-soft); margin-bottom:12px;} .ac-card-min button{ border:0; background:none; color:var(--brand); font-weight:600; cursor:pointer; padding:0;}
   @media (max-width: 640px){ .ac-card{ flex-direction:column; align-items:stretch;} .ac-card-desenho{ display:none;} }
   @media print{ #nova-versao, #acomp{ display:none !important;} }
+  /* ---------- guia das Margens ---------- */
+  .mg-leitura{ background:linear-gradient(180deg, #f2f8fb, #fff); border:1px solid #cfe3ec; border-radius:16px; padding:16px 18px; margin:0 0 16px;}
+  .mg-lt-top{ display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:8px;} .mg-lt-top h4{ margin:0; font-size:1.05rem;}
+  .mg-lt-tour{ border:1px solid var(--brand); color:var(--brand); background:#fff; border-radius:999px; padding:6px 14px; font-size:12.5px; font-weight:600; cursor:pointer;}
+  .mg-lt-item{ display:flex; gap:12px; padding:10px 0; border-top:1px solid #e3eef3;} .mg-lt-item:first-of-type{ border-top:0;}
+  .mg-lt-ic{ font-size:20px; line-height:1.3;} .mg-lt-item p{ margin:0; font-size:15px; line-height:1.5; color:var(--ink);}
+  .mg-lt-acoes{ display:flex; gap:8px; flex-wrap:wrap; margin-top:8px;}
+  .mg-lt-acoes button{ border:1px solid var(--border); background:#fff; border-radius:999px; padding:6px 12px; font-size:12.5px; color:var(--brand); font-weight:600; cursor:pointer;}
+  .mg-lt-acoes button:hover{ border-color:var(--brand); background:var(--brand-soft);}
+  .mg-lt-dica{ margin:6px 0 0; font-size:12px; color:var(--ink-faint);}
+  .mg-acende{ animation:mgAcende 2.4s ease;} @keyframes mgAcende{ 0%,60%{ box-shadow:0 0 0 4px rgba(135,220,24,.65); border-radius:12px;} 100%{ box-shadow:0 0 0 0 rgba(135,220,24,0);} }
+  #tour{ position:fixed; inset:0; z-index:150;}
+  .tour-luz{ position:fixed; border-radius:12px; box-shadow:0 0 0 9999px rgba(10,25,35,.55); transition:all .25s ease; pointer-events:none; outline:3px solid #87dc18;}
+  .tour-card{ position:fixed; background:#fff; border-radius:14px; padding:16px 18px; box-shadow:0 16px 40px rgba(0,0,0,.3);}
+  .tour-card h4{ margin:2px 0 6px; font-size:1.05rem;} .tour-card p{ margin:0 0 12px; font-size:14px; line-height:1.5; color:var(--ink-soft);}
+  .tour-n{ font-size:11px; color:var(--ink-faint); font-family:'IBM Plex Mono',monospace;}
+  .tour-acoes{ display:flex; gap:8px; align-items:center;} .tour-acoes span{ flex:1;}
+  .tour-acoes button{ border:1px solid var(--border); background:#fff; border-radius:999px; padding:7px 14px; font-size:13px; cursor:pointer;}
+  .tour-acoes .tour-pri{ background:var(--brand); color:#fff; border-color:var(--brand); font-weight:600;}
+  @media print{ #tour, .mg-lt-tour, .mg-lt-acoes{ display:none !important;} }
 </style>
 </head>
 <body>
@@ -1756,7 +1776,7 @@ async function boot(){
   loadSyncInfo();
   await loadSellers();
   renderCalendar();
-  renderHoje();
+  if(!abrirTelaInicial()) renderHoje();
 }
 // ---------- SINCRONIZAÇÃO COM O FÁCIL123 (status no cabeçalho e no botão 🔄 da barra lateral) ----------
 const SY_ATRASO_MIN = 75; // roda a cada 30 min; acima disso, algo travou
@@ -6375,11 +6395,12 @@ async function renderMargens(){
   const pc = v=> v == null ? '' : String(Math.round(1000*v)/10).replace('.', ',');
   AN.prem = Object.fromEntries((pm.data || []).map(x=> [x.chave, Number(x.valor) || 0]));
   host.innerHTML = anTopo('Margens', `${fmtDate(ini)} a ${fmtDate(fim)} · como chegamos na margem, alvo e piso por linha`)
+    + mgLeitura(cs.data || {}, pm.data || [], L, R, pad, ab.data || [], tot, totAb)
     + mgCascata(cs.data || {}, pm.data || [])
     + `<div class="an-resumo">${tot > 0 ? `<b>${anPct(totAb/tot, 1)}</b> do faturamento do período foi vendido abaixo do piso de margem (${dtMoney(totAb)} de ${dtMoney(tot)}).` : 'Sem vendas no período.'}
        Abaixo do <b>piso</b>, o vendedor precisa da aprovação do gestor. Entre o piso e o <b>alvo</b>, ele pode fechar sozinho.</div>
     <div class="mg-aviso"><b>Margem ou markup?</b> Aqui a régua é a <b>margem sobre o preço de venda</b>: (preço − custo) ÷ preço. Uma margem de 50% equivale a um <b>markup de 100%</b> sobre o custo. Se os números que o time usa forem markup, converta pela coluna ao lado antes de salvar.</div>
-    <div class="an-tab mg-tab"><div class="an-tr an-th"><span>Linha</span><span>Alvo (margem)</span><span>Piso (margem)</span><span>Equivale a markup</span><span>Margem real</span><span>Faturamento</span><span>Abaixo do piso</span></div>
+    <div class="an-tab mg-tab" id="mg-sec-linhas"><div class="an-tr an-th"><span>Linha</span><span>Alvo (margem)</span><span>Piso (margem)</span><span>Equivale a markup</span><span>Margem real</span><span>Faturamento</span><span>Abaixo do piso</span></div>
       ${linhas.map(l=>{ const r = R.get(l) || pad, x = L.find(y=> y.linha === l), herda = !R.has(l);
         const abx = x && x.receita > 0 ? x.receita_abaixo_piso/x.receita : null;
         return `<div class="an-tr" data-mglinha="${escapeHtml(l)}"><span><b>${escapeHtml(l)}</b>${herda ? '<small>usa o Padrão</small>' : l === 'Padrão' ? '<small>vale para linhas sem regra própria</small>' : ''}</span>
@@ -6396,10 +6417,11 @@ async function renderMargens(){
       <div class="an-tr mg-add"><span><input id="mg-prod" class="ca-inp" placeholder="Código ou nome do produto" list="mg-prods"><datalist id="mg-prods"></datalist></span><span><input id="mg-ealvo" class="ca-inp mg-in" placeholder="alvo"> %</span><span><input id="mg-episo" class="ca-inp mg-in" placeholder="piso"> %</span><span><button type="button" class="hj2-btn hj2-sec" id="mg-addex">Adicionar</button></span></div>
     </div>
     <h4>Vendas abaixo do piso <small>maior prejuízo de margem primeiro · para conversar com o vendedor</small></h4>
-    <div class="an-tab mg-ab"><div class="an-tr an-th"><span>Data</span><span>Cliente · vendedor</span><span>Produto</span><span>Preço praticado</span><span>Preço mínimo</span><span>Margem</span></div>
+    <div class="an-tab mg-ab" id="mg-sec-abaixo"><div class="an-tr an-th"><span>Data</span><span>Cliente · vendedor</span><span>Produto</span><span>Preço praticado</span><span>Preço mínimo</span><span>Margem</span></div>
       ${(ab.data || []).length ? ab.data.map(x=> `<div class="an-tr"><span>${fmtDate(x.data)}<small>nota ${escapeHtml(String(x.numero || '—'))}</small></span><span><b>${escapeHtml(nomeBonito(x.cliente || '—'))}</b><small>${escapeHtml(nomeBonito(x.vendedor || 'sem vendedor'))}</small></span>
           <span>${escapeHtml(nomeProduto(x.produto || ''))}<small>${fmtNum(x.quantidade)} un. · ${dtMoney(x.total)}</small></span><span>${fmtMoney(x.preco)}</span><span>${fmtMoney(x.preco_minimo)}<small>piso ${anPct(x.piso)}${x.tabela1 ? ' · Tabela 1 '+fmtMoney(x.tabela1) : ''}</small></span><span class="an-mg mal">${anPct(x.margem, 1)}</span></div>`).join('')
         : '<div class="an-tr"><span class="an-na">Nenhuma venda abaixo do piso no período.</span></div>'}</div>` + AN_NOTA;
+  setTimeout(()=>{ if(document.getElementById('view-margens').classList.contains('active')) tourRodar(TOUR_MARGENS, 'margens'); }, 700);   // tour só na 1ª vez
 }
 // a cascata: do preço de venda até a margem de contribuição, com as fontes de cada número
 const MG_PREM = [['imposto','Impostos sobre a venda','Simples Nacional e tributos'], ['comissao','Comissão dos vendedores','sobre o valor vendido'], ['frete','Frete pago pela Synthetic','quando a empresa paga a entrega'], ['financeiro','Taxas financeiras','boleto, cartão, antecipação']];
@@ -6417,13 +6439,13 @@ function mgCascata(c, prem){
       <li>Margem bruta: (${fmtMoney(pu)} − ${fmtMoney(ex.custo)}) ÷ ${fmtMoney(pu)} = <b>${anPct(mgx, 1)}</b> · em markup: ${anPct(ex.custo > 0 ? (pu - ex.custo)/ex.custo : null)} sobre o custo</li>
       <li>Menos as premissas (${anPct(MG_PREM.reduce((t, [k])=> t + pct(k), 0), 1)}): margem de contribuição de <b>${anPct(mcx, 1)}</b></li>
       <li>Regra da linha ${escapeHtml(ex.linha || '')}: alvo ${anPct(ex.alvo)}, piso ${anPct(ex.piso)}: preço mínimo sem aprovação ${fmtMoney(ex.custo/(1 - ex.piso))}</li></ol></div>`; }
-  return `<div class="mg-casc"><div><h4>Como chegamos na margem de contribuição</h4>
+  return `<div class="mg-casc" id="mg-sec-casc"><div><h4>Como chegamos na margem de contribuição</h4>
       ${linha('Receita das vendas (itens com custo cadastrado)', rec, rec, 'tot', `Notas de venda do Fácil123 · ${fmtNum(c.itens - c.itens_sem_custo)} de ${fmtNum(c.itens)} itens têm custo (${anPct(rec/(Number(c.receita) || 1))} da receita)`)}
       ${linha('(−) Custo variável dos produtos', -cu, rec, '', 'Custo cadastrado no produto no Fácil123 (matéria-prima e embalagem). O Fácil123 guarda só o custo atual; o CRM guarda o histórico desde '+fmtDate(c.custo_desde))}
       ${linha('= Margem bruta', bruta, rec, 'sub', 'É a régua dos pisos por linha e da tela de vendedores')}
       ${MG_PREM.map(([k, rot, sub])=> linha('(−) '+rot, -pct(k)*rec, rec, pct(k) ? '' : 'zero', escapeHtml((P[k] || {}).obs || sub))).join('')}
       ${linha('= Margem de contribuição', mc, rec, 'tot', 'O que sobra de cada venda para pagar a estrutura (salários, aluguel, financiamentos) e dar lucro')}
-    </div><div><h4>Premissas <small>percentual sobre o valor vendido · o gestor ajusta</small></h4>
+    </div><div id="mg-sec-prem"><h4>Premissas <small>percentual sobre o valor vendido · o gestor ajusta</small></h4>
       ${MG_PREM.map(([k, rot, sub])=> `<label class="mg-pr"><span><b>${rot}</b><small>${sub}</small></span><span><input class="ca-inp mg-in" data-mgprem="${k}" inputmode="decimal" value="${pc(pct(k))}"> %</span></label>`).join('')}
       <div class="at-acoes"><button type="button" class="hj2-btn hj2-sec" id="mg-salvar-prem">Salvar premissas</button><span id="mg-msg-prem" class="an-sub"></span></div>
       <div class="mg-aviso"><b>De onde vêm:</b> o imposto foi calculado pelo Simples Nacional pago no financeiro do Fácil123 (≈ 6% do faturamento do mês anterior, mais ≈ 1% de tributos diversos). Comissão e frete vieram dos pagamentos do financeiro de jan–set/2026, garimpados pelo favorecido e pela descrição (estão espalhados em categorias como "Taxa de boleto", "Salários" e "Despesas variáveis"). Tarifas de boleto e cartão não estão no Fácil123. Vale pedir ao financeiro para usar categorias próprias (Comissões, Fretes sobre vendas, Tarifas bancárias): aí o CRM recalcula sozinho.</div>
@@ -8673,6 +8695,7 @@ function eqEditarUsuario(u){
       <div class="field"><label for="equ-nome">Nome</label><input id="equ-nome" class="ca-inp" maxlength="80" value="${escapeHtml(u.nome||'')}"></div>
       <div class="field"><label for="equ-role">Perfil</label><select id="equ-role" class="ca-inp">${eqOpcoesPerfil(u.role)}</select></div>
       <div class="field"><label for="equ-seller">Carteira no Fácil123 (obrigatória para Vendedor)</label><select id="equ-seller" class="ca-inp">${eqOpcoesCarteira(u.seller_id)}</select></div>
+      <div class="field"><label for="equ-tela">Tela em que a pessoa cai ao entrar</label><select id="equ-tela" class="ca-inp">${TELAS_INICIAIS.map(([k, t])=> `<option value="${k}" ${(u.tela_inicial||'')===k?'selected':''}>${t}</option>`).join('')}</select></div>
       <label class="eq-check"><input type="checkbox" id="equ-ativo" ${u.ativo?'checked':''}> Acesso ativo</label>
       <div class="om-err" id="equ-err"></div>
     </div>
@@ -8684,6 +8707,9 @@ function eqEditarUsuario(u){
     const sel = box.querySelector('#equ-seller').value;
     const { error } = await sb.rpc('crm_usuario_salvar', { p_email:u.email, p_nome:box.querySelector('#equ-nome').value, p_role:box.querySelector('#equ-role').value,
       p_seller_id: sel ? +sel : null, p_ativo: ativo });
+    if(!error && (box.querySelector('#equ-tela').value || '') !== (u.tela_inicial || '')){
+      const r2 = await sb.rpc('crm_usuario_tela', { p_email:u.email, p_tela:box.querySelector('#equ-tela').value || null });
+      if(r2.error){ b.disabled = false; box.querySelector('#equ-err').textContent = errAmigavel(r2.error); return; } }
     b.disabled = false;
     if(error){ box.querySelector('#equ-err').textContent = errAmigavel(error); return; }
     dlgClose(); showToast('Acesso atualizado.'); renderEquipe();
@@ -9056,6 +9082,110 @@ document.addEventListener('click', e=>{
   if(k === 'experimentar') acompEscrever('botao', null);
   if(k === 'entendi' || k === 'ver'){ acompLS(acompChave('card'), k === 'entendi' ? 'recolhido' : 'aberto'); const card = b.closest('.ac-card, .ac-card-min'); if(card) card.outerHTML = acompCardHtml(); }
 });
+
+// ---------- GUIA DAS MARGENS: leitura do período em frases + atalhos para o detalhe + tour na 1ª vez ----------
+// Feito para quem decide (CEO): o que importa vem primeiro, em linguagem simples; cada frase leva ao ponto da tela.
+function mgLeitura(c, prem, L, R, pad, ab, tot, totAb){
+  const P = Object.fromEntries((prem || []).map(x=> [x.chave, Number(x.valor) || 0]));
+  const rec = Number(c.receita_custo) || 0, cu = Number(c.custo) || 0;
+  const somaPrem = MG_PREM.reduce((t, [k])=> t + (P[k] || 0), 0);
+  const itens = [];
+  if(rec > 0){
+    const mc = (rec - cu) - somaPrem*rec, por100 = 100*mc/rec;
+    itens.push(['💰', `De cada <b>R$ 100</b> vendidos no período, sobraram <b>${fmtMoney(por100)}</b> de margem de contribuição, depois de pagar o produto, o imposto, a comissão e o frete. No total, <b>${dtMoney(mc)}</b>.`,
+      [['Ver a conta passo a passo', 'mg-sec-casc']]]);
+  }
+  const abaixoAlvo = L.filter(x=> x.mg != null && x.receita > 0 && x.mg < Number((R.get(x.linha) || pad).alvo)).sort((a, b)=> b.receita - a.receita);
+  if(abaixoAlvo.length){
+    const x = abaixoAlvo[0], r = R.get(x.linha) || pad;
+    itens.push(['📉', `<b>${escapeHtml(x.linha)}</b> está com margem de <b>${anPct(x.mg, 1)}</b>, abaixo do alvo de ${anPct(Number(r.alvo))}${abaixoAlvo.length > 1 ? `; mais ${abaixoAlvo.length - 1} linha${abaixoAlvo.length > 2 ? 's' : ''} abaixo do alvo` : ''}.`,
+      [['Ver as linhas', 'mg-sec-linhas']]]);
+  } else if(L.length) itens.push(['✅', 'Todas as linhas de produto estão no alvo de margem ou acima.', [['Ver as linhas', 'mg-sec-linhas']]]);
+  if(totAb > 0){
+    const porVend = new Map(); (ab || []).forEach(x=>{ const k = nomeBonito(x.vendedor || 'sem vendedor'); porVend.set(k, (porVend.get(k) || 0) + Number(x.total || 0)); });
+    const top = [...porVend.entries()].sort((a, b)=> b[1] - a[1])[0];
+    itens.push(['⚠️', `<b>${anPct(totAb/tot, 1)}</b> do faturamento (${dtMoney(totAb)}) foi vendido abaixo do piso, quando o vendedor precisaria de aprovação.${top ? ` Quem mais vendeu abaixo: <b>${escapeHtml(top[0])}</b> (${dtMoney(top[1])}).` : ''}`,
+      [['Ver essas vendas', 'mg-sec-abaixo'], ['Margem por vendedor', '@vendedores']]]);
+  } else if(tot > 0) itens.push(['✅', 'Nenhuma venda abaixo do piso no período.', []]);
+  itens.push(['⚙️', `A conta usa <b>imposto ${anPct(P.imposto || 0, 1)}</b>, <b>comissão ${anPct(P.comissao || 0, 2)}</b> e <b>frete ${anPct(P.frete || 0, 1)}</b>, e cada linha tem alvo e piso. Esses números são seus: ajuste quando quiser.`,
+    [['Ajustar as premissas', 'mg-sec-prem'], ['Ajustar os pisos', 'mg-sec-linhas']]]);
+  return `<div class="mg-leitura" id="mg-leitura"><div class="mg-lt-top"><h4>O que importa neste período</h4>
+      <button type="button" class="mg-lt-tour" data-mgtour="1">▶ Como ler esta tela</button></div>
+    ${itens.map(([ic, txt, acoes])=> `<div class="mg-lt-item"><span class="mg-lt-ic" aria-hidden="true">${ic}</span><div><p>${txt}</p>${acoes.length ? `<div class="mg-lt-acoes">${acoes.map(([rot, alvo])=> `<button type="button" data-mgir="${alvo}">${rot} ${alvo.startsWith('@') ? '→' : '↓'}</button>`).join('')}</div>` : ''}</div></div>`).join('')}
+    <p class="mg-lt-dica">Para ver outro período, troque no seletor ao lado do título.</p></div>`;
+}
+// leva até a parte da tela (rola e acende por 2,5 s) ou abre outra aba do Painel
+function mgIr(alvo){
+  if(alvo.startsWith('@')){ const t = document.querySelector(`[data-pn="${alvo.slice(1)}"]`); if(t) t.click(); return; }
+  const el = document.getElementById(alvo); if(!el) return;
+  el.scrollIntoView({ behavior:'smooth', block:'start' });
+  el.classList.remove('mg-acende'); void el.offsetWidth; el.classList.add('mg-acende');
+  setTimeout(()=> el.classList.remove('mg-acende'), 2600);
+}
+document.addEventListener('click', e=>{
+  const b = e.target.closest('[data-mgir]'); if(b){ mgIr(b.dataset.mgir); return; }
+  if(e.target.closest('[data-mgtour]')) tourRodar(TOUR_MARGENS, 'margens', true);
+});
+
+// tour: destaca uma parte da tela por vez, com uma explicação curta; Esc ou "Pular" fecha
+const TOUR_MARGENS = [
+  ['#mg-leitura', 'Comece por aqui', 'O resumo do período em frases simples. Cada botão leva você direto ao detalhe.'],
+  ['#an-per', 'Escolha o período', 'Mês atual, mês passado, trimestre, ano… Toda a tela recalcula.'],
+  ['#mg-sec-casc', 'A conta da margem de contribuição', 'Do faturamento até o que sobra: menos o custo do produto, o imposto, a comissão e o frete. Cada linha mostra de onde vem o número.'],
+  ['#mg-sec-prem', 'As premissas são suas', 'Imposto, comissão e frete em % das vendas. Mudou um número, clique em Salvar e a conta inteira se atualiza.'],
+  ['#mg-sec-linhas', 'Alvo e piso por linha', 'Verde: no alvo. Amarelo: entre o piso e o alvo. Vermelho: abaixo do piso, quando o vendedor precisa da sua aprovação.'],
+  ['#mg-sec-abaixo', 'Quem vendeu abaixo do piso', 'Venda por venda, da que mais custou primeiro: é a lista para a conversa com cada vendedor.'],
+  ['#view-margens .pn-pdf', 'Para levar para a reunião', 'O "PDF para o CEO" monta tudo isso em páginas, pronto para imprimir ou mandar.']];
+function tourRodar(passos, chave, forcar){
+  const k = 'crm_tour_' + chave + ':' + (window._userEmail || '');
+  if(!forcar){ try{ if(localStorage.getItem(k)) return; }catch(e){} }
+  try{ localStorage.setItem(k, '1'); }catch(e){}
+  const validos = passos.filter(([sel])=>{ const el = document.querySelector(sel); return el && el.offsetParent !== null; });
+  if(!validos.length) return;
+  document.getElementById('tour')?.remove();
+  const box = document.createElement('div'); box.id = 'tour';
+  box.innerHTML = '<div class="tour-luz"></div><div class="tour-card" role="dialog" aria-live="polite"><small class="tour-n"></small><h4></h4><p></p><div class="tour-acoes"><button type="button" data-tour="pular">Pular</button><span></span><button type="button" data-tour="voltar">Voltar</button><button type="button" data-tour="prox" class="tour-pri">Próximo</button></div></div>';
+  document.body.appendChild(box);
+  let i = 0;
+  const luz = box.querySelector('.tour-luz'), card = box.querySelector('.tour-card');
+  const fecha = ()=>{ box.remove(); document.removeEventListener('keydown', tecla); window.removeEventListener('resize', mostra); };
+  const tecla = e=>{ if(e.key === 'Escape') fecha(); if(e.key === 'ArrowRight') avanca(1); if(e.key === 'ArrowLeft') avanca(-1); };
+  const avanca = d=>{ i += d; if(i >= validos.length) return fecha(); if(i < 0) i = 0; mostra(true); };
+  function mostra(rolar){
+    const [sel, tit, txt] = validos[i], el = document.querySelector(sel); if(!el) return avanca(1);
+    if(rolar) el.scrollIntoView({ block:'center' });
+    const r = el.getBoundingClientRect(), m = 8;
+    Object.assign(luz.style, { left:(r.left - m)+'px', top:(r.top - m)+'px', width:(r.width + 2*m)+'px', height:Math.min(r.height + 2*m, innerHeight - 20)+'px' });
+    card.querySelector('.tour-n').textContent = `${i + 1} de ${validos.length}`;
+    card.querySelector('h4').textContent = tit; card.querySelector('p').textContent = txt;
+    card.querySelector('[data-tour="voltar"]').hidden = i === 0;
+    card.querySelector('[data-tour="prox"]').textContent = i === validos.length - 1 ? 'Entendi' : 'Próximo';
+    // o cartão fica abaixo do destaque; se não couber, acima; se não couber, no meio
+    const ch = card.offsetHeight || 170, cw = Math.min(340, innerWidth - 32);
+    let top = r.bottom + 16; if(top + ch > innerHeight - 10) top = r.top - ch - 16; if(top < 10) top = Math.max(10, innerHeight/2 - ch/2);
+    Object.assign(card.style, { width:cw+'px', top:top+'px', left:Math.max(16, Math.min(r.left, innerWidth - cw - 16))+'px' });
+  }
+  box.addEventListener('click', e=>{ const b = e.target.closest('[data-tour]'); if(!b) return;
+    if(b.dataset.tour === 'pular') fecha(); else avanca(b.dataset.tour === 'prox' ? 1 : -1); });
+  document.addEventListener('keydown', tecla); window.addEventListener('resize', mostra);
+  setTimeout(()=> mostra(true), 50);
+}
+
+// tela inicial de cada usuário (definida em Acessos; ex.: CEO cai direto nas Margens)
+const PAINEL_TITULOS = { comercial:'Painel · metas', vendedores:'Painel · vendedores e clientes', regioes:'Painel · regiões', margens:'Painel · margens', concorrentes:'Painel · concorrentes', estoque:'Painel · estoque' };
+const TELAS_INICIAIS = [['', 'Hoje (padrão)'], ['margens', 'Painel · margens'], ['comercial', 'Painel · metas'], ['vendedores', 'Painel · vendedores e clientes'], ['indicadores', 'Painel · visão do mês'], ['mapa', 'Estratégia'], ['operacao', 'Carteira'], ['atender', 'Atender']];
+function abrirTelaInicial(){
+  const t = window._perfil && window._perfil.tela_inicial; if(!t || t === 'hoje') return false;
+  if(PAINEL_TITULOS[t]){
+    if(!ehGestao()) return false;
+    document.querySelectorAll('.nav-btn').forEach(x=> x.classList.remove('active'));
+    const p = document.querySelector('.nav-btn[data-view="indicadores"]'); if(p) p.classList.add('active');
+    irParaTela(t, PAINEL_TITULOS[t]); return true;
+  }
+  const b = document.querySelector(`.nav-btn[data-view="${t}"]`);
+  if(b && !b.hidden){ b.click(); return true; }
+  return false;
+}
 
 sgInit();
 if(window._convite) conviteAbrir(); else checkSession();
