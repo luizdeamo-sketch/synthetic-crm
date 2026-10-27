@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8" />
-<meta name="crm-versao" content="20261027-181405">
+<meta name="crm-versao" content="20261027-181703">
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="theme-color" content="#005071">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -60,6 +60,12 @@
   .tb-chip{ font-size:11.5px; font-weight:600; padding:3px 8px; border-radius:999px; white-space:nowrap;}
   .tb-chip.crm{ background:var(--green-soft); color:var(--green);} .tb-chip.facil{ background:var(--amber-soft); color:var(--amber-ink);} .tb-chip.sem{ background:var(--red-soft); color:var(--red);}
   .tb-pos{ font-weight:600;} .tb-pos.alto{ color:var(--amber-ink);}
+  /* tabela média: régua de 0 a 5 com a meta marcada */
+  .tm-regua{ position:relative; height:10px; min-width:140px; background:var(--border-soft); border-radius:5px;}
+  .tm-regua i{ position:absolute; left:0; top:0; bottom:0; border-radius:5px; background:var(--brand);}
+  .tm-regua i.baixo{ background:var(--amber);}
+  .tm-regua b{ position:absolute; top:-4px; bottom:-4px; width:2px; background:var(--ink);}
+  .tm-grupo td{ background:var(--surface-2); font-weight:700;}
   .tb-rodape{ font-size:12px; color:var(--ink-faint); margin-top:8px;}
   .tb-form{ display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:10px; padding:14px 22px;}
   .tb-form label{ display:flex; flex-direction:column; gap:4px; font:600 11px 'IBM Plex Mono',monospace; color:var(--ink-faint); min-width:0;}
@@ -94,6 +100,7 @@
   .sb-prio-l{ display:grid; grid-template-columns:34px 1fr auto; gap:12px; align-items:center; padding:12px 16px; border-top:1px solid var(--border-soft);} .sb-prio-l:first-child{ border-top:0;}
   .sb-prio-n{ width:28px; height:28px; border-radius:50%; background:var(--brand); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:13px;}
   .sb-prio-l b{ font-size:15px;} .sb-prio-l p{ margin:2px 0 0; font-size:13.5px; color:var(--ink-soft);}
+  .sb-tag.ok{ background:var(--green-soft); color:var(--green);}
   .sb-tag{ font-size:12px; font-weight:600; padding:4px 10px; border-radius:999px; background:var(--amber-soft); color:var(--amber-ink); white-space:nowrap;}
   .sb-princ{ display:grid; grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); gap:10px 18px; margin:0; padding:0; list-style:none;}
   .sb-princ li{ background:var(--surface-2); border:1px solid var(--border-soft); border-radius:var(--radius-sm); padding:12px 14px; font-size:14px; line-height:1.5;} .sb-princ li b{ display:block; margin-bottom:2px;}
@@ -393,6 +400,7 @@
     <img class="rail-logo" src="assets/logo-synthetic.png" alt="Synthetic">
     <button data-perfis="vendedor,supervisor,gerente,master" class="nav-btn" data-view="sobre" title="Apresentação: o que é a Torre de Controle Synthetic e para que ela serve"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l3 7h-6z"></path><path d="M9 9h6l1 13H8z"></path><line x1="4" y1="22" x2="20" y2="22"></line></svg><span>Apresentação</span></button>
     <button data-perfis="vendedor,supervisor,gerente,master" class="nav-btn" data-view="tabelas" title="Tabelas de preço 1 a 5 de cada produto"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="3" y1="15" x2="21" y2="15"></line><line x1="9" y1="9" x2="9" y2="21"></line></svg><span>Tabelas</span></button>
+    <button data-perfis="vendedor,supervisor,gerente,master" class="nav-btn" data-view="tabmedia" title="Tabela média: em que tabela cada vendedor está vendendo, contra a meta de 2,3"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="4" y1="20" x2="20" y2="20"></line><rect x="5" y="11" width="3" height="9"></rect><rect x="10.5" y="7" width="3" height="13"></rect><rect x="16" y="13" width="3" height="7"></rect><line x1="3" y1="10" x2="21" y2="10" stroke-dasharray="2 2"></line></svg><span>Tab. média</span></button>
     <button data-perfis="vendedor,supervisor,gerente,master" class="nav-btn" data-view="sugestoes" title="Sugestões: ideias, problemas e dúvidas sobre o sistema, e o que foi feito com cada uma"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6"></path><path d="M10 22h4"></path><path d="M12 2a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2z"></path></svg><span>Sugestões</span></button>
     <button data-perfis="vendedor,supervisor,gerente,master" class="nav-btn nav-atender" data-view="atender" title="Atender um cliente: inteligência, abordagem, conversa e proposta, passo a passo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg><span>Atender</span></button>
     <button data-perfis="vendedor,supervisor,gerente,master" class="nav-btn active" data-view="hoje" title="Hoje: quem ligar agora, em ordem de prioridade"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"></path></svg><span>Hoje</span></button>
@@ -411,6 +419,7 @@
 
     <div id="view-sobre" class="view"><div class="sb" id="sb"></div></div>
     <div id="view-tabelas" class="view"><div class="tb" id="tb"></div></div>
+    <div id="view-tabmedia" class="view"><div class="tb" id="tm"></div></div>
     <div id="view-ajustes" class="view"><div class="pg">
       <div class="pg-head"><h2>Ajustes</h2><span class="sub">Ferramentas de administração do CRM. Só o Master vê este menu.</span></div>
       <div class="aj-grade">
@@ -3836,6 +3845,7 @@ document.querySelectorAll('.nav-btn').forEach(btn=>{
     const v = btn.dataset.view;
     if(v === 'sobre') renderSobre();
     if(v === 'tabelas') renderTabelas();
+    if(v === 'tabmedia') renderTabMedia();
     if(v === 'operacao') renderOperacao();
     if(v === 'hoje') renderHoje();
     if(v === 'atender') renderAtender();
@@ -3909,7 +3919,7 @@ const ehGestao = ()=> ['admin','master','gerente','analista'].includes(perfilEfe
 // Sistema zerado (27/10/2026): o menu mostra só o que já foi reconstruído. As telas antigas continuam no código;
 // para trazer uma de volta, inclua a view aqui. MENU_ZERADO = false devolve o menu inteiro.
 const MENU_ZERADO = true;
-const MENU_ATIVO = { sobre:'*', tabelas:'*', sugestoes:'*', equipe:'admin' };   // Sugestões nunca sai do menu (skill balao-e-sugestoes)
+const MENU_ATIVO = { sobre:'*', tabelas:'*', tabmedia:'*', sugestoes:'*', equipe:'admin' };   // Sugestões nunca sai do menu (skill balao-e-sugestoes)
 function menuLiberado(view, p){
   if(!MENU_ZERADO) return true;
   const quem = MENU_ATIVO[view]; return !!quem && (quem === '*' || quem.split(',').includes(p));
@@ -9614,6 +9624,57 @@ async function tbImportar(){
   });
 }
 
+// ---------- TABELA MÉDIA POR VENDEDOR E POR GERÊNCIA (prioridade 2 do CEO, 27/10/2026) ----------
+// Posição do preço vendido entre as tabelas, ponderada pelo valor (crm_tabela_media). Meta 2,3; limite sem pedir: Tabela 1 −7% (0,93).
+// Gerência = equipe do vendedor em Acessos. O especialista vê só a própria carteira (o banco filtra).
+const TM = { per:'mes', META:2.3 };
+const tmFmt = v=> v == null ? '—' : Number(v).toLocaleString('pt-BR', { minimumFractionDigits:2, maximumFractionDigits:2 });
+const tmPct = (a, b)=> b ? Math.round(100 * (a || 0) / b) + '%' : '—';
+function tmPeriodo(){
+  const h = new Date(), d = x=> x.toISOString().slice(0, 10);
+  if(TM.per === 'mes') return [d(new Date(h.getFullYear(), h.getMonth(), 1)), d(h), 'mês atual'];
+  if(TM.per === 'ant') return [d(new Date(h.getFullYear(), h.getMonth() - 1, 1)), d(new Date(h.getFullYear(), h.getMonth(), 0)), 'mês passado'];
+  return [d(new Date(h - 90 * 864e5)), d(h), 'últimos 90 dias'];
+}
+async function renderTabMedia(){
+  const host = document.getElementById('tm'); if(!host) return;
+  const [ini, fim, rot] = tmPeriodo();
+  host.innerHTML = '<div class="tb-rodape">Calculando a tabela média…</div>';
+  const { data, error } = await sb.rpc('crm_tabela_media', { p_ini:ini, p_fim:fim });
+  if(error){ host.innerHTML = `<div class="tb-aviso">Não consegui calcular: ${escapeHtml(errAmigavel(error))}</div>`; return; }
+  const L = data || [], soma = k=> L.reduce((s, r)=> s + Number(r[k] || 0), 0);
+  const tot = soma('valor'), comTab = soma('valor_com_tabela'), crm = soma('valor_tabela_crm'), abaixo = soma('valor_abaixo_limite');
+  const media = comTab ? L.reduce((s, r)=> s + Number(r.valor_com_tabela || 0) * Number(r.tabela_media || 0), 0) / comTab : null;
+  const provisorio = !tot || crm / tot < .8;
+  // agrupa por gerência (equipe); quem não tem equipe fica em "Sem gerência"
+  const grupos = new Map(); L.forEach(r=>{ const g = r.gerencia || 'Sem gerência definida'; if(!grupos.has(g)) grupos.set(g, []); grupos.get(g).push(r); });
+  const regua = v=> v == null ? '' : `<div class="tm-regua" title="0 a 5; a linha preta é a meta de 2,3"><i class="${v < TM.META ? 'baixo' : ''}" style="width:${Math.min(100, Math.max(0, v / 5 * 100))}%"></i><b style="left:${TM.META / 5 * 100}%"></b></div>`;
+  const linha = (r, grupo)=>{ const v = r.tabela_media == null ? null : Number(r.tabela_media);
+    return `<tr class="${grupo ? 'tm-grupo' : ''}"><td class="prod">${escapeHtml(r.vendedor)}</td><td class="n">${fmtMoney(r.valor)}</td>
+      <td class="n"><span class="tb-pos ${v != null && v < TM.META ? 'alto' : ''}">${tmFmt(v)}</span></td><td>${regua(v)}</td>
+      <td class="n">${tmPct(r.valor_com_tabela, r.valor)}</td><td class="n">${tmPct(r.valor_abaixo_limite, r.valor)}</td>
+      ${grupo ? '<td></td><td></td>' : `<td class="n">${r.pedidos}</td><td class="n">${r.clientes}</td>`}</tr>`; };
+  const agrega = (nome, rs)=>{ const ct = rs.reduce((s, r)=> s + Number(r.valor_com_tabela || 0), 0);
+    return { vendedor:nome, valor:rs.reduce((s, r)=> s + Number(r.valor), 0), valor_com_tabela:ct, valor_abaixo_limite:rs.reduce((s, r)=> s + Number(r.valor_abaixo_limite || 0), 0),
+      tabela_media: ct ? rs.reduce((s, r)=> s + Number(r.valor_com_tabela || 0) * Number(r.tabela_media || 0), 0) / ct : null }; };
+  const varias = grupos.size > 1 || !grupos.has('Sem gerência definida');
+  host.innerHTML = `
+    <div class="tb-kpis">
+      <div class="tb-kpi ${media != null && media < TM.META ? 'alerta' : ''}"><small>Tabela média · ${rot}</small><b>${tmFmt(media)}</b><span>meta ${tmFmt(TM.META)} · quanto maior, mais perto da Tabela 5</span></div>
+      <div class="tb-kpi ${abaixo / (tot || 1) > .05 ? 'alerta' : ''}"><small>Vendido abaixo do limite</small><b>${tmPct(abaixo, tot)}</b><span>${fmtMoney(abaixo)} abaixo da Tabela 1 −7%, que precisa de aprovação</span></div>
+      <div class="tb-kpi ${provisorio ? 'alerta' : ''}"><small>Vendas com tabela lançada</small><b>${tmPct(crm, tot)}</b><span>${provisorio ? 'número provisório até as tabelas 1 a 5 serem lançadas' : 'base confiável para a tabela média'}</span></div>
+    </div>
+    ${provisorio ? `<div class="tb-aviso"><b>Número ainda provisório.</b> As tabelas 1 a 5 ainda não foram lançadas no sistema; por isso a conta usa as tabelas antigas do Fácil123, que estão abaixo do preço praticado, e a média sai perto de 5. Assim que as tabelas forem lançadas na tela Tabelas, este número passa a valer.</div>` : ''}
+    <div class="tb-bar">
+      <select id="tm-per"><option value="mes" ${TM.per === 'mes' ? 'selected' : ''}>Mês atual</option><option value="ant" ${TM.per === 'ant' ? 'selected' : ''}>Mês passado</option><option value="90" ${TM.per === '90' ? 'selected' : ''}>Últimos 90 dias</option></select>
+      <span class="tb-esp"></span>${ehGestao() && !varias ? '<span class="tb-rodape" style="margin:0">Gerências: cadastre as equipes em Acessos para ver a média por gerência.</span>' : ''}
+    </div>
+    <div class="tb-wrap"><table class="tb-tab"><thead><tr><th>${varias ? 'Gerência / vendedor' : 'Vendedor'}</th><th class="n">Vendido</th><th class="n">Tabela média</th><th>contra a meta</th><th class="n">Com tabela</th><th class="n">Abaixo do limite</th><th class="n">Pedidos</th><th class="n">Clientes</th></tr></thead>
+    <tbody>${L.length ? [...grupos.entries()].map(([g, rs])=> (varias ? linha(agrega(g, rs), true) : '') + rs.map(r=> linha(r)).join('')).join('') : '<tr><td colspan="8" class="vazio">Nenhuma venda no período.</td></tr>'}</tbody></table></div>
+    <div class="tb-rodape">Tabela média = em que tabela o preço foi vendido, pesando pelo valor: Tabela 2 = 2; entre a 2 e a 3, fração; Tabela 1 com 7% de desconto = 0,93. "Com tabela" = parte das vendas de produtos que têm tabela; o resto não entra na média.</div>`;
+  host.querySelector('#tm-per').addEventListener('change', e=>{ TM.per = e.target.value; renderTabMedia(); });
+}
+
 // ---------- APRESENTAÇÃO: o que é a Torre de Controle Synthetic (1ª tela de quem entra) ----------
 function renderSobre(){
   const host = document.getElementById('sb'); if(!host || host.dataset.ok) return;
@@ -9624,10 +9685,10 @@ function renderSobre(){
     ['🧭', 'Informação do negócio', 'O que acontece na carteira, para agir antes de perder o cliente.', ['Clientes que pararam de comprar', 'Produtos que cada cliente deixou de levar', 'Visitas e próximos passos', 'Carteira por vendedor e região']]];
   // ordem definida pelo Luis Antônio no grupo de WhatsApp em 27/10/2026
   const prio = [
-    ['Tabelas de preço 1 a 5', 'Os preços de cada produto nas 5 tabelas, no sistema e sempre iguais ao Fácil123.'],
-    ['Tabela média por vendedor e por gerência', 'Em que tabela cada um está vendendo, comparado com a meta de 2,3.'],
-    ['Prazo médio por vendedor e por gerência', 'Quantos dias a Synthetic leva para receber, de quem vende e de cada equipe.'],
-    ['Comissões por vendedor', 'O cálculo da comissão de cada um, com as condições próprias de cada vendedor.']];
+    ['Tabelas de preço 1 a 5', 'Os preços de cada produto nas 5 tabelas, lançados aqui (planilha ou à mão).', 'tela pronta · falta lançar as tabelas'],
+    ['Tabela média por vendedor e por gerência', 'Em que tabela cada um está vendendo, comparado com a meta de 2,3.', 'tela pronta · vale após lançar as tabelas'],
+    ['Prazo médio por vendedor e por gerência', 'Quantos dias a Synthetic leva para receber, de quem vende e de cada equipe.', 'em construção'],
+    ['Comissões por vendedor', 'O cálculo da comissão de cada um, com as condições próprias de cada vendedor.', 'em construção']];
   const depois = ['Margem de contribuição', 'CRM de visitas', 'Performance de vendedor', 'Rastreamento de entrega (transportadora RC)'];
   const princ = [
     ['Não é bala de prata.', 'A Synthetic já sabe vender. A Torre não ensina a roda a girar: faz ela girar mais rápido.'],
@@ -9665,7 +9726,7 @@ function renderSobre(){
 
     <h2>O que estamos construindo primeiro</h2>
     <p class="sb-sub">As prioridades definidas pela diretoria, nesta ordem.</p>
-    <div class="sb-prio">${prio.map(([t, d], i)=> `<div class="sb-prio-l"><span class="sb-prio-n">${i + 1}</span><div><b>${t}</b><p>${d}</p></div><span class="sb-tag">em construção</span></div>`).join('')}</div>
+    <div class="sb-prio">${prio.map(([t, d, st], i)=> `<div class="sb-prio-l"><span class="sb-prio-n">${i + 1}</span><div><b>${t}</b><p>${d}</p></div><span class="sb-tag${st.startsWith('tela pronta') ? ' ok' : ''}">${st}</span></div>`).join('')}</div>
     <p class="sb-sub" style="margin-top:10px">Na sequência: ${depois.join(' · ')}.</p>
 
     <h2>Princípios</h2>
