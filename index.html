@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8" />
-<meta name="crm-versao" content="20261027-175530">
+<meta name="crm-versao" content="20261027-180717">
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="theme-color" content="#005071">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -299,7 +299,30 @@
   .ac-card-bola{ width:42px; height:42px; border-radius:50%; background:var(--brand); color:#fff; display:flex; align-items:center; justify-content:center; font-size:20px;}
   .ac-card-min{ display:flex; align-items:center; gap:10px; font-size:13px; color:var(--ink-soft); margin-bottom:12px;} .ac-card-min button{ border:0; background:none; color:var(--brand); font-weight:600; cursor:pointer; padding:0;}
   @media (max-width: 640px){ .ac-card{ flex-direction:column; align-items:stretch;} .ac-card-desenho{ display:none;} }
-  @media print{ #nova-versao, #acomp{ display:none !important;} }
+  /* retorno para quem sugeriu */
+  .sg-ret{ display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin:8px 0; padding:8px 10px; border-radius:var(--radius-sm); background:var(--brand-soft); font-size:13px;}
+  .sg-ret span{ font-weight:600; margin-right:4px;} .sg-ret.ok{ background:var(--green-soft); color:var(--green); font-weight:600;}
+  .sg-aviso{ display:flex; gap:14px; align-items:center; justify-content:space-between; flex-wrap:wrap; margin:12px var(--pg-pad) 0; padding:12px 16px; border-radius:var(--radius-md); background:var(--brand-soft); border:1px solid #b9d3dd;}
+  .sg-aviso p{ margin:4px 0 0; font-size:13.5px; color:var(--ink-soft);} .sg-aviso .sg-aviso-resp{ color:var(--ink); font-weight:500;}
+  .sg-aviso-bt{ display:flex; gap:8px; flex-wrap:wrap;}
+  .view:has(> .sg-aviso){ align-content:start;}   /* as telas são grid: sem isso o aviso estica até metade da altura */
+  #rail .nav-btn{ position:relative;} .sg-badge{ position:absolute; top:4px; right:8px; min-width:16px; height:16px; padding:0 4px; border-radius:8px; background:var(--red); color:#fff; font:700 10px/16px 'Barlow',sans-serif; font-style:normal; box-shadow:0 0 0 2px var(--brand);}
+  /* print do balão: escolher a área e marcar em cima (padrão do Aliança) */
+  #ac-sel{ position:fixed; inset:0; z-index:395; background:rgba(10,25,35,.35); cursor:crosshair;}
+  .ac-sel-bar{ position:fixed; top:12px; left:50%; transform:translateX(-50%); background:#fff; border-radius:12px; padding:10px 14px; box-shadow:0 10px 30px rgba(0,0,0,.35); font-size:13px; display:flex; gap:8px; align-items:center; flex-wrap:wrap; cursor:default; max-width:92vw;}
+  .ac-sel-bar button{ border:1px solid var(--border); background:#fff; border-radius:999px; padding:5px 12px; font-size:12.5px; cursor:pointer;}
+  .ac-sel-r{ position:fixed; border:3px solid var(--amber); background:rgba(255,255,255,.08); box-shadow:0 0 0 9999px rgba(10,25,35,.45); pointer-events:none;}
+  #ac-ed{ position:fixed; inset:0; z-index:400; background:rgba(10,25,35,.8); display:flex; flex-direction:column;}
+  .ac-ed-barra{ display:flex; gap:8px; align-items:center; flex-wrap:wrap; padding:10px 14px; background:#fff; border-bottom:1px solid var(--border);} .ac-ed-barra b{ margin-right:8px;}
+  .ac-ed-barra button, .ac-ed-rod button{ border:1px solid var(--border); background:#fff; border-radius:999px; padding:6px 13px; font-size:12.5px; cursor:pointer;}
+  .ac-ed-barra button.on{ background:var(--brand-soft); border-color:var(--brand); color:var(--brand); font-weight:700;}
+  .ac-ed-area{ flex:1; min-height:0; display:flex; align-items:center; justify-content:center; padding:12px; overflow:auto;}
+  #ac-ed-c{ max-width:100%; max-height:calc(100vh - 200px); background:#fff; border-radius:6px; box-shadow:0 10px 40px rgba(0,0,0,.45); cursor:crosshair; touch-action:none;}
+  .ac-ed-rod{ background:#fff; padding:10px 14px; display:flex; gap:10px; align-items:flex-end; flex-wrap:wrap; border-top:1px solid var(--border);}
+  #ac-ed-txt{ flex:1; min-width:240px; border:1px solid var(--border); border-radius:8px; padding:8px; font:inherit; font-size:13px; resize:vertical;}
+  .ac-ed-rod .ac-pri{ background:var(--brand); color:#fff; border-color:var(--brand); font-weight:700;}
+  .ac-ed-in{ position:fixed; z-index:410; border:2px solid #e11d2e; border-radius:6px; padding:5px 8px; font:700 15px Barlow, Arial, sans-serif; color:#e11d2e; background:#fff; min-width:220px;}
+  @media print{ #nova-versao, #acomp, #ac-ed, #ac-sel{ display:none !important;} }
   /* ---------- guia das Margens ---------- */
   .mg-leitura{ background:linear-gradient(180deg, #f2f8fb, #fff); border:1px solid #cfe3ec; border-radius:16px; padding:16px 18px; margin:0 0 16px;}
   .mg-lt-top{ display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:8px;} .mg-lt-top h4{ margin:0; font-size:1.05rem;}
@@ -1871,6 +1894,7 @@ async function boot(){
   await loadSellers();
   renderCalendar();
   if(!abrirTelaInicial()){ renderHoje(); document.querySelector('.nav-btn[data-view="sobre"]')?.click(); }
+  sgRetornoCarrega(); setInterval(sgRetornoCarrega, 5 * 60000);   // respostas às sugestões de quem está logado
 }
 // ---------- SINCRONIZAÇÃO COM O FÁCIL123 (status no cabeçalho e no botão 🔄 da barra lateral) ----------
 const SY_ATRASO_MIN = 75; // roda a cada 30 min; acima disso, algo travou
@@ -8310,7 +8334,7 @@ async function renderSugestoes(){
   const host = document.getElementById('sg-list'); if(!SG.list.length) host.innerHTML = '<div class="op-more">Carregando...</div>';
   const { data, error } = await sb.from('crm_sugestoes').select('*').order('created_at',{ascending:false}).limit(1000);
   if(error){ host.innerHTML = '<div class="op-more">Erro: '+escapeHtml(error.message)+'</div>'; return; }
-  SG.list = data||[]; sgDraw();
+  SG.list = data||[]; sgDraw(); sgMarcaVistas();
 }
 function sgIco(t){ return /^video\//.test(t||'')?'🎬':/^audio\//.test(t||'')?'🎧':'📄'; }
 function sgDraw(){
@@ -8326,6 +8350,7 @@ function sgDraw(){
       ${(r.anexos&&r.anexos.length)?`<div class="sg-atts">${r.anexos.map(a=>/^image\//.test(a.mime||'')?`<a href="#" data-att="${escapeHtml(a.path)}" title="${escapeHtml(a.nome||'')}"><img class="sg-thumb" data-thumb="${escapeHtml(a.path)}" alt="${escapeHtml(a.nome||'print')}"></a>`:`<a href="#" class="sg-file" data-att="${escapeHtml(a.path)}">${sgIco(a.mime)} ${escapeHtml(a.nome||'arquivo')}</a>`).join('')}</div>`:''}
       ${r.audio_path?`<div class="sg-audio"><a href="#" data-act="audio">▶ ouvir o áudio original</a></div>`:''}
       ${r.resposta?`<div class="sg-resp"${(r.resposta||'').startsWith('🔴')?' style="background:#fde8e8;border:2px solid #c23636"':''}><b>Resposta:</b> ${escapeHtml(r.resposta).replace(/\n/g,'<br>')}</div>`:''}
+      ${sgRetornoHtml(r)}
       <div class="sg-actions">${perfilEfetivo()==='admin' ? '<button class="om-cancel" data-act="status">Alterar status / responder</button>' : ''}<button class="btn-ghost" data-act="hist">Histórico (${hist.length})</button></div>
       <div class="sg-hist" style="display:none">${hist.length ? hist.slice().reverse().map(h=>`<div class="rec"><span class="k">${fmtDateTime(h.em)}</span><b>${escapeHtml(h.por||'—')}</b>: ${escapeHtml(sgLabel(h.de)[1])} → <b>${escapeHtml(sgLabel(h.para)[1])}</b>${h.nota?'<br>'+escapeHtml(h.nota):''}</div>`).join('') : '<div class="no-rec">Sem movimentações ainda.</div>'}</div>
     </div>`; }).join('') : '<div class="op-more">Nenhuma sugestão nesta seleção.</div>';
@@ -8341,7 +8366,54 @@ document.getElementById('sg-list').addEventListener('click', async e=>{
   if(a.dataset.act==='hist'){ const h = card.querySelector('.sg-hist'); h.style.display = h.style.display==='none' ? 'block' : 'none'; }
   if(a.dataset.act==='audio'){ try{ const url = await docsSignedUrl(r.audio_path); a.parentElement.innerHTML = `<audio controls autoplay src="${url}"></audio>`; }catch(x){ showToast('Erro: '+errMsg(x)); } }
   if(a.dataset.act==='status') sgStatusDialog(r);
+  if(a.dataset.act==='ret-bom' || a.dataset.act==='ret-nao') await sgRetorno(r, a.dataset.act==='ret-bom' ? 'ficou_bom' : 'nao_ficou');
 });
+// ---------- RETORNO PARA QUEM SUGERIU (skill balao-e-sugestoes, passo 6) ----------
+// A resposta aparece na aba Sugestões e na própria tela de onde a sugestão saiu; quem sugeriu diz "ficou bom" ou "ainda não ficou".
+// Regra do banco: cada um só vê as próprias sugestões; Administrador e CEO veem todas (crm_e_master).
+const sgSouAutor = r=> (r.autor_email || '').toLowerCase() === (window._userEmail || '').toLowerCase();
+function sgRetornoHtml(r){
+  if(!r.resposta || !sgSouAutor(r)) return r.retorno ? `<div class="sg-ret ok">${r.retorno === 'ficou_bom' ? '👍 Quem sugeriu: ficou bom' : '↩ Quem sugeriu: ainda não ficou'}</div>` : '';
+  if(r.retorno) return `<div class="sg-ret ok">${r.retorno === 'ficou_bom' ? '👍 Você marcou: ficou bom' : '↩ Você marcou: ainda não ficou (voltou para análise)'}</div>`;
+  return `<div class="sg-ret"><span>Isso resolveu?</span><button class="om-save" data-act="ret-bom">👍 Ficou bom</button><button class="om-cancel" data-act="ret-nao">Ainda não ficou</button></div>`;
+}
+async function sgRetorno(r, valor){
+  const { error } = await sb.rpc('crm_sugestao_retorno', { p_id:r.id, p_retorno:valor });
+  if(error){ showToast(errAmigavel(error)); return; }
+  showToast(valor === 'ficou_bom' ? 'Obrigado! Anotado que ficou bom.' : 'Anotado. Volta para análise.');
+  uso('clique', 'retorno sugestão', { valor });
+  await renderSugestoes(); sgRetornoCarrega();
+}
+// respostas que quem sugeriu ainda não viu: contador no menu e aviso na tela de origem
+const SGR = { pend:[] };
+async function sgRetornoCarrega(){
+  if(!window._userEmail) return;
+  const { data, error } = await sb.from('crm_sugestoes').select('id,texto,resposta,status,tela,contexto,autor_email,retorno,resposta_vista_em')
+    .not('resposta', 'is', null).is('retorno', null).eq('autor_email', window._userEmail.toLowerCase()).order('atualizado_em', { ascending:false }).limit(50);
+  if(error) return;
+  SGR.pend = data || [];
+  const b = document.querySelector('#rail .nav-btn[data-view="sugestoes"]');
+  if(b){ let n = b.querySelector('.sg-badge'); const novas = SGR.pend.filter(x=> !x.resposta_vista_em).length;
+    if(novas){ if(!n){ n = document.createElement('i'); n.className = 'sg-badge'; b.appendChild(n); } n.textContent = novas; b.title = novas + ' resposta(s) nova(s) para você'; } else if(n) n.remove(); }
+  sgRetornoNaTela();
+}
+function sgRetornoNaTela(){
+  document.getElementById('sg-aviso')?.remove();
+  const view = usoTelaAtual(); if(!view || view === 'sugestoes') return;
+  const r = SGR.pend.find(x=> x.contexto && x.contexto.view === view); if(!r) return;
+  const host = document.getElementById('view-' + view); if(!host) return;
+  const d = document.createElement('div'); d.id = 'sg-aviso'; d.className = 'sg-aviso';
+  d.innerHTML = `<div><b>💬 Respondemos sua sugestão sobre esta tela</b><p>"${escapeHtml((r.texto || '').slice(0, 120))}${(r.texto || '').length > 120 ? '…' : ''}"</p><p class="sg-aviso-resp">${escapeHtml(r.resposta || '')}</p></div>
+    <div class="sg-aviso-bt"><button class="om-save" data-ret="ficou_bom">👍 Ficou bom</button><button class="om-cancel" data-ret="nao_ficou">Ainda não ficou</button><button class="btn-ghost" data-ret="fechar" title="Ver depois na aba Sugestões">Depois</button></div>`;
+  host.prepend(d);
+  if(!r.resposta_vista_em){ r.resposta_vista_em = new Date().toISOString(); sb.rpc('crm_sugestao_retorno', { p_id:r.id, p_retorno:null }); }
+  d.addEventListener('click', async e=>{ const b = e.target.closest('[data-ret]'); if(!b) return;
+    if(b.dataset.ret === 'fechar'){ d.remove(); return; }
+    await sgRetorno(r, b.dataset.ret); d.remove(); });
+}
+document.addEventListener('crm-tela', ()=> setTimeout(sgRetornoNaTela, 300));
+// ao abrir a aba Sugestões, as respostas exibidas contam como vistas
+async function sgMarcaVistas(){ for(const r of SG.list.filter(x=> x.resposta && sgSouAutor(x) && !x.resposta_vista_em)){ r.resposta_vista_em = new Date().toISOString(); await sb.rpc('crm_sugestao_retorno', { p_id:r.id, p_retorno:null }); } sgRetornoCarrega(); }
 function sgStatusDialog(r){
   window._sgRespFiles = [];
   const box = dlgOpen(`<div class="om-title"><div><h3>Alterar status</h3><div class="om-sub">${escapeHtml((r.texto||'').slice(0,140))}${(r.texto||'').length>140?'…':''}</div></div><button data-close>✕</button></div>
@@ -9059,7 +9131,7 @@ document.addEventListener('visibilitychange', ()=>{
 function usoLiga(){ if(USO.on) return; USO.on = true; USO.desde = Date.now(); USO.tela = null; usoTrocaTela(); }
 
 // ---------- PEÇA 3 · ACOMPANHANTE (balão que conversa com o usuário) ----------
-const ACOMP_SEM_AUTO = ['luizdeamo@gmail.com'];           // quem testa o sistema: sem balões automáticos (o 💬 continua)
+const ACOMP_SEM_AUTO = ['luizdeamo@gmail.com', 'luiz.amo@capacitycase.com.br'];           // quem testa o sistema: sem balões automáticos (o 💬 continua)
 const ACOMP_RESPONSAVEL = 'Luiz';
 const ACOMP_TIPOS = [['melhoria','Ideia de melhoria'], ['problema','Algo não funciona'], ['duvida','Dúvida']];
 const ACOMP_PERGUNTAS = {
@@ -9101,14 +9173,91 @@ function acompLib(){
   return acompLib._p || (acompLib._p = new Promise((ok, falha)=>{ const s = document.createElement('script');
     s.src = 'https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.js'; s.onload = ok; s.onerror = falha; document.head.appendChild(s); }));
 }
-async function acompTiraPrint(){
+// area: {} = tela inteira; {rect} = área arrastada; {url} = outra janela/aba já capturada. Devolve uma URL de imagem (ou null).
+async function acompTiraPrint(area){
+  area = area || {};
+  if(area.url) return area.url;
   const t = new Promise(r=> setTimeout(()=> r(null), 8000));
   const p = (async ()=>{ await acompLib();
     // sem <script> (o código inteiro do CRM dentro do print quebrava a imagem) e com imagem vazia no lugar de figura que não carregar
-    return window.htmlToImage.toJpeg(document.body, { quality:0.75, skipFonts:true, pixelRatio:1, width:innerWidth, height:innerHeight, backgroundColor:'#ffffff',
+    const url = await window.htmlToImage.toJpeg(document.body, { quality:0.85, skipFonts:true, pixelRatio:1, width:innerWidth, height:innerHeight, backgroundColor:'#ffffff',
       imagePlaceholder:'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==',
-      filter: n=> !(n.id === 'acomp' || n.id === 'toast' || n.id === 'nova-versao' || n.tagName === 'SCRIPT' || n.tagName === 'NOSCRIPT') }); })().catch(()=> null);
+      filter: n=> !(n.id === 'acomp' || n.id === 'toast' || n.id === 'nova-versao' || n.id === 'ac-sel' || n.id === 'ac-ed' || n.tagName === 'SCRIPT' || n.tagName === 'NOSCRIPT') });
+    const R = area.rect; if(!R) return url;
+    // recorta a área escolhida (a imagem tem o tamanho da janela)
+    const img = await new Promise((ok, falha)=>{ const i = new Image(); i.onload = ()=> ok(i); i.onerror = falha; i.src = url; });
+    const k = img.naturalWidth / innerWidth, cv = document.createElement('canvas');
+    cv.width = Math.round(R.w * k); cv.height = Math.round(R.h * k);
+    cv.getContext('2d').drawImage(img, R.x * k, R.y * k, R.w * k, R.h * k, 0, 0, cv.width, cv.height);
+    return cv.toDataURL('image/jpeg', 0.85); })().catch(()=> null);
   return Promise.race([p, t]);
+}
+// escolher o que vai no print: arrastar uma área, tela inteira ou outra janela/aba (captura real da tela)
+function acompArea(){
+  return new Promise(res=>{
+    const ov = document.createElement('div'); ov.id = 'ac-sel';
+    ov.innerHTML = '<div class="ac-sel-bar"><b>O que vai no print?</b> Arraste sobre a tela para marcar a área, ou escolha: <button type="button" data-s="full">Tela inteira</button><button type="button" data-s="disp">Outra janela ou aba…</button><button type="button" data-s="x">Cancelar</button></div><div class="ac-sel-r" hidden></div>';
+    document.body.appendChild(ov);
+    const r = ov.querySelector('.ac-sel-r'); let x0 = 0, y0 = 0, arrastando = false;
+    const esc = e=>{ if(e.key === 'Escape') fim(null); };
+    const fim = v=>{ document.removeEventListener('keydown', esc); ov.remove(); res(v); };
+    document.addEventListener('keydown', esc);
+    const caixa = e=> ({ x:Math.min(x0, e.clientX), y:Math.min(y0, e.clientY), w:Math.abs(e.clientX - x0), h:Math.abs(e.clientY - y0) });
+    const pinta = b=>{ r.hidden = false; Object.assign(r.style, { left:b.x + 'px', top:b.y + 'px', width:b.w + 'px', height:b.h + 'px' }); };
+    ov.addEventListener('pointerdown', e=>{ if(e.target.closest('.ac-sel-bar')) return; arrastando = true; x0 = e.clientX; y0 = e.clientY; pinta({ x:x0, y:y0, w:0, h:0 }); e.preventDefault(); });
+    ov.addEventListener('pointermove', e=>{ if(arrastando) pinta(caixa(e)); });
+    ov.addEventListener('pointerup', e=>{ if(!arrastando) return; arrastando = false; const b = caixa(e); if(b.w < 30 || b.h < 30){ r.hidden = true; return; } fim({ rect:b }); });
+    ov.addEventListener('click', async e=>{ const b = e.target.closest('[data-s]'); if(!b) return; const s = b.dataset.s;
+      if(s === 'x'){ fim(null); return; } if(s === 'full'){ fim({}); return; }
+      try{
+        const st = await navigator.mediaDevices.getDisplayMedia({ video:true, audio:false }); const v = document.createElement('video'); v.srcObject = st; await v.play(); await new Promise(rr=> setTimeout(rr, 350));
+        const cv = document.createElement('canvas'); cv.width = v.videoWidth; cv.height = v.videoHeight; cv.getContext('2d').drawImage(v, 0, 0); st.getTracks().forEach(x=> x.stop());
+        fim({ url: cv.toDataURL('image/jpeg', 0.85) });
+      }catch(err){ showToast('Não foi possível capturar essa janela. Use a área na tela ou a tela inteira.'); }
+    });
+  });
+}
+// editor: riscar, retângulo e texto em vermelho por cima do print; devolve a imagem marcada (ou null se cancelar)
+function acompEditor(url, campoTexto){
+  return new Promise(res=>{
+    document.getElementById('ac-ed')?.remove();
+    const ed = document.createElement('div'); ed.id = 'ac-ed';
+    ed.innerHTML = '<div class="ac-ed-barra"><b>Marque no print</b><button type="button" data-t="pen" class="on">✏️ Riscar</button><button type="button" data-t="rect">▭ Retângulo</button><button type="button" data-t="txt">🔤 Texto</button>'
+      + '<button type="button" data-t="undo">↶ Desfazer</button><button type="button" data-t="clear">🗑 Limpar</button><span style="flex:1"></span><button type="button" data-t="cancel">Cancelar</button></div>'
+      + '<div class="ac-ed-area"><canvas id="ac-ed-c"></canvas></div>'
+      + '<div class="ac-ed-rod"><textarea id="ac-ed-txt" rows="2" placeholder="Descreva o ajuste (o que está errado ou o que você quer)…"></textarea><button type="button" data-t="usar" class="ac-pri">Usar este print</button></div>';
+    document.body.appendChild(ed);
+    const cv = ed.querySelector('#ac-ed-c'), ctx = cv.getContext('2d'), tx = ed.querySelector('#ac-ed-txt'), pilha = [], COR = '#e11d2e';
+    tx.value = campoTexto ? campoTexto.value : '';
+    let esc = 1, ferramenta = 'pen', desenhando = false, x0 = 0, y0 = 0, base = null;
+    const img = new Image(); img.onload = ()=>{ cv.width = img.naturalWidth; cv.height = img.naturalHeight; esc = Math.max(1, cv.width / 1000); ctx.drawImage(img, 0, 0); pilha.push(ctx.getImageData(0, 0, cv.width, cv.height)); ctx.lineCap = 'round'; ctx.lineJoin = 'round'; }; img.src = url;
+    const pos = ev=>{ const r = cv.getBoundingClientRect(); return [(ev.clientX - r.left) * cv.width / r.width, (ev.clientY - r.top) * cv.height / r.height]; };
+    const salva = ()=>{ pilha.push(ctx.getImageData(0, 0, cv.width, cv.height)); if(pilha.length > 25) pilha.splice(1, 1); };
+    const fim = v=>{ document.removeEventListener('keydown', teclas); ed.remove(); res(v); };
+    const teclas = e=>{ if(e.key === 'Escape' && !ed.querySelector('.ac-ed-in')) fim(null); };
+    document.addEventListener('keydown', teclas);
+    function escreve(x, y){
+      const r = cv.getBoundingClientRect(), box = document.createElement('input'); box.type = 'text'; box.className = 'ac-ed-in'; box.placeholder = 'Escreva e tecle Enter';
+      box.style.left = (r.left + x * r.width / cv.width) + 'px'; box.style.top = (r.top + y * r.height / cv.height - 14) + 'px'; ed.appendChild(box); setTimeout(()=> box.focus(), 30);
+      let feito = false; const ok = ()=>{ if(feito) return; feito = true; const t = box.value.trim(); box.remove(); if(!t) return;
+        const fs = Math.round(22 * esc); ctx.font = '700 ' + fs + 'px Barlow, Arial, sans-serif'; ctx.textBaseline = 'middle'; ctx.lineWidth = fs / 5; ctx.strokeStyle = '#fff'; ctx.strokeText(t, x, y); ctx.fillStyle = COR; ctx.fillText(t, x, y); salva(); };
+      box.addEventListener('keydown', e=>{ if(e.key === 'Enter') ok(); if(e.key === 'Escape'){ box.value = ''; ok(); } }); box.addEventListener('blur', ok);
+    }
+    cv.addEventListener('pointerdown', ev=>{ ev.preventDefault(); const [x, y] = pos(ev);
+      if(ferramenta === 'txt'){ escreve(x, y); return; }
+      desenhando = true; x0 = x; y0 = y; cv.setPointerCapture(ev.pointerId); base = ctx.getImageData(0, 0, cv.width, cv.height);
+      ctx.strokeStyle = COR; ctx.lineWidth = 4 * esc; if(ferramenta === 'pen'){ ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + 0.1, y + 0.1); ctx.stroke(); } });
+    cv.addEventListener('pointermove', ev=>{ if(!desenhando) return; const [x, y] = pos(ev);
+      if(ferramenta === 'pen'){ ctx.lineTo(x, y); ctx.stroke(); } else { ctx.putImageData(base, 0, 0); ctx.strokeRect(x0, y0, x - x0, y - y0); } });
+    const solta = ()=>{ if(!desenhando) return; desenhando = false; salva(); };
+    cv.addEventListener('pointerup', solta); cv.addEventListener('pointercancel', solta);
+    ed.addEventListener('click', e=>{ const b = e.target.closest('[data-t]'); if(!b) return; const t = b.dataset.t;
+      if(['pen', 'rect', 'txt'].includes(t)){ ferramenta = t; ed.querySelectorAll('[data-t=pen],[data-t=rect],[data-t=txt]').forEach(x=> x.classList.toggle('on', x === b)); cv.style.cursor = t === 'txt' ? 'text' : 'crosshair'; return; }
+      if(t === 'undo'){ if(pilha.length > 1){ pilha.pop(); ctx.putImageData(pilha[pilha.length - 1], 0, 0); } return; }
+      if(t === 'clear'){ ctx.putImageData(pilha[0], 0, 0); salva(); return; }
+      if(t === 'cancel'){ fim(null); return; }
+      if(t === 'usar'){ if(campoTexto && tx.value.trim()) campoTexto.value = tx.value; fim(cv.toDataURL('image/jpeg', 0.85)); } });
+  });
 }
 async function acompEscrever(motivo, pergunta){
   clearTimeout(ACOMP.timer);
@@ -9121,19 +9270,27 @@ async function acompEscrever(motivo, pergunta){
     <div class="ac-chips" role="radiogroup" aria-label="Tipo">${ACOMP_TIPOS.map(([k, l])=> `<button type="button" role="radio" data-actipo="${k}" aria-checked="${k===ACOMP.tipo}" class="${k===ACOMP.tipo?'on':''}">${l}</button>`).join('')}</div>
     <textarea id="ac-txt" rows="4" placeholder="Escreva aqui, ou clique em Falar"></textarea>
     <div class="ac-linha"><button type="button" id="ac-mic">🎤 Falar</button><span id="ac-mic-st" class="ac-mini"></span></div>
-    <div class="ac-print"><img id="ac-img" alt="Print da tela" hidden><span id="ac-print-st" class="ac-mini">Tirando um print da tela…</span><button type="button" id="ac-tirar">Tirar de novo</button></div>
-    <p class="ac-mini">O print vai junto para entendermos onde você estava. Fundos de mapa podem sair em branco.</p>
+    <div class="ac-print"><img id="ac-img" alt="Print da tela" hidden><span id="ac-print-st" class="ac-mini"></span><button type="button" id="ac-tirar">📸 Tirar print e marcar</button><button type="button" id="ac-marcar" hidden>✏️ Marcar</button></div>
+    <p class="ac-mini">Opcional: você escolhe a área (ou outra janela), risca e escreve em cima, e o print vai junto.</p>
     <div class="ac-acoes"><button type="button" id="ac-enviar" class="ac-pri">Enviar</button><button type="button" id="ac-desiste">Cancelar</button></div>`;
   c.querySelectorAll('[data-actipo]').forEach(b=> b.onclick = ()=>{ ACOMP.tipo = b.dataset.actipo; c.querySelectorAll('[data-actipo]').forEach(x=>{ const on = x === b; x.classList.toggle('on', on); x.setAttribute('aria-checked', on); }); });
   c.querySelector('#ac-desiste').onclick = ()=> acompFecha('desistiu');
   c.querySelector('#ac-mic').onclick = ()=> ditadoAlterna(ACOMP.voz, c.querySelector('#ac-txt'), c.querySelector('#ac-mic'), c.querySelector('#ac-mic-st'), '🎤 Falar');
-  const printa = async ()=>{ const st = c.querySelector('#ac-print-st'), img = c.querySelector('#ac-img'); st.textContent = 'Tirando um print da tela…'; img.hidden = true;
-    c.style.visibility = 'hidden'; const url = await acompTiraPrint(); c.style.visibility = '';
+  // print no padrão do Aliança: escolher a área (ou tela inteira / outra janela), depois marcar em cima (skill balao-e-sugestoes)
+  const mostra = url=>{ const img = c.querySelector('#ac-img'), st = c.querySelector('#ac-print-st'); ACOMP.print = url;
+    img.hidden = !url; if(url) img.src = url; c.querySelector('#ac-marcar').hidden = !url; c.querySelector('#ac-tirar').textContent = url ? '📸 Tirar de novo' : '📸 Tirar print e marcar'; st.textContent = ''; };
+  c.querySelector('#ac-tirar').onclick = async ()=>{
+    const st = c.querySelector('#ac-print-st'); c.style.visibility = 'hidden'; document.getElementById('ac-botao').style.visibility = 'hidden';
+    const area = await acompArea(); let url = null;
+    if(area){ await new Promise(r=> setTimeout(r, 80)); url = await acompTiraPrint(area); }
+    c.style.visibility = ''; document.getElementById('ac-botao').style.visibility = '';
     if(ACOMP.aberto !== 'escrever') return;
-    ACOMP.print = url; if(url){ img.src = url; img.hidden = false; st.textContent = ''; } else st.textContent = 'Não consegui tirar o print; dá para enviar sem ele.'; };
-  c.querySelector('#ac-tirar').onclick = printa;
+    if(area && !url){ st.textContent = 'Não consegui tirar o print; dá para enviar sem ele.'; return; }
+    if(url){ const marcado = await acompEditor(url, c.querySelector('#ac-txt')); mostra(marcado || url); }
+  };
+  c.querySelector('#ac-marcar').onclick = async ()=>{ if(!ACOMP.print) return; const m = await acompEditor(ACOMP.print, c.querySelector('#ac-txt')); if(m) mostra(m); };
   c.querySelector('#ac-enviar').onclick = acompEnvia;
-  printa(); setTimeout(()=>{ const t = document.getElementById('ac-txt'); if(t) t.focus(); }, 50);
+  setTimeout(()=>{ const t = document.getElementById('ac-txt'); if(t) t.focus(); }, 50);
 }
 async function acompEnvia(ev){
   const c = document.getElementById('ac-caixa'), ta = c.querySelector('#ac-txt'), b = ev.currentTarget;
@@ -9150,7 +9307,7 @@ async function acompEnvia(ev){
     const autor = curUserName();
     const { error } = await sb.from('crm_sugestoes').insert({ autor, texto: texto || '(ver áudio)', anexos, origem: ACOMP.voz.voz || audio_path ? 'voz' : 'texto', tipo:ACOMP.tipo,
       tela:usoNomeTela(USO.tela), prioridade:'normal', audio_path, status:'nova', historico:[{ em:new Date().toISOString(), por:autor, de:'nova', para:'nova', nota:'Enviada pelo balão' }],
-      contexto:{ via:'balao', motivo:ACOMP.motivo, pergunta:ACOMP.pergunta, rota:usoRota(USO.tela), largura:innerWidth, ultimos:USO.ultimos.slice(-20) } });
+      contexto:{ via:'balao', motivo:ACOMP.motivo, pergunta:ACOMP.pergunta, rota:usoRota(USO.tela), view:USO.tela, largura:innerWidth, ultimos:USO.ultimos.slice(-20) } });
     if(error) throw error;
     clearTimeout(ACOMP.timer); uso('balao', ACOMP.motivo, { evento:'fechou', resposta:'enviou' }); ACOMP.aberto = 'feito';
     c.innerHTML = `<p class="ac-texto ac-ok">Anotado! O ${escapeHtml(ACOMP_RESPONSAVEL)} já recebeu. 🙌</p>`;
@@ -9158,8 +9315,10 @@ async function acompEnvia(ev){
     usoEnvia();
   }catch(e){ b.disabled = false; b.textContent = 'Enviar'; c.querySelector('#ac-mic-st').textContent = 'Não consegui enviar agora. Tente de novo.'; console.warn(e); }
 }
-// balão de primeira vez numa tela: depois de 25 s nela, uma vez por tela, no máximo um a cada 5 min
+// balão de primeira vez numa tela: DESLIGADO (skill balao-e-sugestoes: na LCA foi ignorado ~25 de 25 vezes). true religa.
+const ACOMP_PRIMEIRA = false;
 document.addEventListener('crm-tela', e=>{
+  if(!ACOMP_PRIMEIRA) return;
   clearTimeout(ACOMP.prim); const tela = e.detail.tela;
   ACOMP.prim = setTimeout(()=>{
     if(USO.tela !== tela || !acompAutoOk()) return;
