@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8" />
-<meta name="crm-versao" content="20261027-164940">
+<meta name="crm-versao" content="20261027-171155">
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="theme-color" content="#005071">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -29,6 +29,37 @@
     --shadow-sm: 0 1px 2px rgba(15,18,30,.04), 0 4px 12px -6px rgba(15,18,30,.08);
     --shadow-md: 0 2px 4px rgba(15,18,30,.04), 0 12px 28px -10px rgba(15,18,30,.14);
   }
+  /* ---------- Tabelas 1 a 5 ---------- */
+  #view-tabelas{ overflow-y:auto; overflow-x:hidden; grid-template-columns:minmax(0,1fr);}   /* a view é grid: sem minmax a tabela larga estica a página */
+  .tb{ max-width:1280px; width:100%; min-width:0; margin:0 auto; padding:22px 28px 50px;}
+  .tb-kpis{ display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:14px;}
+  .tb-kpi{ background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-md); padding:14px 16px;}
+  .tb-kpi small{ display:block; font:600 11px 'IBM Plex Mono',monospace; text-transform:uppercase; letter-spacing:.04em; color:var(--ink-faint);}
+  .tb-kpi b{ display:block; font:700 26px 'Roboto Condensed',sans-serif; margin:4px 0 2px;} .tb-kpi span{ font-size:12.5px; color:var(--ink-soft);}
+  .tb-kpi.alerta b{ color:var(--amber-ink);}
+  .tb-aviso{ background:var(--amber-soft); border:1px solid var(--amber-line); color:var(--amber-ink); border-radius:var(--radius-md); padding:10px 14px; font-size:13.5px; line-height:1.5; margin-bottom:14px;}
+  .tb-bar{ display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-bottom:10px;}
+  .tb-bar input, .tb-bar select{ border:1px solid var(--border); border-radius:var(--radius-sm); padding:8px 10px; font-size:13.5px; background:var(--surface); color:var(--ink);}
+  .tb-bar input[type=search]{ flex:1 1 240px;}
+  .tb-bar .tb-esp{ flex:1;}
+  .tb-wrap{ background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-md); overflow:auto; max-height:calc(100vh - 330px);}
+  .tb-tab{ width:100%; border-collapse:collapse; font-size:13px;}
+  .tb-tab th{ position:sticky; top:0; background:var(--surface-2); text-align:left; font:600 11px 'IBM Plex Mono',monospace; text-transform:uppercase; color:var(--ink-faint); padding:9px 10px; border-bottom:1px solid var(--border); white-space:nowrap; cursor:pointer;}
+  .tb-tab td{ padding:8px 10px; border-bottom:1px solid var(--border-soft); white-space:nowrap;}
+  .tb-tab td.n, .tb-tab th.n{ text-align:right; font-variant-numeric:tabular-nums;}
+  .tb-tab td.prod{ white-space:normal; min-width:220px;}
+  .tb-tab tr.edit{ cursor:pointer;} .tb-tab tr.edit:hover td{ background:var(--brand-soft);}
+  .tb-tab td.vazio{ color:var(--ink-faint);}
+  .tb-chip{ font-size:11.5px; font-weight:600; padding:3px 8px; border-radius:999px; white-space:nowrap;}
+  .tb-chip.crm{ background:var(--green-soft); color:var(--green);} .tb-chip.facil{ background:var(--amber-soft); color:var(--amber-ink);} .tb-chip.sem{ background:var(--red-soft); color:var(--red);}
+  .tb-pos{ font-weight:600;} .tb-pos.alto{ color:var(--amber-ink);}
+  .tb-rodape{ font-size:12px; color:var(--ink-faint); margin-top:8px;}
+  .tb-form{ display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:10px; padding:14px 22px;}
+  .tb-form label{ display:flex; flex-direction:column; gap:4px; font:600 11px 'IBM Plex Mono',monospace; color:var(--ink-faint); min-width:0;}
+  .tb-form input{ border:1px solid var(--border); border-radius:6px; padding:8px; font-size:14px; width:100%; min-width:0; box-sizing:border-box;}
+  .tb-passo{ display:flex; gap:8px; align-items:center; padding:0 22px 8px; font-size:13px; color:var(--ink-soft); flex-wrap:wrap;}
+  .tb-passo input{ width:70px; border:1px solid var(--border); border-radius:6px; padding:6px;}
+  @media (max-width:820px){ .tb{ padding:14px 12px 40px;} .tb-kpis{ grid-template-columns:1fr;} .tb-form{ grid-template-columns:repeat(2,1fr);} }
   /* ---------- Apresentação (Torre de Controle Synthetic) ---------- */
   #view-sobre{ overflow-y:auto;}
   .sb{ max-width:1040px; margin:0 auto; padding:28px 32px 60px; color:var(--ink);}
@@ -327,6 +358,7 @@
   <nav id="rail">
     <img class="rail-logo" src="assets/logo-synthetic.png" alt="Synthetic">
     <button data-perfis="vendedor,supervisor,gerente,master" class="nav-btn" data-view="sobre" title="Apresentação: o que é a Torre de Controle Synthetic e para que ela serve"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l3 7h-6z"></path><path d="M9 9h6l1 13H8z"></path><line x1="4" y1="22" x2="20" y2="22"></line></svg><span>Apresentação</span></button>
+    <button data-perfis="vendedor,supervisor,gerente,master" class="nav-btn" data-view="tabelas" title="Tabelas de preço 1 a 5 de cada produto"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="3" y1="15" x2="21" y2="15"></line><line x1="9" y1="9" x2="9" y2="21"></line></svg><span>Tabelas</span></button>
     <button data-perfis="vendedor,supervisor,gerente,master" class="nav-btn nav-atender" data-view="atender" title="Atender um cliente: inteligência, abordagem, conversa e proposta, passo a passo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg><span>Atender</span></button>
     <button data-perfis="vendedor,supervisor,gerente,master" class="nav-btn active" data-view="hoje" title="Hoje: quem ligar agora, em ordem de prioridade"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"></path></svg><span>Hoje</span></button>
     <button data-perfis="vendedor,supervisor,gerente,master" class="nav-btn" data-view="operacao" title="Carteira de clientes: funil e compras na linha do tempo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg><span>Carteira</span></button>
@@ -343,6 +375,7 @@
   <div class="view-container">
 
     <div id="view-sobre" class="view"><div class="sb" id="sb"></div></div>
+    <div id="view-tabelas" class="view"><div class="tb" id="tb"></div></div>
     <div id="view-ajustes" class="view"><div class="pg">
       <div class="pg-head"><h2>Ajustes</h2><span class="sub">Ferramentas de administração do CRM. Só o Master vê este menu.</span></div>
       <div class="aj-grade">
@@ -3766,6 +3799,7 @@ document.querySelectorAll('.nav-btn').forEach(btn=>{
     document.getElementById('view-'+btn.dataset.view).classList.add('active');
     const v = btn.dataset.view;
     if(v === 'sobre') renderSobre();
+    if(v === 'tabelas') renderTabelas();
     if(v === 'operacao') renderOperacao();
     if(v === 'hoje') renderHoje();
     if(v === 'atender') renderAtender();
@@ -3839,7 +3873,7 @@ const ehGestao = ()=> ['admin','master','gerente','analista'].includes(perfilEfe
 // Sistema zerado (27/10/2026): o menu mostra só o que já foi reconstruído. As telas antigas continuam no código;
 // para trazer uma de volta, inclua a view aqui. MENU_ZERADO = false devolve o menu inteiro.
 const MENU_ZERADO = true;
-const MENU_ATIVO = { sobre:'*', equipe:'admin' };
+const MENU_ATIVO = { sobre:'*', tabelas:'*', equipe:'admin' };
 function menuLiberado(view, p){
   if(!MENU_ZERADO) return true;
   const quem = MENU_ATIVO[view]; return !!quem && (quem === '*' || quem.split(',').includes(p));
@@ -9239,6 +9273,174 @@ function abrirTelaInicial(){
   const b = document.querySelector(`.nav-btn[data-view="${t}"]`);
   if(b && !b.hidden){ b.click(); return true; }
   return false;
+}
+
+// ---------- TABELAS 1 A 5 (prioridade 1 do CEO, 27/10/2026) ----------
+// As tabelas ficam no CRM (crm_tabela_precos), porque no Fácil123 só ~100 produtos têm tabela e os preços estão desatualizados.
+// Onde o CRM ainda não tem, mostra a do Fácil123 marcada como tal. Lançam: Administrador, CEO e Analista (o banco confere).
+const TB = { rows:[], dias:90, q:'', linha:'', sit:'', ord:'valor', dir:-1, carregado:false };
+const tbR = v=> v==null ? '—' : Number(v).toLocaleString('pt-BR', { minimumFractionDigits:2, maximumFractionDigits:2 });
+const tbPode = ()=> ['admin','master','analista'].includes(perfilEfetivo());
+const tbNum = s=>{ if(s==null) return null; if(typeof s==='number') return s; s = String(s).replace(/[R$\s]/g,''); if(!s) return null;
+  if(s.includes(',')) s = s.replace(/\./g,'').replace(',', '.'); const n = Number(s); return isFinite(n) ? n : null; };
+async function tbCarrega(){
+  const { data, error } = await sb.rpc('crm_tabelas_precos', { p_dias: TB.dias });
+  if(error){ document.getElementById('tb').innerHTML = `<div class="tb-aviso">Não consegui carregar as tabelas: ${escapeHtml(errAmigavel(error))}</div>`; return false; }
+  TB.rows = data || []; TB.carregado = true; return true;
+}
+async function renderTabelas(recarregar){
+  const host = document.getElementById('tb'); if(!host) return;
+  if(!TB.carregado || recarregar){ host.innerHTML = '<div class="tb-rodape">Carregando as tabelas…</div>'; if(!(await tbCarrega())) return; }
+  const g = ehGestao(), R = TB.rows;
+  const vend = R.filter(r=> r.valor > 0), totV = vend.reduce((s, r)=> s + Number(r.valor), 0);
+  const comTab = vend.filter(r=> r.fonte === 'crm'), vCom = comTab.reduce((s, r)=> s + Number(r.valor), 0);
+  const nCrm = R.filter(r=> r.fonte === 'crm').length, nFacil = R.filter(r=> r.fonte === 'facil').length;
+  const pos = vend.filter(r=> r.tabela_media != null), vPos = pos.reduce((s, r)=> s + Number(r.valor), 0);
+  const media = vPos ? pos.reduce((s, r)=> s + Number(r.valor) * Number(r.tabela_media), 0) / vPos : null;
+  const linhas = [...new Set(R.map(r=> r.linha).filter(Boolean))].sort();
+  host.innerHTML = `
+    ${g ? `<div class="tb-kpis">
+      <div class="tb-kpi ${vCom / (totV || 1) < .9 ? 'alerta' : ''}"><small>Vendas com tabela lançada</small><b>${totV ? Math.round(100 * vCom / totV) : 0}%</b><span>${comTab.length} de ${vend.length} produtos vendidos nos últimos ${TB.dias} dias</span></div>
+      <div class="tb-kpi"><small>Produtos com tabela no sistema</small><b>${nCrm}</b><span>${nFacil} só com a tabela antiga do Fácil123</span></div>
+      <div class="tb-kpi ${media != null && media > 3 ? 'alerta' : ''}"><small>Tabela média vendida</small><b>${media == null ? '—' : media.toLocaleString('pt-BR', { maximumFractionDigits:2 })}</b><span>meta 2,3${nCrm ? '' : ' · ainda calculada com as tabelas antigas'}</span></div>
+    </div>` : ''}
+    ${nCrm === 0 ? `<div class="tb-aviso"><b>As tabelas 1 a 5 ainda não foram lançadas.</b> No Fácil123 só ${nFacil} produtos têm tabela preenchida, e os preços estão abaixo do que se pratica hoje. ${tbPode() ? 'Baixe a planilha, preencha as 5 colunas e importe aqui.' : 'Assim que forem lançadas, aparecem aqui.'}</div>` : ''}
+    <div class="tb-bar">
+      <input type="search" id="tb-q" placeholder="Buscar por código ou produto" value="${escapeHtml(TB.q)}">
+      <select id="tb-linha"><option value="">Todas as linhas</option>${linhas.map(l=> `<option ${l === TB.linha ? 'selected' : ''}>${escapeHtml(l)}</option>`).join('')}</select>
+      <select id="tb-sit"><option value="">Todas as situações</option><option value="crm" ${TB.sit === 'crm' ? 'selected' : ''}>Lançada no sistema</option><option value="facil" ${TB.sit === 'facil' ? 'selected' : ''}>Só a antiga do Fácil123</option><option value="sem" ${TB.sit === 'sem' ? 'selected' : ''}>Sem tabela</option></select>
+      ${g ? `<select id="tb-dias">${[30, 90, 365].map(d=> `<option value="${d}" ${d === TB.dias ? 'selected' : ''}>vendas de ${d} dias</option>`).join('')}</select>` : ''}
+      <span class="tb-esp"></span>
+      ${tbPode() ? '<button class="om-cancel" id="tb-modelo">⬇ Planilha para preencher</button><button class="om-save" id="tb-importar">⬆ Importar planilha</button>' : ''}
+      <button class="om-cancel" id="tb-export">Exportar</button>
+    </div>
+    <div class="tb-wrap"><table class="tb-tab"><thead><tr>
+      <th data-ord="codigo">Código</th><th data-ord="produto">Produto</th><th data-ord="linha">Linha</th><th>Un.</th>
+      ${[1, 2, 3, 4, 5].map(i=> `<th class="n" data-ord="t${i}">Tabela ${i}</th>`).join('')}<th>Situação</th>
+      ${g ? '<th class="n" data-ord="valor">Vendido</th><th class="n" data-ord="preco_medio">Preço médio</th><th class="n" data-ord="tabela_media">Tabela média</th>' : ''}
+    </tr></thead><tbody id="tb-corpo"></tbody></table></div>
+    <div class="tb-rodape" id="tb-rod"></div>`;
+  tbCorpo();
+  const re = ()=>{ TB.q = host.querySelector('#tb-q').value; TB.linha = host.querySelector('#tb-linha').value; TB.sit = host.querySelector('#tb-sit').value; tbCorpo(); };
+  host.querySelector('#tb-q').addEventListener('input', re); host.querySelector('#tb-linha').addEventListener('change', re); host.querySelector('#tb-sit').addEventListener('change', re);
+  host.querySelector('#tb-dias')?.addEventListener('change', e=>{ TB.dias = Number(e.target.value); renderTabelas(true); });
+  host.querySelector('#tb-export').addEventListener('click', tbExportar);
+  host.querySelector('#tb-modelo')?.addEventListener('click', tbModelo);
+  host.querySelector('#tb-importar')?.addEventListener('click', tbImportar);
+  host.querySelectorAll('th[data-ord]').forEach(th=> th.addEventListener('click', ()=>{ const o = th.dataset.ord; TB.dir = TB.ord === o ? -TB.dir : (['codigo','produto','linha'].includes(o) ? 1 : -1); TB.ord = o; tbCorpo(); }));
+}
+function tbFiltradas(){
+  const q = TB.q.trim().toLowerCase();
+  return TB.rows.filter(r=> (!q || (r.codigo + ' ' + r.produto).toLowerCase().includes(q)) && (!TB.linha || r.linha === TB.linha)
+    && (!TB.sit || (TB.sit === 'sem' ? !r.fonte : r.fonte === TB.sit)))
+    .sort((a, b)=>{ const x = a[TB.ord], y = b[TB.ord]; if(x == null && y == null) return 0; if(x == null) return 1; if(y == null) return -1;   // vazios sempre no fim
+      const numerico = ['valor','preco_medio','tabela_media','t1','t2','t3','t4','t5'].includes(TB.ord);
+      return (numerico ? Number(x) - Number(y) : String(x).localeCompare(String(y), 'pt-BR', { numeric:true })) * TB.dir; });
+}
+function tbCorpo(){
+  const g = ehGestao(), pode = tbPode(), L = tbFiltradas();
+  const chip = r=> r.fonte === 'crm' ? '<span class="tb-chip crm">Lançada</span>' : r.fonte === 'facil' ? '<span class="tb-chip facil">Antiga (Fácil123)</span>' : '<span class="tb-chip sem">Sem tabela</span>';
+  document.getElementById('tb-corpo').innerHTML = L.map(r=> `<tr class="${pode ? 'edit' : ''}" data-id="${r.product_id}">
+    <td>${escapeHtml(r.codigo || '')}</td><td class="prod">${escapeHtml(r.produto || '')}</td><td>${escapeHtml(r.linha || '')}</td><td>${escapeHtml(r.unidade || '')}</td>
+    ${[1, 2, 3, 4, 5].map(i=> `<td class="n ${r['t' + i] == null ? 'vazio' : ''}">${tbR(r['t' + i])}</td>`).join('')}<td>${chip(r)}</td>
+    ${g ? `<td class="n">${r.valor ? fmtMoney(r.valor) : '—'}</td><td class="n">${tbR(r.preco_medio)}</td><td class="n"><span class="tb-pos ${r.tabela_media > 5 ? 'alto' : ''}">${r.tabela_media == null ? '—' : Number(r.tabela_media).toLocaleString('pt-BR', { maximumFractionDigits:2 })}</span></td>` : ''}
+  </tr>`).join('') || `<tr><td colspan="14" class="vazio">Nenhum produto com esse filtro.</td></tr>`;
+  document.getElementById('tb-rod').textContent = `${L.length} produto${L.length === 1 ? '' : 's'}.` + (pode ? ' Clique numa linha para lançar ou corrigir as tabelas.' : '')
+    + (g ? ' Tabela média: em que tabela o produto foi vendido (Tabela 2 = 2; Tabela 1 com 7% de desconto = 0,93; acima de 5 = acima da Tabela 5).' : '');
+  if(pode) document.querySelectorAll('#tb-corpo tr.edit').forEach(tr=> tr.addEventListener('click', ()=> tbEditar(Number(tr.dataset.id))));
+}
+function tbEditar(id){
+  const r = TB.rows.find(x=> x.product_id === id); if(!r) return;
+  const box = dlgOpen(`<div class="om-title"><div><h3>${escapeHtml(r.codigo + ' · ' + r.produto)}</h3><div class="om-sub">${escapeHtml(r.linha || '')}${r.preco_medio ? ' · preço médio praticado R$ ' + tbR(r.preco_medio) : ''}${r.fonte === 'facil' ? ' · valores atuais vêm da tabela antiga do Fácil123' : ''}</div></div><button data-close>✕</button></div>
+    <div class="tb-form">${[1, 2, 3, 4, 5].map(i=> `<label>TABELA ${i}<input id="tbe-${i}" inputmode="decimal" value="${r['t' + i] == null ? '' : tbR(r['t' + i])}"></label>`).join('')}</div>
+    <div class="tb-passo">Preencher as tabelas 2 a 5 a partir da 1, somando <input id="tbe-pct" inputmode="decimal" value="5"> % a cada tabela <button class="om-cancel" id="tbe-calc">Calcular</button></div>
+    <div class="om-err" id="tbe-err"></div>
+    <div class="om-foot"><span style="flex:1"></span><button class="om-cancel" data-close>Cancelar</button><button class="om-save" id="tbe-ok">Salvar</button></div>`, true);
+  box.querySelector('#tbe-calc').addEventListener('click', ()=>{ const t1 = tbNum(box.querySelector('#tbe-1').value), p = tbNum(box.querySelector('#tbe-pct').value);
+    if(!(t1 > 0) || p == null){ box.querySelector('#tbe-err').textContent = 'Informe a Tabela 1 e o percentual.'; return; }
+    for(let i = 2; i <= 5; i++) box.querySelector('#tbe-' + i).value = tbR(t1 * Math.pow(1 + p / 100, i - 1)); });
+  box.querySelector('#tbe-ok').addEventListener('click', async e=>{
+    const v = [1, 2, 3, 4, 5].map(i=> tbNum(box.querySelector('#tbe-' + i).value));
+    if(v.some(x=> !(x > 0))){ box.querySelector('#tbe-err').textContent = 'Preencha as 5 tabelas com valores maiores que zero.'; return; }
+    e.target.disabled = true;
+    const { error } = await sb.rpc('crm_tabelas_salvar', { p_linhas:[{ product_id:id, t1:v[0], t2:v[1], t3:v[2], t4:v[3], t5:v[4] }], p_origem:'manual' });
+    e.target.disabled = false;
+    if(error){ box.querySelector('#tbe-err').textContent = errAmigavel(error); return; }
+    dlgClose(); showToast('Tabelas salvas.'); renderTabelas(true);
+  });
+}
+function tbExportar(){
+  const g = ehGestao(), L = tbFiltradas();
+  const cab = ['Código','Produto','Linha','Unidade','Tabela 1','Tabela 2','Tabela 3','Tabela 4','Tabela 5','Situação'].concat(g ? ['Vendido (R$)','Preço médio','Tabela média'] : []);
+  const num = v=> v == null ? '' : String(v).replace('.', ',');
+  const linhas = L.map(r=> [r.codigo, r.produto, r.linha, r.unidade, num(r.t1), num(r.t2), num(r.t3), num(r.t4), num(r.t5),
+    r.fonte === 'crm' ? 'Lançada' : r.fonte === 'facil' ? 'Antiga (Fácil123)' : 'Sem tabela'].concat(g ? [num(r.valor), num(r.preco_medio), num(r.tabela_media)] : []));
+  const csv = '﻿' + [cab].concat(linhas).map(l=> l.map(c=> '"' + String(c ?? '').replace(/"/g, '""') + '"').join(';')).join('\r\n');
+  const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], { type:'text/csv;charset=utf-8' }));
+  a.download = 'tabelas-synthetic-' + new Date().toISOString().slice(0, 10) + '.csv'; a.click(); setTimeout(()=> URL.revokeObjectURL(a.href), 2000);
+}
+// planilha para a Synthetic preencher: todos os produtos da lista, na ordem do que mais vende, com os valores atuais
+async function tbModelo(){
+  try{ await docsLoadScript('https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js'); }catch(e){ showToast('Não consegui abrir o gerador de planilha.'); return; }
+  const cab = ['Código','Produto','Linha','Unidade','Preço médio praticado','Tabela 1','Tabela 2','Tabela 3','Tabela 4','Tabela 5'];
+  const dados = TB.rows.map(r=> [r.codigo, r.produto, r.linha, r.unidade, r.preco_medio == null ? '' : Number(r.preco_medio),
+    ...[1, 2, 3, 4, 5].map(i=> r.fonte === 'crm' ? Number(r['t' + i]) : '')]);
+  const ws = XLSX.utils.aoa_to_sheet([cab].concat(dados)); ws['!cols'] = [{ wch:10 }, { wch:46 }, { wch:24 }, { wch:8 }, { wch:14 }, { wch:11 }, { wch:11 }, { wch:11 }, { wch:11 }, { wch:11 }];
+  const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, 'Tabelas 1 a 5'); XLSX.writeFile(wb, 'tabelas-1-a-5-synthetic.xlsx');
+  showToast('Planilha baixada: preencha as colunas Tabela 1 a 5 e importe aqui.');
+}
+async function tbImportar(){
+  const box = dlgOpen(`<div class="om-title"><div><h3>Importar tabelas 1 a 5</h3><div class="om-sub">Excel (.xlsx) ou CSV com a coluna <b>Código</b> e as colunas <b>Tabela 1</b> a <b>Tabela 5</b>. Linhas sem as 5 tabelas são ignoradas; nada muda no Fácil123.</div></div><button data-close>✕</button></div>
+    <div style="padding:16px 22px"><div class="dz" id="tbi-dz">📊 Arraste a planilha aqui ou clique para escolher<input type="file" id="tbi-file" accept=".csv,.xlsx,.xls" hidden></div><div id="tbi-res" style="margin-top:12px;font-size:13.5px"></div></div>
+    <div class="om-err" id="tbi-err"></div>
+    <div class="om-foot"><span style="flex:1"></span><button class="om-cancel" data-close>Cancelar</button><button class="om-save" id="tbi-ok" disabled>Gravar</button></div>`, true);
+  const dz = box.querySelector('#tbi-dz'), inp = box.querySelector('#tbi-file'); let prontas = [];
+  dz.addEventListener('click', ()=> inp.click());
+  dz.addEventListener('dragover', e=>{ e.preventDefault(); dz.classList.add('over'); }); dz.addEventListener('dragleave', ()=> dz.classList.remove('over'));
+  dz.addEventListener('drop', e=>{ e.preventDefault(); dz.classList.remove('over'); if(e.dataTransfer.files[0]) le(e.dataTransfer.files[0]); });
+  inp.addEventListener('change', ()=>{ if(inp.files[0]) le(inp.files[0]); });
+  async function le(file){
+    box.querySelector('#tbi-err').textContent = ''; let rows;
+    try{
+      await docsLoadScript('https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js');
+      const wb = /\.csv$/i.test(file.name) ? XLSX.read(await file.text(), { type:'string', FS:';' }) : XLSX.read(await file.arrayBuffer(), { type:'array' });
+      rows = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { header:1, raw:true, defval:'' });
+    }catch(e){ box.querySelector('#tbi-err').textContent = 'Não consegui ler a planilha.'; return; }
+    const norm = s=> String(s).normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/\s+/g, ' ').trim();
+    const hi = rows.findIndex(r=> r.some(c=> /^codigo|^cod\.?$/.test(norm(c))) && r.some(c=> /tabela 1|^t1$/.test(norm(c))));
+    if(hi < 0){ box.querySelector('#tbi-err').textContent = 'Não achei as colunas "Código" e "Tabela 1" a "Tabela 5" na primeira aba.'; return; }
+    const h = rows[hi].map(norm), col = re=> h.findIndex(c=> re.test(c));
+    const cCod = col(/^codigo|^cod\.?$/), cT = [1, 2, 3, 4, 5].map(i=> col(new RegExp('^(tabela ' + i + '|t' + i + ')$')));
+    if(cT.some(c=> c < 0)){ box.querySelector('#tbi-err').textContent = 'Faltam colunas: ' + cT.map((c, i)=> c < 0 ? 'Tabela ' + (i + 1) : null).filter(Boolean).join(', ') + '.'; return; }
+    const { data: prods, error } = await sb.from('products').select('id,code').eq('archived', false);
+    if(error){ box.querySelector('#tbi-err').textContent = errAmigavel(error); return; }
+    const porCod = new Map((prods || []).map(p=> [String(p.code).trim(), p.id]));
+    let semCod = 0, naoAchou = [], incompletas = 0, foraOrdem = 0; prontas = [];
+    for(const r of rows.slice(hi + 1)){
+      const cod = String(r[cCod] ?? '').trim(); if(!cod){ if(cT.some(c=> String(r[c]).trim())) semCod++; continue; }
+      const v = cT.map(c=> tbNum(r[c]));
+      if(v.every(x=> x == null)) continue;
+      if(v.some(x=> !(x > 0))){ incompletas++; continue; }
+      const id = porCod.get(cod); if(!id){ naoAchou.push(cod); continue; }
+      if(v.some((x, i)=> i && x < v[i - 1])) foraOrdem++;
+      prontas.push({ product_id:id, t1:v[0], t2:v[1], t3:v[2], t4:v[3], t5:v[4] });
+    }
+    box.querySelector('#tbi-res').innerHTML = `<b>${prontas.length}</b> produto${prontas.length === 1 ? '' : 's'} pronto${prontas.length === 1 ? '' : 's'} para gravar.`
+      + (incompletas ? `<br>${incompletas} linha(s) ignorada(s): falta alguma das 5 tabelas.` : '')
+      + (naoAchou.length ? `<br>${naoAchou.length} código(s) não encontrado(s) no Fácil123: ${escapeHtml(naoAchou.slice(0, 8).join(', '))}${naoAchou.length > 8 ? '…' : ''}` : '')
+      + (semCod ? `<br>${semCod} linha(s) sem código.` : '')
+      + (foraOrdem ? `<br><span style="color:var(--amber-ink)">Atenção: ${foraOrdem} produto(s) com uma tabela mais barata que a anterior. Confira antes de gravar.</span>` : '');
+    box.querySelector('#tbi-ok').disabled = !prontas.length;
+  }
+  box.querySelector('#tbi-ok').addEventListener('click', async e=>{
+    e.target.disabled = true; let n = 0;
+    for(let i = 0; i < prontas.length; i += 1000){
+      const { data, error } = await sb.rpc('crm_tabelas_salvar', { p_linhas: prontas.slice(i, i + 1000), p_origem:'planilha' });
+      if(error){ box.querySelector('#tbi-err').textContent = errAmigavel(error); e.target.disabled = false; return; }
+      n += data || 0;
+    }
+    dlgClose(); showToast(`${n} produto${n === 1 ? '' : 's'} com tabelas gravadas.`); renderTabelas(true);
+  });
 }
 
 // ---------- APRESENTAÇÃO: o que é a Torre de Controle Synthetic (1ª tela de quem entra) ----------
