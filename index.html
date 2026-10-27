@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8" />
-<meta name="crm-versao" content="20261027-164258">
+<meta name="crm-versao" content="20261027-164940">
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="theme-color" content="#005071">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -9249,12 +9249,13 @@ function renderSobre(){
     ['📊', 'Indicadores', 'Os números que mostram se o negócio está andando, todo dia, sem planilha.', ['Faturamento e meta', 'Margem de contribuição', 'Prazo médio de recebimento', 'Performance de cada vendedor']],
     ['🏷️', 'Precificação', 'Preço com regra: quanto dá para negociar sem perder margem.', ['Tabela média por vendedor', 'Piso e alvo de margem por linha', 'Limite de desconto sem precisar pedir', 'Vendas abaixo do piso']],
     ['🧭', 'Informação do negócio', 'O que acontece na carteira, para agir antes de perder o cliente.', ['Clientes que pararam de comprar', 'Produtos que cada cliente deixou de levar', 'Visitas e próximos passos', 'Carteira por vendedor e região']]];
+  // ordem definida pelo Luis Antônio no grupo de WhatsApp em 27/10/2026
   const prio = [
-    ['Margem de contribuição', 'Por produto, por vendedor e pela gerência: quanto sobra de cada venda.'],
-    ['Tabela média', 'Em que tabela cada vendedor está vendendo e quanto pode flexibilizar.'],
-    ['Prazo médio', 'Quantos dias a Synthetic leva para receber, por vendedor e por cliente.'],
-    ['CRM de visitas', 'Quem foi visitado, o que foi combinado e o que vem depois.'],
-    ['Performance de vendedor', 'Venda, margem, prazo e carteira de cada um, mês a mês.']];
+    ['Tabelas de preço 1 a 5', 'Os preços de cada produto nas 5 tabelas, no sistema e sempre iguais ao Fácil123.'],
+    ['Tabela média por vendedor e por gerência', 'Em que tabela cada um está vendendo, comparado com a meta de 2,3.'],
+    ['Prazo médio por vendedor e por gerência', 'Quantos dias a Synthetic leva para receber, de quem vende e de cada equipe.'],
+    ['Comissões por vendedor', 'O cálculo da comissão de cada um, com as condições próprias de cada vendedor.']];
+  const depois = ['Margem de contribuição', 'CRM de visitas', 'Performance de vendedor', 'Rastreamento de entrega (transportadora RC)'];
   const princ = [
     ['Não é bala de prata.', 'A Synthetic já sabe vender. A Torre não ensina a roda a girar: faz ela girar mais rápido.'],
     ['Um dado, uma fonte.', 'Tudo vem do Fácil123, lido a cada 30 minutos, só leitura. Ninguém digita duas vezes.'],
@@ -9290,8 +9291,9 @@ function renderSobre(){
     </div>
 
     <h2>O que estamos construindo primeiro</h2>
-    <p class="sb-sub">As prioridades combinadas com a diretoria, nesta ordem.</p>
+    <p class="sb-sub">As prioridades definidas pela diretoria, nesta ordem.</p>
     <div class="sb-prio">${prio.map(([t, d], i)=> `<div class="sb-prio-l"><span class="sb-prio-n">${i + 1}</span><div><b>${t}</b><p>${d}</p></div><span class="sb-tag">em construção</span></div>`).join('')}</div>
+    <p class="sb-sub" style="margin-top:10px">Na sequência: ${depois.join(' · ')}.</p>
 
     <h2>Princípios</h2>
     <ul class="sb-princ">${princ.map(([t, d])=> `<li><b>${t}</b>${d}</li>`).join('')}</ul>
