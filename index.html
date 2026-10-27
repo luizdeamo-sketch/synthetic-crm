@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8" />
-<meta name="crm-versao" content="20261027-181703">
+<meta name="crm-versao" content="20261027-183154">
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="theme-color" content="#005071">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -293,6 +293,8 @@
   .ac-card-bola{ width:42px; height:42px; border-radius:50%; background:var(--brand); color:#fff; display:flex; align-items:center; justify-content:center; font-size:20px;}
   .ac-card-min{ display:flex; align-items:center; gap:10px; font-size:13px; color:var(--ink-soft); margin-bottom:12px;} .ac-card-min button{ border:0; background:none; color:var(--brand); font-weight:600; cursor:pointer; padding:0;}
   @media (max-width: 640px){ .ac-card{ flex-direction:column; align-items:stretch;} .ac-card-desenho{ display:none;} }
+  .eq-pedidos{ background:var(--amber-soft); border:1px solid var(--amber-line); border-radius:var(--radius-md); padding:12px 14px; margin:12px 0;}
+  .eq-pedidos h3{ margin:0 0 8px; font-size:15px; color:var(--amber-ink);} .eq-pedidos .ca-table{ background:var(--surface);}
   /* retorno para quem sugeriu */
   .sg-ret{ display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin:8px 0; padding:8px 10px; border-radius:var(--radius-sm); background:var(--brand-soft); font-size:13px;}
   .sg-ret span{ font-weight:600; margin-right:4px;} .sg-ret.ok{ background:var(--green-soft); color:var(--green); font-weight:600;}
@@ -384,8 +386,8 @@
 <div id="noaccess-screen" style="display:none;">
   <div class="login-card">
     <div class="login-brand">Torre de Controle<span class="dot"></span><small>Synthetic</small></div>
-    <h1 style="margin-top:14px">Acesso não liberado</h1>
-    <div class="sub">O e-mail <b id="noaccess-email"></b> entrou, mas não tem acesso ao CRM (ou o acesso foi desativado). Peça um convite ao seu gerente.</div>
+    <h1 style="margin-top:14px" id="noaccess-titulo">Acesso não liberado</h1>
+    <div class="sub" id="noaccess-texto">O e-mail <b id="noaccess-email"></b> entrou, mas não tem acesso à Torre de Controle (ou o acesso foi desativado). Peça o link de acesso ao administrador.</div>
     <button class="btn btn-primary" id="btn-noaccess-out">Sair</button>
   </div>
 </div>
@@ -1873,7 +1875,11 @@ async function boot(){
   let ok = false;
   try{ const { data, error } = await sb.rpc('is_app_user'); if(error) console.warn('is_app_user', error); ok = !error && (data===true || data==='true'); }catch(e){ console.warn(e); }
   if(!ok){
-    document.getElementById('noaccess-email').textContent = window._userEmail || 'informado';
+    let st = null; try{ const r = await sb.rpc('crm_meu_status'); st = r.data; }catch(e){}
+    if(st === 'pendente'){   // cadastrou-se pelo link da equipe e espera o Administrador aprovar
+      document.getElementById('noaccess-titulo').textContent = 'Cadastro recebido ✅';
+      document.getElementById('noaccess-texto').innerHTML = `Seu cadastro (<b>${escapeHtml(window._userEmail || '')}</b>) está <b>aguardando aprovação</b>. Assim que o administrador liberar, é só entrar de novo com o seu e-mail e a sua senha.`;
+    } else document.getElementById('noaccess-email').textContent = window._userEmail || 'informado';
     document.getElementById('noaccess-screen').style.display = 'flex';
     return;
   }
@@ -1891,6 +1897,7 @@ async function boot(){
   renderCalendar();
   if(!abrirTelaInicial()){ renderHoje(); document.querySelector('.nav-btn[data-view="sobre"]')?.click(); }
   sgRetornoCarrega(); setInterval(sgRetornoCarrega, 5 * 60000);   // respostas às sugestões de quem está logado
+  eqBadgePedidos(); setInterval(()=>{ EQ.pedidos = null; eqBadgePedidos(); }, 5 * 60000);   // pedidos de acesso esperando o Administrador
 }
 // ---------- SINCRONIZAÇÃO COM O FÁCIL123 (status no cabeçalho e no botão 🔄 da barra lateral) ----------
 const SY_ATRASO_MIN = 75; // roda a cada 30 min; acima disso, algo travou
@@ -8743,7 +8750,11 @@ async function conviteAbrir(){
   const box = document.getElementById('cv-info');
   if(!info.ok){ box.textContent = info.erro; return; }
   const ate = new Date(info.expira_em).toLocaleString('pt-BR', { day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit' });
-  box.textContent = `Você foi convidado para o CRM da Synthetic Lubrificantes com o perfil ${info.perfil}. O convite vale até ${ate}.` +
+  const geral = info.perfil === 'definido na aprovação';   // link da equipe: o perfil é escolhido pelo Administrador
+  if(geral) document.querySelector('#convite-screen h1').textContent = 'Cadastro de acesso';
+  box.textContent = (geral
+    ? `Crie seu acesso à Torre de Controle - Synthetic. Depois do cadastro, o administrador aprova e define o que você vai ver. O link vale até ${ate}.`
+    : `Você foi convidado para a Torre de Controle - Synthetic com o perfil ${info.perfil}. O convite vale até ${ate}.`) +
     (info.email_fixo ? ` Use o e-mail ${info.email_fixo}.` : '');
   document.getElementById('cv-form').hidden = false;
   document.getElementById('cv-nome').focus();
@@ -8758,7 +8769,7 @@ async function conviteAbrir(){
     const b = ev.currentTarget; b.disabled = true; b.textContent = 'Criando seu acesso…';
     const r = await conviteChama({ acao:'aceitar', token, nome, email, senha });
     if(!r.ok){ b.disabled = false; b.textContent = 'Criar meu acesso'; return authMsg('cv-err', r.erro); }
-    authMsg('cv-err', 'Acesso criado! Entrando…', true);
+    authMsg('cv-err', r.pendente ? 'Cadastro feito! Agora é só aguardar a aprovação.' : 'Acesso criado! Entrando…', true);
     const { error } = await sb.auth.signInWithPassword({ email, password: senha });
     if(error){ authMsg('cv-err', 'Acesso criado. Entre com seu e-mail e a senha que você acabou de criar.', true); setTimeout(()=>location.reload(), 2500); return; }
     document.getElementById('convite-screen').style.display = 'none';
@@ -8782,6 +8793,8 @@ async function eqCarregar(){
   const err = [u, e, m, c, l].find(x=>x.error);
   if(err) throw err.error;
   EQ.usuarios = u.data || []; EQ.equipes = e.data || []; EQ.membros = m.data || []; EQ.convites = c.data || []; EQ.log = l.data || [];
+  EQ.pedidos = [];
+  if(perfilEfetivo() === 'admin'){ const p = await sb.rpc('crm_pedidos_acesso'); if(!p.error) EQ.pedidos = p.data || []; }
 }
 async function renderEquipe(){
   const host = document.getElementById('eq'); if(!host) return;
@@ -8791,9 +8804,17 @@ async function renderEquipe(){
   const abas = [['usuarios','Usuários'],['convites','Convites'],['equipes','Equipes'],['log','Registro de segurança']];
   host.innerHTML = `<div class="pg-head"><h2>Acessos</h2><span class="sub">Quem entra no CRM, com qual perfil e quais carteiras enxerga. As permissões são garantidas pelo banco de dados.</span></div>
     <div class="pn-bar"><div class="pn-tabs" role="tablist" aria-label="Acessos">${abas.map(([k, t])=>`<button type="button" role="tab" class="${EQ.aba===k?'on':''}" aria-selected="${EQ.aba===k}" data-eqaba="${k}">${t}</button>`).join('')}</div>
-    <span style="flex:1"></span><button type="button" class="om-save" id="eq-convidar">+ Novo convite</button></div><div id="eq-corpo"></div>`;
+    <span style="flex:1"></span>${perfilEfetivo()==='admin' ? '<button type="button" class="om-save" id="eq-link">🔗 Link de acesso da equipe</button> ' : ''}<button type="button" class="om-cancel" id="eq-convidar">+ Convite individual</button></div>
+    ${EQ.pedidos.length ? eqPedidosHtml() : ''}<div id="eq-corpo"></div>`;
   host.querySelectorAll('[data-eqaba]').forEach(b=>b.addEventListener('click', ()=>{ EQ.aba = b.dataset.eqaba; renderEquipe(); }));
   host.querySelector('#eq-convidar').addEventListener('click', eqNovoConvite);
+  host.querySelector('#eq-link')?.addEventListener('click', eqLinkEquipe);
+  host.querySelectorAll('[data-eqaprova]').forEach(b=> b.addEventListener('click', ()=> eqAprovar(EQ.pedidos.find(p=> p.email === b.dataset.eqaprova))));
+  host.querySelectorAll('[data-eqrecusa]').forEach(b=> b.addEventListener('click', async ()=>{
+    if(!confirm(`Recusar o pedido de ${b.dataset.eqrecusa}? A pessoa continua sem acesso.`)) return;
+    b.disabled = true; const { error } = await sb.rpc('crm_acesso_decidir', { p_email:b.dataset.eqrecusa, p_aprovar:false });
+    if(error){ b.disabled = false; showToast(errAmigavel(error)); return; } showToast('Pedido recusado.'); renderEquipe(); }));
+  eqBadgePedidos();
   const corpo = host.querySelector('#eq-corpo');
   ({ usuarios:eqUsuarios, convites:eqConvites, equipes:eqEquipes, log:eqLog })[EQ.aba](corpo);
 }
@@ -8804,7 +8825,7 @@ function eqUsuarios(corpo){
     <td>${eqDt(u.ultimo_acesso)}</td>
     <td class="r">${eqPodeAtribuir(u.role) && u.email !== window._userEmail ? `<button type="button" class="om-cancel" data-eqedit="${escapeHtml(u.email)}">Editar</button>${u.ativo ? ` <button type="button" class="om-cancel" data-eqsenha="${escapeHtml(u.email)}" title="Gera uma senha provisória para você enviar">${u.tem_login ? 'Nova senha' : 'Criar senha'}</button>` : ''}` : ''}</td></tr>`).join('');
   corpo.innerHTML = `<div style="display:flex;justify-content:flex-end;margin-bottom:10px"><button type="button" class="om-save" id="eq-cadastrar">+ Cadastrar usuário (senha provisória)</button></div><table class="ca-table"><thead><tr><th>Usuário</th><th>Perfil</th><th>Carteira (Fácil123)</th><th>Equipe</th><th>Situação</th><th>Último acesso</th><th></th></tr></thead><tbody>${linhas || '<tr><td colspan="7">Nenhum usuário.</td></tr>'}</tbody></table>
-    <p class="eq-nota">Novos usuários entram de dois jeitos: <b>cadastro com senha provisória</b> (você envia a senha; no primeiro acesso a pessoa cria a dela) ou <b>convite por link</b>. Aqui você também muda o perfil, a carteira ou desativa alguém (o acesso é cortado na hora). Ninguém pode mudar o próprio perfil.</p>`;
+    <p class="eq-nota">Novos usuários entram de três jeitos: <b>🔗 link de acesso da equipe</b> (um link para o grupo; cada um se cadastra e você aprova escolhendo o perfil), <b>cadastro com senha provisória</b> (você envia a senha; no primeiro acesso a pessoa cria a dela) ou <b>convite individual</b> (link para uma pessoa, já com o perfil). Aqui você também muda o perfil, a carteira ou desativa alguém (o acesso é cortado na hora). Ninguém pode mudar o próprio perfil.</p>`;
   corpo.querySelectorAll('[data-eqedit]').forEach(b=>b.addEventListener('click', ()=>eqEditarUsuario(EQ.usuarios.find(u=>u.email===b.dataset.eqedit))));
   corpo.querySelector('#eq-cadastrar').addEventListener('click', eqCadastrar);
   corpo.querySelectorAll('[data-eqsenha]').forEach(b=>b.addEventListener('click', async ()=>{
@@ -8896,10 +8917,74 @@ function eqEditarUsuario(u){
     dlgClose(); showToast('Acesso atualizado.'); renderEquipe();
   });
 }
+// ---------- LINK DE ACESSO DA EQUIPE (com aprovação) ----------
+// Um link só para a equipe toda: a pessoa se cadastra (nome, e-mail, senha) e fica aguardando; o Administrador aprova escolhendo o perfil.
+function eqPedidosHtml(){
+  return `<div class="eq-pedidos"><h3>⏳ ${EQ.pedidos.length} pedido${EQ.pedidos.length === 1 ? '' : 's'} de acesso aguardando você</h3>
+    <table class="ca-table"><thead><tr><th>Pessoa</th><th>Pediu em</th><th>Link</th><th></th></tr></thead><tbody>${EQ.pedidos.map(p=> `<tr>
+      <td><b>${escapeHtml(p.nome || '')}</b><div class="eq-mini">${escapeHtml(p.email)}</div></td><td>${eqDt(p.pedido_em)}</td><td>${escapeHtml(p.link_nota || '—')}</td>
+      <td class="r"><button type="button" class="om-save" data-eqaprova="${escapeHtml(p.email)}">Aprovar…</button> <button type="button" class="om-cancel" data-eqrecusa="${escapeHtml(p.email)}">Recusar</button></td></tr>`).join('')}</tbody></table></div>`;
+}
+function eqAprovar(p){
+  if(!p) return;
+  const box = dlgOpen(`<div class="om-title"><div><h3>Aprovar acesso</h3><div class="om-sub">${escapeHtml((p.nome || '') + ' · ' + p.email)}</div></div><button data-close>✕</button></div>
+    <div class="dlg-body">
+      <div class="field"><label for="eqa-role">Perfil</label><select id="eqa-role" class="ca-inp">${eqOpcoesPerfil('vendedor')}</select></div>
+      <div class="field" id="eqa-seller-f"><label for="eqa-seller">Carteira no Fácil123 (obrigatória para Especialista)</label><select id="eqa-seller" class="ca-inp">${eqOpcoesCarteira(null)}</select></div>
+      <p class="eq-nota">CEO: vê tudo. Gerente de vendas: o time comercial. Analista: os números, sem mexer em acessos. Especialista: só a própria carteira.</p>
+      <div class="om-err" id="eqa-err"></div>
+    </div>
+    <div class="om-foot"><button class="om-cancel" data-close>Cancelar</button><button class="om-save" id="eqa-ok">Aprovar</button></div>`);
+  const roleSel = box.querySelector('#eqa-role');
+  const ajusta = ()=>{ box.querySelector('#eqa-seller-f').hidden = roleSel.value !== 'vendedor'; }; roleSel.addEventListener('change', ajusta); ajusta();
+  box.querySelector('#eqa-ok').addEventListener('click', async ev=>{
+    const role = roleSel.value, seller = role === 'vendedor' ? box.querySelector('#eqa-seller').value : '';
+    if(role === 'vendedor' && !seller){ box.querySelector('#eqa-err').textContent = 'Escolha a carteira do Fácil123 desse especialista.'; return; }
+    ev.currentTarget.disabled = true;
+    const { error } = await sb.rpc('crm_acesso_decidir', { p_email:p.email, p_aprovar:true, p_role:role, p_seller_id: seller ? +seller : null });
+    if(error){ ev.currentTarget.disabled = false; box.querySelector('#eqa-err').textContent = errAmigavel(error); return; }
+    dlgClose(); showToast(`Acesso de ${p.nome || p.email} aprovado como ${PERFIS[role]}.`); renderEquipe();
+  });
+}
+function eqLinkEquipe(){
+  const box = dlgOpen(`<div class="om-title"><div><h3>Link de acesso da equipe</h3><div class="om-sub">Um link só para mandar no grupo. Cada pessoa se cadastra e você aprova, escolhendo o perfil.</div></div><button data-close>✕</button></div>
+    <div class="dlg-body">
+      <div class="field"><label for="eql-horas">Validade</label><select id="eql-horas" class="ca-inp"><option value="72">3 dias</option><option value="168">7 dias</option><option value="720" selected>30 dias</option></select></div>
+      <div class="field"><label for="eql-usos">Quantas pessoas podem se cadastrar</label><input id="eql-usos" class="ca-inp" type="number" min="1" max="50" value="20"></div>
+      <div class="field"><label for="eql-nota">Nome do link (só você vê)</label><input id="eql-nota" class="ca-inp" maxlength="200" value="Equipe Synthetic"></div>
+      <div class="om-err" id="eql-err"></div><div id="eql-out" hidden></div>
+    </div>
+    <div class="om-foot"><button class="om-cancel" data-close>Fechar</button><button class="om-save" id="eql-ok">Gerar link</button></div>`);
+  box.querySelector('#eql-ok').addEventListener('click', async ev=>{
+    const b = ev.currentTarget; b.disabled = true; b.textContent = 'Gerando…';
+    const { data, error } = await sb.rpc('crm_link_acesso_criar', { p_horas:+box.querySelector('#eql-horas').value,
+      p_max_usos: Math.max(1, Math.min(50, parseInt(box.querySelector('#eql-usos').value, 10) || 20)), p_nota: box.querySelector('#eql-nota').value.trim() || null });
+    if(error){ b.disabled = false; b.textContent = 'Gerar link'; box.querySelector('#eql-err').textContent = errAmigavel(error); return; }
+    const base = /^http:\/\/(localhost|127\.)/.test(location.origin) ? 'https://synthetic-crm.github.io/' : location.origin + location.pathname;
+    const link = base + '#convite=' + data.token;
+    const msg = `Pessoal, este é o link para criar o acesso de vocês à Torre de Controle - Synthetic:\n\n${link}\n\nCada um coloca o nome, o e-mail da empresa e cria uma senha. Depois eu aprovo e libero o que cada um vai ver. O link vale até ${eqDt(data.expira_em)}.`;
+    b.remove(); box.querySelectorAll('.dlg-body > .field').forEach(f=> f.hidden = true);
+    const out = box.querySelector('#eql-out'); out.hidden = false;
+    out.innerHTML = `<div class="sy-hero ok"><div class="ic">🔗</div><div><h4>Link criado</h4><div class="sub">Ele aparece só agora (o sistema guarda apenas uma impressão digital). Se perder, revogue na aba Convites e gere outro.</div></div></div>
+      <div class="field" style="margin-top:12px"><label for="eql-msg">Mensagem pronta para o grupo</label><textarea id="eql-msg" class="ca-inp" rows="7" readonly>${escapeHtml(msg)}</textarea></div>
+      <div class="eq-link"><button type="button" class="om-save" id="eql-copiar">Copiar mensagem</button><button type="button" class="om-cancel" id="eql-copiar-link">Copiar só o link</button></div>`;
+    const copia = async t=>{ try{ await navigator.clipboard.writeText(t); showToast('Copiado.'); }catch(e){ out.querySelector('#eql-msg').select(); showToast('Selecione e copie (Ctrl+C).'); } };
+    out.querySelector('#eql-copiar').addEventListener('click', ()=> copia(msg)); out.querySelector('#eql-copiar-link').addEventListener('click', ()=> copia(link));
+    EQ.aba = 'convites';
+  });
+}
+// número de pedidos esperando no botão Acessos (só para o Administrador)
+async function eqBadgePedidos(){
+  if(perfilEfetivo() !== 'admin') return;
+  let n = EQ.pedidos ? EQ.pedidos.length : 0;
+  if(!EQ.pedidos){ const p = await sb.rpc('crm_pedidos_acesso'); if(p.error) return; n = (p.data || []).length; }
+  const b = document.querySelector('#rail .nav-btn[data-view="equipe"]'); if(!b) return;
+  let i = b.querySelector('.sg-badge'); if(n){ if(!i){ i = document.createElement('i'); i.className = 'sg-badge'; b.appendChild(i); } i.textContent = n; b.title = n + ' pedido(s) de acesso aguardando'; } else if(i) i.remove();
+}
 function eqConvites(corpo){
   const linhas = EQ.convites.map(c=>{ const [cls, txt] = eqSit[c.situacao] || ['', c.situacao];
     const usos = (c.usado_por||[]).filter(x=>x.status==='concluido');
-    return `<tr><td><span class="tagx">${PERFIS[c.role]||escapeHtml(c.role)}</span>${c.nota?`<div class="eq-mini">${escapeHtml(c.nota)}</div>`:''}</td>
+    return `<tr><td><span class="tagx">${c.role === 'aprovacao' ? '🔗 Link da equipe (com aprovação)' : (PERFIS[c.role]||escapeHtml(c.role))}</span>${c.nota?`<div class="eq-mini">${escapeHtml(c.nota)}</div>`:''}</td>
       <td>${escapeHtml(c.vendedor_facil || c.equipe || '—')}${c.email_restrito?`<div class="eq-mini">só para ${escapeHtml(c.email_restrito)}</div>`:''}</td>
       <td><span class="sy-st ${cls}">${txt}</span></td><td class="r">${c.usos}/${c.max_usos}</td><td>${eqDt(c.expira_em)}</td>
       <td>${escapeHtml(c.criado_por)}<div class="eq-mini">${eqDt(c.criado_em)}</div></td>
