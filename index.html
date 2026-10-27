@@ -2,12 +2,12 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8" />
-<meta name="crm-versao" content="20261027-173158">
+<meta name="crm-versao" content="20261027-173400">
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="theme-color" content="#005071">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Synthetic CRM">
-<title>Synthetic · CRM Comercial</title>
+<title>Torre de Controle - Synthetic</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@500;600;700;800&family=Barlow:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap">
@@ -313,7 +313,7 @@
 
 <div id="login-screen">
   <div class="login-card">
-    <div class="login-brand">Synthetic<span class="dot"></span><small>CRM Comercial</small></div>
+    <div class="login-brand">Torre de Controle<span class="dot"></span><small>Synthetic</small></div>
     <div class="sub">Synthetic Lubrificantes — acesso restrito à equipe comercial.</div>
     <div class="field"><label>E-mail</label><input id="login-email" type="email" autocomplete="username"></div>
     <div class="field"><label>Senha</label><input id="login-pass" type="password" autocomplete="current-password"></div>
@@ -336,7 +336,7 @@
 
 <div id="convite-screen" style="display:none;">
   <div class="login-card">
-    <div class="login-brand">Synthetic<span class="dot"></span><small>CRM Comercial</small></div>
+    <div class="login-brand">Torre de Controle<span class="dot"></span><small>Synthetic</small></div>
     <h1 style="margin-top:14px">Convite de acesso</h1>
     <div class="sub" id="cv-info">Conferindo o convite…</div>
     <div id="cv-form" hidden>
@@ -353,7 +353,7 @@
 
 <div id="noaccess-screen" style="display:none;">
   <div class="login-card">
-    <div class="login-brand">Synthetic<span class="dot"></span><small>CRM Comercial</small></div>
+    <div class="login-brand">Torre de Controle<span class="dot"></span><small>Synthetic</small></div>
     <h1 style="margin-top:14px">Acesso não liberado</h1>
     <div class="sub">O e-mail <b id="noaccess-email"></b> entrou, mas não tem acesso ao CRM (ou o acesso foi desativado). Peça um convite ao seu gerente.</div>
     <button class="btn btn-primary" id="btn-noaccess-out">Sair</button>
@@ -362,7 +362,7 @@
 
 <div id="app">
   <header>
-    <div class="brand"><span class="wm">Synthetic</span><span class="dot"></span><span class="wm-sub">CRM Comercial</span><span class="hdr-title" id="hdr-title">Hoje</span><span class="info-ico" id="hdr-info" tabindex="0" title="Cada cliente numa linha do tempo: a faixa do funil comercial (antes do 1º pedido e na reativação) e a faixa de compras do Fácil123, mês a mês. Clique na faixa do funil para marcar/desmarcar uma etapa na data; clique no nome para abrir a ficha completa.">ⓘ</span></div>
+    <div class="brand"><span class="wm">Torre de Controle</span><span class="dot"></span><span class="wm-sub">Synthetic</span><span class="hdr-title" id="hdr-title">Hoje</span><span class="info-ico" id="hdr-info" tabindex="0" title="Cada cliente numa linha do tempo: a faixa do funil comercial (antes do 1º pedido e na reativação) e a faixa de compras do Fácil123, mês a mês. Clique na faixa do funil para marcar/desmarcar uma etapa na data; clique no nome para abrir a ficha completa.">ⓘ</span></div>
     <div class="who"><span id="hdr-sync" title="Os pedidos do ERP Fácil123 são sincronizados automaticamente a cada 30 minutos (somente leitura)">Fácil123 · …</span><span id="who-role" class="who-role" title="Seu perfil de acesso"></span><span id="who-email"></span><button id="btn-backup" title="Baixar uma cópia de todos os dados do CRM">⬇ Backup</button><button id="btn-logout">Sair</button></div>
   </header>
 
@@ -1656,7 +1656,7 @@
 
 <script>
 // =====================================================================
-// Synthetic · CRM Comercial — Synthetic Lubrificantes (Salto/SP)
+// Torre de Controle - Synthetic (Synthetic Lubrificantes, Salto/SP). Nome padrão dos sistemas da Capacity Case: "Torre de Controle - <empresa>"
 // Camada comercial sobre os dados do ERP Fácil123 (sincronizados, somente leitura).
 // =====================================================================
 const SUPABASE_URL = "https://kszwycktftzpmxzpyvdt.supabase.co";
@@ -3840,7 +3840,7 @@ function pnPdf(btn){
   const w = window.open('', '_blank'); if(!w){ showToast('Libere as janelas pop-up para gerar o PDF.'); return; }
   const css = [...document.querySelectorAll('style')].map(x=> x.textContent).join('\n');
   const logo = new URL('assets/logo-synthetic.png', location.href).href, hoje = new Date().toLocaleDateString('pt-BR');
-  w.document.write(`<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><base href="${location.href}"><title>Synthetic · Painel · ${escapeHtml(aba)}${sel ? ' · '+escapeHtml(sel) : ''}</title>
+  w.document.write(`<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><base href="${location.href}"><title>Torre de Controle - Synthetic · Painel · ${escapeHtml(aba)}${sel ? ' · '+escapeHtml(sel) : ''}</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@400;700&family=Barlow:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap">
     <style>${css}
     html, body{ background:#fff !important; height:auto !important; overflow:visible !important;} body{ margin:0; padding:0 26px 26px; -webkit-print-color-adjust:exact; print-color-adjust:exact;}
@@ -8091,7 +8091,7 @@ const agLocalHtml = l => !l ? '' : (/^https?:\/\//i.test(l) ? ` · <a href="${es
 function agGcalUrl(ev){
   const z = d => new Date(d).toISOString().replace(/[-:]/g,'').replace(/\.\d{3}/,'');
   const ini = new Date(ev.data_inicio), fim = ev.data_fim ? new Date(ev.data_fim) : new Date(ini.getTime()+3600000);
-  return 'https://calendar.google.com/calendar/render?action=TEMPLATE&text='+encodeURIComponent(ev.titulo||'Compromisso')+'&dates='+z(ini)+'/'+z(fim)+'&details='+encodeURIComponent((ev.notas||'')+'\n\nAgendado pelo CRM Synthetic')+'&location='+encodeURIComponent(ev.local||'')+'&add='+encodeURIComponent((ev.participantes||[]).join(','));
+  return 'https://calendar.google.com/calendar/render?action=TEMPLATE&text='+encodeURIComponent(ev.titulo||'Compromisso')+'&dates='+z(ini)+'/'+z(fim)+'&details='+encodeURIComponent((ev.notas||'')+'\n\nAgendado pelo Torre de Controle - Synthetic')+'&location='+encodeURIComponent(ev.local||'')+'&add='+encodeURIComponent((ev.participantes||[]).join(','));
 }
 function agIcs(ev){
   const z = d => new Date(d).toISOString().replace(/[-:]/g,'').replace(/\.\d{3}/,'');
@@ -8538,14 +8538,14 @@ async function exportMarcosPDF(dias){
   document.getElementById('print-report').innerHTML = `
     <div class="pr-page">
       <div class="pr-header"><span class="pr-brand">Synthetic<i></i></span><span class="pr-tag">Marcos · ${escapeHtml(fmtDDMM(ini))} a ${escapeHtml(fmtDDMM(fim))}</span></div>
-      <h1 class="pr-title">Marcos do CRM Comercial</h1>
+      <h1 class="pr-title">Marcos da Torre de Controle - Synthetic</h1>
       <p class="pr-sub">${escapeHtml(resumo)}</p>
       <p class="pr-section-title">Grandes marcos</p>
       <div class="pr-timeline">${dias.map(d=>`<div class="pr-tl-item"><span class="pr-tl-date">${escapeHtml(fmtDDMM(d.data))}</span><span class="pr-tl-day">${escapeHtml(d.dia_semana||'')}</span>
         <p class="pr-tl-text"><b>${escapeHtml((d.marco_icone||'')+' '+(d.marco_titulo||''))}</b><br>${escapeHtml(d.marco_texto||'')}</p></div>`).join('')}</div>
       ${(pend||[]).length?`<p class="pr-section-title">Pendências da diretoria</p><div class="pr-box open"><ul>${pend.map(r=>`<li><b>${escapeHtml(r.titulo)}</b>${r.area?' ('+escapeHtml(r.area)+')':''}${r.detalhe?' — '+escapeHtml(r.detalhe):''}</li>`).join('')}</ul></div>`:''}
       ${abertos.length?`<p class="pr-section-title">Próximos passos em aberto</p><div class="pr-box open"><ul>${abertos.map(i=>`<li>${escapeHtml(i)}</li>`).join('')}</ul></div>`:''}
-      <div class="pr-footer"><span>Synthetic Lubrificantes · CRM Comercial — detalhes na Ata diária</span><span>Gerado em ${hoje}</span></div>
+      <div class="pr-footer"><span>Torre de Controle - Synthetic · detalhes na Ata diária</span><span>Gerado em ${hoje}</span></div>
     </div>`;
   setTimeout(()=> window.print(), 80);
 }
