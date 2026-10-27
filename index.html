@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8" />
-<meta name="crm-versao" content="20261027-173400">
+<meta name="crm-versao" content="20261027-173925">
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="theme-color" content="#005071">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -80,6 +80,19 @@
   .sb-hero .sb-frase{ margin-top:18px; display:inline-block; background:rgba(255,255,255,.12); border-left:4px solid var(--teal); padding:10px 14px; border-radius:0 10px 10px 0; font-size:15.5px;}
   .sb h2{ font:700 21px 'Roboto Condensed',sans-serif; margin:34px 0 4px;}
   .sb-sub{ margin:0 0 16px; color:var(--ink-soft); font-size:15px;}
+  .sb-mantra{ margin-top:var(--pg-gap); background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); padding:clamp(16px, 1.6vw, 28px);}
+  .sb-mantra-top{ display:flex; justify-content:space-between; align-items:baseline; gap:12px; flex-wrap:wrap; margin-bottom:12px;}
+  .sb-mantra-top h2{ margin:0;} .sb-mantra-top p{ margin:0; color:var(--ink-soft); font-size:14.5px;}
+  .sb-niveis{ display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:var(--pg-gap);}
+  .sb-nivel{ border-radius:var(--radius-md); padding:14px 16px; border:1px solid var(--border-soft); background:var(--surface-2); position:relative;}
+  .sb-nivel::before{ content:""; position:absolute; left:0; top:12px; bottom:12px; width:4px; border-radius:0 4px 4px 0; background:var(--c);}
+  .sb-nivel small{ font:600 11px 'IBM Plex Mono',monospace; letter-spacing:.05em; text-transform:uppercase; color:var(--c);}
+  .sb-nivel h3{ margin:4px 0 2px; font-size:17px;} .sb-nivel .sb-quando{ font-size:12.5px; color:var(--ink-faint); margin-bottom:8px;}
+  .sb-nivel p{ margin:0 0 8px; font-size:14px; line-height:1.5; color:var(--ink-soft);}
+  .sb-nivel .sb-ex{ font-size:13.5px; line-height:1.5; background:var(--surface); border:1px dashed var(--border); border-radius:8px; padding:8px 10px; margin:0;}
+  .sb-nivel .sb-ex b{ color:var(--ink);}
+  .sb-mantra-pe{ display:flex; gap:10px 24px; flex-wrap:wrap; justify-content:space-between; align-items:center; margin-top:12px; font-size:14px; color:var(--ink-soft);}
+  .sb-mantra-pe q{ font-weight:600; color:var(--ink); quotes:"“" "”";}
   .sb-pilares{ display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:var(--pg-gap);}
   .sb-card{ background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-md); padding:18px; box-shadow:var(--shadow-xs);}
   .sb-card .sb-ic{ width:38px; height:38px; border-radius:10px; background:var(--brand-soft); color:var(--brand); display:flex; align-items:center; justify-content:center; font-size:19px; margin-bottom:10px;}
@@ -9462,6 +9475,14 @@ function renderSobre(){
     ['📊', 'Indicadores', 'Os números que mostram se o negócio está andando, todo dia, sem planilha.', ['Faturamento e meta', 'Margem de contribuição', 'Prazo médio de recebimento', 'Performance de cada vendedor']],
     ['🏷️', 'Precificação', 'Preço com regra: quanto dá para negociar sem perder margem.', ['Tabela média por vendedor', 'Piso e alvo de margem por linha', 'Limite de desconto sem precisar pedir', 'Vendas abaixo do piso']],
     ['🧭', 'Informação do negócio', 'O que acontece na carteira, para agir antes de perder o cliente.', ['Clientes que pararam de comprar', 'Produtos que cada cliente deixou de levar', 'Visitas e próximos passos', 'Carteira por vendedor e região']]];
+  // mantra do Luiz (método dos 3 níveis, 27/10/2026), com os exemplos reais da Synthetic
+  const niveis = [
+    ['var(--brand)', '01 · Estratégico', 'Direção', '3 a 5 anos · o CEO define', 'Onde competir e como vencer. No máximo 3 prioridades, cada uma com número e prazo.',
+     '<b>Meta 2027:</b> crescer 30% acima da inflação de 2026.'],
+    ['#0a7f8f', '02 · Tático', 'Iniciativas', '1 a 3 anos · revisão a cada 90 dias', 'A ponte para a execução: de 2 a 4 iniciativas por prioridade, cada uma com um dono e marcos.',
+     '<b>Agora:</b> tabelas de preço, tabela média, prazo médio e comissões.'],
+    ['var(--teal-deep)', '03 · Operacional', 'Rotina', 'dias a 12 meses · o time executa', 'Onde o trabalho acontece. Cada pessoa acompanha 2 ou 3 números que importam.',
+     '<b>Na semana:</b> tabela média contra a meta de 2,3 e prazo médio de cada vendedor.']];
   // ordem definida pelo Luis Antônio no grupo de WhatsApp em 27/10/2026
   const prio = [
     ['Tabelas de preço 1 a 5', 'Os preços de cada produto nas 5 tabelas, no sistema e sempre iguais ao Fácil123.'],
@@ -9485,6 +9506,12 @@ function renderSobre(){
       <h1>Ver o negócio inteiro numa tela, decidir com número e agir no mesmo dia.</h1>
       <p>Este sistema reúne o que a Synthetic já registra no Fácil123 e transforma em indicadores, regras de preço e informação para quem vende e para quem decide.</p>
       <div class="sb-frase">Não queremos ensinar a roda a girar. Queremos que ela gire mais rápido.</div>
+    </section>
+
+    <section class="sb-mantra" aria-label="Como planejamos: os 3 níveis">
+      <div class="sb-mantra-top"><h2>Nosso mantra: os 3 níveis do planejamento</h2><p>Todo trabalho tem um nível, um dono e desce até a rotina do time. <span class="sb-tag">a Torre vai acompanhar os 3 níveis</span></p></div>
+      <div class="sb-niveis">${niveis.map(([c, k, t, q, d, ex])=> `<div class="sb-nivel" style="--c:${c}"><small>${k}</small><h3>${t}</h3><div class="sb-quando">${q}</div><p>${d}</p><p class="sb-ex">${ex}</p></div>`).join('')}</div>
+      <div class="sb-mantra-pe"><span><b>E → T → O:</b> a meta vira iniciativas, e as iniciativas viram a rotina que o time vê todo dia.</span><q>Se não desce, é desejo. Se não sobe, é ocupação.</q></div>
     </section>
 
     <h2>O que a Torre entrega</h2>
