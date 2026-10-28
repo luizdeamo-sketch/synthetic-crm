@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8" />
-<meta name="crm-versao" content="20261028-165400">
+<meta name="crm-versao" content="20261028-170028">
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="theme-color" content="#005071">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -100,7 +100,17 @@
   .sb-prio-l{ display:grid; grid-template-columns:34px 1fr auto; gap:12px; align-items:center; padding:12px 16px; border-top:1px solid var(--border-soft);} .sb-prio-l:first-child{ border-top:0;}
   .sb-prio-n{ width:28px; height:28px; border-radius:50%; background:var(--brand); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:13px;}
   .sb-prio-l b{ font-size:15px;} .sb-prio-l p{ margin:2px 0 0; font-size:13.5px; color:var(--ink-soft);}
-  .sb-tag.ok{ background:var(--green-soft); color:var(--green);}
+.cm-abas{ display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px;}
+  .cm-aba{ border:1px solid var(--line, #d9dde3); background:var(--surface, #fff); color:inherit; padding:8px 14px; border-radius:999px; font:inherit; font-weight:600; cursor:pointer;}
+  .cm-aba.on{ background:var(--brand, #0b5cad); border-color:var(--brand, #0b5cad); color:#fff;}
+  .cm-recado{ border-left:4px solid var(--brand, #0b5cad); background:var(--surface-2, #f4f7fb); padding:14px 16px; border-radius:8px; margin-bottom:12px; line-height:1.5;}
+  .cm-recado b.de{ display:block; margin-bottom:4px;}
+  .cm-chips{ display:flex; gap:6px; flex-wrap:wrap;}
+  .cm-chip{ border:1px solid var(--line, #d9dde3); background:transparent; color:inherit; padding:5px 11px; border-radius:999px; font:inherit; font-size:13px; cursor:pointer;}
+  .cm-chip.on{ background:var(--ink, #1d2733); color:#fff; border-color:transparent;}
+  .cm-ok{ color:var(--green, #1a7f37); font-weight:600;} .cm-pend{ color:var(--amber-ink, #8a5a00); font-weight:600;}
+  .cm-faixas{ display:grid; grid-template-columns:repeat(auto-fit, minmax(150px, 1fr)); gap:10px;}
+    .sb-tag.ok{ background:var(--green-soft); color:var(--green);}
   .sb-tag{ font-size:12px; font-weight:600; padding:4px 10px; border-radius:999px; background:var(--amber-soft); color:var(--amber-ink); white-space:nowrap;}
   .sb-princ{ display:grid; grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); gap:10px 18px; margin:0; padding:0; list-style:none;}
   .sb-princ li{ background:var(--surface-2); border:1px solid var(--border-soft); border-radius:var(--radius-sm); padding:12px 14px; font-size:14px; line-height:1.5;} .sb-princ li b{ display:block; margin-bottom:2px;}
@@ -3948,7 +3958,10 @@ function menuLiberado(view, p){
 async function comissoesLiberadas(){
   if(window._perfil && perfilEfetivo() !== window._perfil.role) return;   // Administrador vendo como outro perfil: vale o perfil escolhido
   const { data } = await sb.rpc('crm_ve_comissoes'); if(!data || VE_COMISSOES) return;
-  VE_COMISSOES = true; const b = document.querySelector('#rail .nav-btn[data-view="comissoes"]'); if(b) b.hidden = false;
+  VE_COMISSOES = true; const b = document.querySelector('#rail .nav-btn[data-view="comissoes"]'); if(!b) return; b.hidden = false;
+  // quem foi liberado pelo e-mail (o Will) e ainda não leu o recado do Luiz entra direto na tabela oficial de comissão
+  let visto = false; try{ visto = localStorage.getItem('cm_recado_luiz') === '1'; }catch(_){}
+  if(!visto && !ehMaster()){ CM.aba = 'regras'; b.click(); }
 }
 function aplicarPerfil(){
   const p = perfilEfetivo();
@@ -9829,7 +9842,7 @@ async function renderPrazo(){
 // ---------- COMISSÕES POR VENDEDOR (prioridade 4 do CEO, 28/10/2026) ----------
 // Regra da planilha do Will (aba "produtos e comissões"), por produto: desconto sobre o preço de cadastro → faixa → %.
 // Ciclo de comissão: dia 26 do mês anterior ao dia 25. Conferido contra o relatório do Daniel de agosto (centavo a centavo).
-const CM = { ciclo:1, sel:null };   // abre no último ciclo fechado
+const CM = { ciclo:1, sel:null, aba:'resumo', filtro:'todas', busca:'' };   // abre no último ciclo fechado
 function cmCiclo(n){   // n = 0 ciclo atual, 1 o anterior...
   const h = new Date(), d = x=> x.toISOString().slice(0, 10);
   const fimMes = h.getDate() > 25 ? h.getMonth() + 1 : h.getMonth();    // ciclo "de outubro" vai de 26/09 a 25/10
@@ -9841,7 +9854,11 @@ function cmCiclo(n){   // n = 0 ciclo atual, 1 o anterior...
 const cmR = v=> v == null ? '—' : Number(v).toLocaleString('pt-BR', { style:'currency', currency:'BRL' });
 const cmPctFmt = v=> v == null ? '—' : (Number(v) * 100).toLocaleString('pt-BR', { minimumFractionDigits:1, maximumFractionDigits:2 }) + '%';
 async function renderComissoes(){
-  const host = document.getElementById('cm'); if(!host) return;
+  const fora = document.getElementById('cm'); if(!fora) return;
+  fora.innerHTML = `<div class="cm-abas"><button class="cm-aba ${CM.aba !== 'regras' ? 'on' : ''}" data-cmaba="resumo">Comissão por vendedor</button><button class="cm-aba ${CM.aba === 'regras' ? 'on' : ''}" data-cmaba="regras">Tabela oficial de comissão</button></div><div id="cm-in"></div>`;
+  fora.querySelectorAll('[data-cmaba]').forEach(b=> b.addEventListener('click', ()=>{ CM.aba = b.dataset.cmaba; renderComissoes(); }));
+  const host = document.getElementById('cm-in');
+  if(CM.aba === 'regras') return cmRegras(host);
   const [ini, fim, rot] = cmCiclo(CM.ciclo);
   host.innerHTML = '<div class="tb-rodape">Calculando as comissões…</div>';
   const { data, error } = await sb.rpc('crm_comissoes', { p_ini:ini, p_fim:fim });
@@ -9861,8 +9878,8 @@ async function renderComissoes(){
   host.innerHTML = `
     <div class="tb-kpis">
       <div class="tb-kpi"><small>Comissão do ciclo</small><b>${cmR(com)}</b><span>${rot}</span></div>
-      <div class="tb-kpi"><small>% médio de comissão</small><b>${cmPctFmt(comRegra ? com / comRegra : null)}</b><span>3% sem desconto, até 0,5% com desconto acima da faixa 4</span></div>
-      <div class="tb-kpi ${semRegra ? 'alerta' : ''}"><small>Itens sem regra de comissão</small><b>${semRegra}</b><span>${semRegra ? fmtMoney(tot - comRegra) + ' vendidos em produtos fora da planilha de comissões' : 'todos os produtos vendidos têm regra'}</span></div>
+      <div class="tb-kpi"><small>% médio de comissão</small><b>${cmPctFmt(comRegra ? com / comRegra : null)}</b><span>pela regra de cada produto na tabela oficial</span></div>
+      <div class="tb-kpi ${semRegra ? 'alerta' : ''}"><small>Itens sem regra de comissão</small><b>${semRegra}</b><span>${semRegra ? fmtMoney(tot - comRegra) + ' vendidos em produtos sem regra na tabela oficial' : 'todos os produtos vendidos têm regra'}</span></div>
     </div>
     <div class="tb-bar">
       <select id="cm-ciclo">${opc}</select>
@@ -9885,6 +9902,112 @@ async function renderComissoes(){
       'comissoes-synthetic-' + fim + '.csv');
   });
   if(CM.sel != null) cmDetalhe(ini, fim);
+}
+// ---- Tabela oficial de comissão (28/10/2026): a regra de cada produto passa a ser mantida aqui, pelo Will, com histórico ----
+// Carga inicial: faixas da planilha do Will + % fixo do campo "Percentual Comissão" do Fácil123. Equipe interna: a definir.
+const cmP = v=> v == null ? '' : (Number(v) * 100).toLocaleString('pt-BR', { maximumFractionDigits:2 });
+const cmNum = s=>{ const t = String(s ?? '').trim().replace('%', '').replace(/\./g, '').replace(',', '.'); return t === '' ? null : (isNaN(+t) ? NaN : +t / 100); };
+const cmRegraTxt = r=> r.c0 == null ? '<span class="vazio">sem regra</span>'
+  : r.d2 == null ? `<b>${cmP(r.c0)}%</b> fixo`
+  : `<b>${cmP(r.c0)}%</b> sem desconto · até ${cmP(r.d2)}%: ${cmP(r.c2)}% · até ${cmP(r.d3)}%: ${cmP(r.c3)}% · até ${cmP(r.d4)}%: ${cmP(r.c4)}% · acima: ${cmP(r.c5)}%`;
+const cmDiverge = r=> r.origem === 'planilha' && r.facil_pct != null && Math.abs(Number(r.facil_pct) - Number(r.c0)) > 1e-6;
+function cmRecadoHtml(){
+  let visto = false; try{ visto = localStorage.getItem('cm_recado_luiz') === '1'; }catch(_){}
+  if(visto) return `<div class="tb-rodape" style="margin:0 0 10px"><a href="#" id="cm-recado-ver">Ver o recado do Luiz sobre a tabela oficial</a></div>`;
+  return `<div class="cm-recado"><b class="de">Recado do Luiz Amo para o Will</b>
+    Will, a proposta é que esta seja a <b>tabela oficial de comissão da Synthetic</b>. Hoje a regra está dividida entre a sua planilha (as faixas de desconto) e o campo "Percentual Comissão" do Fácil, e as duas nem sempre batem. Eu já juntei as duas aqui: os produtos da planilha com as faixas, e os outros com o % que está no Fácil. Conferi a conta com o relatório de agosto do Daniel e bateu centavo a centavo.
+    <br><br><b>Por onde começar:</b> 1) os <b>produtos em que a planilha e o Fácil discordam</b> (botão "Divergências"): escolha a regra certa e salve; 2) os <b>produtos que vendem sem regra</b>; 3) confira o resto e clique em "Confirmar" quando estiver certo. Tudo o que você muda fica registrado (quem, quando, antes e depois), e a tela "Comissão por vendedor" já recalcula na hora.
+    <br><br>A <b>equipe interna</b> tem um cálculo diferente: por enquanto ela usa a mesma regra dos externos; quando a gente conversar, eu monto a regra dela aqui também. A partir daqui, a ideia é você mexer só nesta tela, e não mais na planilha nem no Fácil.
+    <div style="margin-top:10px"><button class="om-save" id="cm-recado-ok">Entendi, vamos começar</button></div></div>`;
+}
+async function cmRegras(host){
+  host.innerHTML = cmRecadoHtml() + '<div class="tb-rodape">Carregando a tabela de comissão…</div>';
+  const { data, error } = await sb.rpc('crm_comissao_regras_lista');
+  if(error){ host.innerHTML = `<div class="tb-aviso">Não consegui carregar: ${escapeHtml(errAmigavel(error))}</div>`; return; }
+  CM.regras = data || [];
+  const L = CM.regras, vend = L.filter(r=> Number(r.valor_12m) > 0);
+  const n = f=> L.filter(f).length, somaV = f=> L.filter(f).reduce((s, r)=> s + Number(r.valor_12m || 0), 0);
+  const filtros = { todas:['Todas', ()=> true], diverg:['Divergências planilha × Fácil', cmDiverge], sem:['Vendem sem regra', r=> r.c0 == null],
+    pend:['A confirmar', r=> r.c0 != null && !r.confirmado], ok:['Confirmadas', r=> r.confirmado] };
+  const busca = CM.busca.toLowerCase();
+  const V = L.filter(filtros[CM.filtro][1]).filter(r=> !busca || (r.codigo + ' ' + r.produto).toLowerCase().includes(busca));
+  host.innerHTML = cmRecadoHtml() + `
+    <div class="tb-kpis">
+      <div class="tb-kpi"><small>Produtos na tabela oficial</small><b>${n(r=> r.c0 != null)}</b><span>${n(r=> r.d2 != null)} com faixas de desconto (planilha) · ${n(r=> r.c0 != null && r.d2 == null)} com % fixo (Fácil)</span></div>
+      <div class="tb-kpi ${n(cmDiverge) ? 'alerta' : ''}"><small>Planilha e Fácil discordam</small><b>${n(cmDiverge)}</b><span>vale a planilha até você decidir</span></div>
+      <div class="tb-kpi ${n(r=> r.c0 == null) ? 'alerta' : ''}"><small>Vendem sem regra</small><b>${n(r=> r.c0 == null)}</b><span>${fmtMoney(somaV(r=> r.c0 == null))} vendidos em 12 meses sem comissão definida</span></div>
+      <div class="tb-kpi"><small>Confirmadas pelo Will</small><b>${n(r=> r.confirmado)} de ${n(r=> r.c0 != null)}</b><span>${vend.length} produtos venderam nos últimos 12 meses</span></div>
+    </div>
+    <div class="tb-bar">
+      <div class="cm-chips">${Object.entries(filtros).map(([k, [t, f]])=> `<button class="cm-chip ${CM.filtro === k ? 'on' : ''}" data-cmf="${k}">${t} (${n(f)})</button>`).join('')}</div>
+      <span class="tb-esp"></span>
+      <input id="cm-busca" class="ca-inp" placeholder="Buscar código ou produto" value="${escapeHtml(CM.busca)}" style="min-width:220px">
+      <button class="om-cancel" id="cm-rcsv">Baixar tabela (CSV)</button>
+    </div>
+    <div class="tb-wrap"><table class="tb-tab"><thead><tr><th>Produto</th><th class="n">Vendido 12 meses</th><th>Regra oficial (externo)</th><th class="n">No Fácil</th><th>Origem</th><th>Situação</th><th></th></tr></thead><tbody>
+    ${V.slice(0, 400).map(r=> `<tr><td class="prod">${escapeHtml(r.codigo)} · ${escapeHtml(r.produto)}${r.ativo ? '' : ' <small class="vazio">(arquivado)</small>'}</td>
+      <td class="n">${Number(r.valor_12m) ? fmtMoney(r.valor_12m) : '—'}</td><td>${cmRegraTxt(r)}</td>
+      <td class="n ${cmDiverge(r) ? 'cm-pend' : ''}">${r.facil_pct == null ? '—' : cmP(r.facil_pct) + '%'}</td>
+      <td>${({ planilha:'planilha', facil:'Fácil', torre:'ajustada aqui' })[r.origem] || '—'}</td>
+      <td>${r.confirmado ? `<span class="cm-ok" title="${escapeHtml((r.atualizado_por || '') + ' ' + (r.atualizado_em ? new Date(r.atualizado_em).toLocaleDateString('pt-BR') : ''))}">✓ confirmada</span>` : r.c0 == null ? '<span class="cm-pend">definir</span>' : '<span class="cm-pend">a confirmar</span>'}</td>
+      <td style="white-space:nowrap">${r.c0 != null && !r.confirmado ? `<button class="om-cancel" data-cmconf="${r.product_id}">Confirmar</button> ` : ''}<button class="om-cancel" data-cmed="${r.product_id}">Editar</button></td></tr>`).join('') || '<tr><td colspan="7" class="vazio">Nenhum produto neste filtro.</td></tr>'}
+    </tbody></table></div>
+    ${V.length > 400 ? `<div class="tb-rodape">Mostrando 400 de ${V.length}. Use a busca para achar os outros.</div>` : ''}
+    <div class="tb-rodape">Regra com faixas: o desconto é medido contra o preço de cadastro; sem desconto vale o primeiro %, e cada faixa vale até o limite indicado. Regra de % fixo: vale o mesmo % com qualquer desconto. "No Fácil" é o campo Percentual Comissão do cadastro do produto no Fácil123, só para comparação.</div>`;
+  cmRegrasEventos(host);
+}
+function cmRegrasEventos(host){
+  const ok = host.querySelector('#cm-recado-ok'); if(ok) ok.addEventListener('click', ()=>{ try{ localStorage.setItem('cm_recado_luiz', '1'); }catch(_){} CM.filtro = 'diverg'; cmRegras(host); });
+  const ver = host.querySelector('#cm-recado-ver'); if(ver) ver.addEventListener('click', e=>{ e.preventDefault(); try{ localStorage.removeItem('cm_recado_luiz'); }catch(_){} cmRegras(host); });
+  host.querySelectorAll('[data-cmf]').forEach(b=> b.addEventListener('click', ()=>{ CM.filtro = b.dataset.cmf; cmRegras(host); }));
+  const bu = host.querySelector('#cm-busca'); if(bu){ let t; bu.addEventListener('input', ()=>{ clearTimeout(t); t = setTimeout(()=>{ CM.busca = bu.value; cmRegras(host).then(()=>{ const x = host.querySelector('#cm-busca'); if(x){ x.focus(); x.setSelectionRange(x.value.length, x.value.length); } }); }, 350); }); }
+  host.querySelectorAll('[data-cmed]').forEach(b=> b.addEventListener('click', ()=> cmEditar(Number(b.dataset.cmed), host)));
+  host.querySelectorAll('[data-cmconf]').forEach(b=> b.addEventListener('click', async ()=>{
+    const r = CM.regras.find(x=> x.product_id === Number(b.dataset.cmconf)); if(!r) return; b.disabled = true;
+    const { error } = await sb.rpc('crm_comissao_salvar', { p_product_id:r.product_id, p_tipo:'externo', p_c0:r.c0, p_d2:r.d2, p_c2:r.c2, p_d3:r.d3, p_c3:r.c3, p_d4:r.d4, p_c4:r.c4, p_c5:r.c5, p_confirmado:true });
+    if(error){ b.disabled = false; showToast(errAmigavel(error)); return; }
+    showToast('Regra confirmada.'); cmRegras(host); }));
+  const csv = host.querySelector('#cm-rcsv'); if(csv) csv.addEventListener('click', ()=>{
+    const n = v=> v == null ? '' : cmP(v);
+    csvDownload([['Código', 'Produto', 'Vendido 12 meses', 'Sem desconto %', 'Faixa 2 até %', 'Faixa 2 %', 'Faixa 3 até %', 'Faixa 3 %', 'Faixa 4 até %', 'Faixa 4 %', 'Acima %', 'No Fácil %', 'Origem', 'Confirmada']]
+      .concat(CM.regras.map(r=> [r.codigo, r.produto, String(r.valor_12m).replace('.', ','), n(r.c0), n(r.d2), n(r.c2), n(r.d3), n(r.c3), n(r.d4), n(r.c4), n(r.c5), n(r.facil_pct), r.origem || '', r.confirmado ? 'sim' : 'não'])),
+      'tabela-comissao-synthetic-' + new Date().toISOString().slice(0, 10) + '.csv'); });
+}
+function cmEditar(id, host){
+  const r = CM.regras.find(x=> x.product_id === id); if(!r) return;
+  const temFaixa = r.d2 != null || r.c0 == null;
+  const campo = (k, rot)=> `<label>${rot}<input id="cme-${k}" inputmode="decimal" value="${cmP(r[k])}"></label>`;
+  const box = dlgOpen(`<div class="om-title"><div><h3>${escapeHtml(r.codigo + ' · ' + r.produto)}</h3><div class="om-sub">Vendedor externo · ${Number(r.valor_12m) ? fmtMoney(r.valor_12m) + ' vendidos em 12 meses' : 'sem venda em 12 meses'}${r.facil_pct != null ? ' · no Fácil: ' + cmP(r.facil_pct) + '%' : ''}</div></div><button data-close>✕</button></div>
+    <div class="dlg-body">
+      <div class="cm-chips" style="margin-bottom:12px"><button class="cm-chip ${temFaixa ? 'on' : ''}" data-cmmodo="faixa">Com faixas de desconto</button><button class="cm-chip ${temFaixa ? '' : 'on'}" data-cmmodo="fixo">% fixo</button></div>
+      <div class="cm-faixas">${campo('c0', 'Sem desconto (%)')}</div>
+      <div id="cme-fx" ${temFaixa ? '' : 'hidden'} style="margin-top:10px"><div class="cm-faixas">
+        ${campo('d2', 'Faixa 2: desconto até (%)')}${campo('c2', 'Faixa 2: comissão (%)')}
+        ${campo('d3', 'Faixa 3: desconto até (%)')}${campo('c3', 'Faixa 3: comissão (%)')}
+        ${campo('d4', 'Faixa 4: desconto até (%)')}${campo('c4', 'Faixa 4: comissão (%)')}
+        ${campo('c5', 'Acima da faixa 4: comissão (%)')}</div>
+        ${r.c0 == null ? '<div class="tb-rodape">Sugestão: o padrão da planilha é 3% sem desconto, 2% / 1,5% / 1% nas faixas e 0,5% acima.</div>' : ''}</div>
+      <div class="tb-rodape">Valores em %. Ex.: 3 = 3%; limite 4,5 = até 4,5% de desconto sobre o preço de cadastro. Equipe interna: regra própria em breve.</div>
+    </div>
+    <div class="om-err" id="cme-err"></div>
+    <div class="om-foot"><span style="flex:1"></span><button class="om-cancel" data-close>Cancelar</button><button class="om-save" id="cme-ok">Salvar e confirmar</button></div>`, true);
+  let modo = temFaixa ? 'faixa' : 'fixo';
+  if(r.c0 == null){ [['c0', 3], ['c2', 2], ['c3', 1.5], ['c4', 1], ['c5', .5]].forEach(([k, v])=>{ const i = box.querySelector('#cme-' + k); if(i && !i.value) i.placeholder = String(v).replace('.', ','); }); }
+  box.querySelectorAll('[data-cmmodo]').forEach(b=> b.addEventListener('click', ()=>{ modo = b.dataset.cmmodo;
+    box.querySelectorAll('[data-cmmodo]').forEach(x=> x.classList.toggle('on', x === b)); box.querySelector('#cme-fx').hidden = modo !== 'faixa'; }));
+  box.querySelector('#cme-ok').addEventListener('click', async e=>{
+    const v = k=> cmNum(box.querySelector('#cme-' + k).value), err = box.querySelector('#cme-err');
+    const p = { p_product_id:id, p_tipo:'externo', p_c0:v('c0'), p_d2:null, p_c2:null, p_d3:null, p_c3:null, p_d4:null, p_c4:null, p_c5:null, p_confirmado:true };
+    if(modo === 'faixa') Object.assign(p, { p_d2:v('d2'), p_c2:v('c2'), p_d3:v('d3'), p_c3:v('c3'), p_d4:v('d4'), p_c4:v('c4'), p_c5:v('c5') });
+    if(Object.values(p).some(x=> typeof x === 'number' && isNaN(x))){ err.textContent = 'Use só números, como 3 ou 4,5.'; return; }
+    if(p.p_c0 == null){ err.textContent = 'Informe a comissão sem desconto.'; return; }
+    if(modo === 'faixa' && ['p_d2', 'p_c2', 'p_d3', 'p_c3', 'p_d4', 'p_c4', 'p_c5'].some(k=> p[k] == null)){ err.textContent = 'Preencha todas as faixas ou escolha "% fixo".'; return; }
+    e.target.disabled = true;
+    const { error } = await sb.rpc('crm_comissao_salvar', p);
+    e.target.disabled = false;
+    if(error){ err.textContent = errAmigavel(error); return; }
+    dlgClose(); showToast('Regra salva e confirmada.'); cmRegras(host);
+  });
 }
 async function cmDetalhe(ini, fim){
   const box = document.getElementById('cm-det'); if(!box) return;
