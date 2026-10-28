@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8" />
-<meta name="crm-versao" content="20261028-182837">
+<meta name="crm-versao" content="20261028-183537">
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="theme-color" content="#005071">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -51,8 +51,8 @@
   .tb-bar .tb-esp{ flex:1;}
   .tb-wrap{ background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-md); overflow:auto; max-height:calc(100vh - 250px); min-height:320px;}
   .tb-tab{ width:100%; border-collapse:collapse; font-size:clamp(12.5px, .75vw, 15px);}
-  .tb-tab th{ position:sticky; top:0; background:var(--surface-2); text-align:left; font:600 11px 'IBM Plex Mono',monospace; text-transform:uppercase; color:var(--ink-faint); padding:9px 10px; border-bottom:1px solid var(--border); white-space:nowrap; cursor:pointer;}
-  .tb-tab td{ padding:8px 10px; border-bottom:1px solid var(--border-soft); white-space:nowrap;}
+  .tb-tab th{ position:sticky; top:0; background:var(--surface-2); text-align:left; font:600 11px 'IBM Plex Mono',monospace; text-transform:uppercase; color:var(--ink-faint); padding:7px 8px; border-bottom:1px solid var(--border); white-space:nowrap; cursor:pointer;}
+  .tb-tab td{ padding:6px 8px; border-bottom:1px solid var(--border-soft); white-space:nowrap;}
   .tb-tab td.n, .tb-tab th.n{ text-align:right; font-variant-numeric:tabular-nums;}
   .tb-tab td.prod{ white-space:normal; min-width:220px;}
   .tb-tab tr.edit{ cursor:pointer;} .tb-tab tr.edit:hover td{ background:var(--brand-soft);}
@@ -102,6 +102,12 @@
   .sb-prio-l b{ font-size:15px;} .sb-prio-l p{ margin:2px 0 0; font-size:13.5px; color:var(--ink-soft);}
 .tb-grupo-ini td{ border-top:2px solid var(--border);}
   .tb-ordlab{ display:flex; align-items:center; gap:6px; font-size:13px; color:var(--muted, #5b6573);}
+  .ct-sit{ font-size:12px; font-weight:600; padding:2px 8px; border-radius:999px; white-space:nowrap; border:1px solid transparent;}
+  .ct-sit.ativo{ background:var(--green-soft); color:var(--green);} .ct-sit.fora_de_linha{ background:var(--surface-2); color:var(--ink-faint); border-color:var(--border);}
+  .ct-sit.sob_encomenda, .ct-sit.em_teste{ background:var(--surface-2); color:var(--ink-soft); border-color:var(--border);} .ct-sit.a_classificar{ background:var(--amber-soft); color:var(--amber-ink);}
+  .ct-mov{ font-size:12.5px; white-space:nowrap;} .ct-mov.vendendo{ color:var(--green); font-weight:600;} .ct-mov.parado, .ct-mov.parado_12m{ color:var(--amber-ink);} .ct-mov.sem_venda{ color:var(--ink-faint);}
+  .ct-lote{ display:flex; gap:8px; align-items:center; flex-wrap:wrap; background:var(--surface-2); border:1px solid var(--border); border-radius:var(--radius-md); padding:6px 10px; margin-bottom:8px; font-size:13px;}
+  .tb-tab td.ck, .tb-tab th.ck{ width:28px; padding-right:0;}
   .cm-abas{ display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px;}
   .cm-aba{ border:1px solid var(--line, #d9dde3); background:var(--surface, #fff); color:inherit; padding:8px 14px; border-radius:999px; font:inherit; font-weight:600; cursor:pointer;}
   .cm-aba.on{ background:var(--brand, #0b5cad); border-color:var(--brand, #0b5cad); color:#fff;}
@@ -421,6 +427,7 @@
     <img class="rail-logo" src="assets/logo-synthetic.png" alt="Synthetic">
     <button data-perfis="vendedor,supervisor,gerente,master" class="nav-btn" data-view="sobre" title="Apresentação: o que é a Torre de Controle Synthetic e para que ela serve"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l3 7h-6z"></path><path d="M9 9h6l1 13H8z"></path><line x1="4" y1="22" x2="20" y2="22"></line></svg><span>Apresentação</span></button>
     <button data-perfis="vendedor,supervisor,gerente,master" class="nav-btn" data-view="tabelas" title="Tabelas de preço 1 a 5 de cada produto"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="3" y1="15" x2="21" y2="15"></line><line x1="9" y1="9" x2="9" y2="21"></line></svg><span>Tabelas</span></button>
+    <button data-perfis="vendedor,supervisor,gerente,master" class="nav-btn" data-view="catalogo" title="Catálogo oficial: quais produtos estão ativos e o que de fato está vendendo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path><line x1="9" y1="7" x2="16" y2="7"></line><line x1="9" y1="11" x2="14" y2="11"></line></svg><span>Catálogo</span></button>
     <button data-perfis="vendedor,supervisor,gerente,master" class="nav-btn" data-view="tabmedia" title="Tabela média: em que tabela cada vendedor está vendendo, contra a meta de 2,3"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="4" y1="20" x2="20" y2="20"></line><rect x="5" y="11" width="3" height="9"></rect><rect x="10.5" y="7" width="3" height="13"></rect><rect x="16" y="13" width="3" height="7"></rect><line x1="3" y1="10" x2="21" y2="10" stroke-dasharray="2 2"></line></svg><span>Tab. média</span></button>
     <button data-perfis="vendedor,supervisor,gerente,master" class="nav-btn" data-view="prazo" title="Prazo médio: em quantos dias a Synthetic recebe, por vendedor e por gerência"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13" r="8"></circle><path d="M12 9v4l2.5 2.5"></path><path d="M9 2h6"></path></svg><span>Prazo</span></button>
     <button data-perfis="vendedor,supervisor,gerente,master" class="nav-btn" data-view="comissoes" title="Comissões: quanto cada vendedor ganha no ciclo, item a item, pela regra de desconto de cada produto"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg><span>Comissões</span></button>
@@ -442,6 +449,7 @@
 
     <div id="view-sobre" class="view"><div class="sb" id="sb"></div></div>
     <div id="view-tabelas" class="view"><div class="tb" id="tb"></div></div>
+    <div id="view-catalogo" class="view"><div class="tb" id="ct"></div></div>
     <div id="view-tabmedia" class="view"><div class="tb" id="tm"></div></div>
     <div id="view-prazo" class="view"><div class="tb" id="pz"></div></div>
     <div id="view-comissoes" class="view"><div class="tb" id="cm"></div></div>
@@ -3875,6 +3883,7 @@ document.querySelectorAll('.nav-btn').forEach(btn=>{
     const v = btn.dataset.view;
     if(v === 'sobre') renderSobre();
     if(v === 'tabelas') renderTabelas();
+    if(v === 'catalogo') renderCatalogo();
     if(v === 'tabmedia') renderTabMedia();
     if(v === 'prazo') renderPrazo();
     if(v === 'comissoes') renderComissoes();
@@ -3951,7 +3960,7 @@ const ehGestao = ()=> ['admin','master','gerente','analista'].includes(perfilEfe
 // Sistema zerado (27/10/2026): o menu mostra só o que já foi reconstruído. As telas antigas continuam no código;
 // para trazer uma de volta, inclua a view aqui. MENU_ZERADO = false devolve o menu inteiro.
 const MENU_ZERADO = true;
-const MENU_ATIVO = { sobre:'*', tabelas:'*', tabmedia:'*', prazo:'*', comissoes:'admin,master', sugestoes:'*', equipe:'admin' };   // Sugestões nunca sai do menu (skill balao-e-sugestoes)
+const MENU_ATIVO = { sobre:'*', tabelas:'*', catalogo:'*', tabmedia:'*', prazo:'*', comissoes:'admin,master', sugestoes:'*', equipe:'admin' };   // Sugestões nunca sai do menu (skill balao-e-sugestoes)
 let VE_COMISSOES = false;   // pessoa liberada pelo e-mail em crm_comissao_acesso (ex.: o Will); o banco confere de novo em cada consulta
 function menuLiberado(view, p){
   if(!MENU_ZERADO) return true;
@@ -9608,11 +9617,15 @@ async function renderTabelas(recarregar){
   const pos = vend.filter(r=> r.tabela_media != null), vPos = pos.reduce((s, r)=> s + Number(r.valor), 0);
   const media = vPos ? pos.reduce((s, r)=> s + Number(r.valor) * Number(r.tabela_media), 0) / vPos : null;
   const linhas = [...new Set(R.map(r=> r.linha).filter(Boolean))].sort();
+  const porV = [...vend].sort((a, b)=> b.valor - a.valor); let ac = 0, nA = 0; for(const r of porV){ if(ac >= .8 * totV) break; ac += Number(r.valor); nA++; }
+  const sem6 = R.filter(r=> !Number(r.qtd_6m)).length;
   host.innerHTML = `
     ${g ? `<div class="tb-kpis">
       <div class="tb-kpi ${vCom / (totV || 1) < .9 ? 'alerta' : ''}"><small>Vendas com tabela lançada</small><b>${totV ? Math.round(100 * vCom / totV) : 0}%</b><span>${comTab.length} de ${vend.length} produtos vendidos nos últimos ${TB.dias} dias</span></div>
       <div class="tb-kpi"><small>Produtos com tabela no sistema</small><b>${nCrm}</b><span>${nFacil} só com a tabela antiga do Fácil123</span></div>
       <div class="tb-kpi ${media != null && media > 3 ? 'alerta' : ''}"><small>Tabela média vendida</small><b>${media == null ? '—' : media.toLocaleString('pt-BR', { maximumFractionDigits:2 })}</b><span>meta 2,3${nCrm ? '' : ' · ainda calculada com as tabelas antigas'}</span></div>
+      <div class="tb-kpi" title="Quantos produtos somam 80% do valor vendido no período"><small>Mix vendido</small><b>${nA} de ${vend.length}</b><span>produtos fazem 80% das vendas de ${TB.dias} dias</span></div>
+      <div class="tb-kpi ${sem6 ? 'alerta' : ''}" style="cursor:pointer" id="tb-ir-cat" title="Abrir no Catálogo os produtos sem venda há 6 meses"><small>Sem venda há 6 meses</small><b>${sem6}</b><span>candidatos a descontinuar · ver no Catálogo ›</span></div>
     </div>` : ''}
     ${nCrm === 0 ? `<div class="tb-aviso"><b>As tabelas 1 a 5 ainda não foram lançadas.</b> No Fácil123 só ${nFacil} produtos têm tabela preenchida, e os preços estão abaixo do que se pratica hoje. ${tbPode() ? 'Baixe a planilha, preencha as 5 colunas e importe aqui.' : 'Assim que forem lançadas, aparecem aqui.'}</div>` : ''}
     <div class="tb-bar">
@@ -9626,15 +9639,16 @@ async function renderTabelas(recarregar){
       <button class="om-cancel" id="tb-export">Exportar</button>
     </div>
     <div class="tb-wrap"><table class="tb-tab"><thead><tr>
-      <th data-ord="codigo">Código</th><th data-ord="produto">Produto</th><th data-ord="linha">Linha</th><th>Un.</th>
-      ${[1, 2, 3, 4, 5].map(i=> `<th class="n" data-ord="t${i}">Tabela ${i}</th>`).join('')}<th>Situação</th>
-      ${g ? '<th class="n" data-ord="qtd_3m" title="Quantidade vendida nos últimos 3 meses">Qtd. 3 meses</th><th class="n" data-ord="qtd_6m" title="Quantidade vendida nos últimos 6 meses">Qtd. 6 meses</th><th class="n" data-ord="qtd_12m" title="Quantidade vendida nos últimos 12 meses">Qtd. 12 meses</th><th class="n" data-ord="valor">Vendido</th><th class="n" data-ord="preco_medio">Preço médio</th><th class="n" data-ord="tabela_media">Tabela média</th>' : ''}
+      <th data-ord="codigo">Código</th><th data-ord="produto">Produto</th><th data-ord="linha">Linha</th><th title="Unidade de venda">Un.</th>
+      ${[1, 2, 3, 4, 5].map(i=> `<th class="n" data-ord="t${i}" title="Preço na Tabela ${i}">T${i}</th>`).join('')}<th title="Lançada = tabela oficial no sistema; Antiga = só a tabela antiga do Fácil123">Tabela</th>
+      ${g ? '<th class="n" data-ord="qtd_3m" title="Quantidade vendida nos últimos 3 meses">3</th><th class="n" data-ord="qtd_6m" title="Quantidade vendida nos últimos 6 meses">6</th><th class="n" data-ord="qtd_12m" title="Quantidade vendida nos últimos 12 meses">12</th><th class="n" data-ord="valor" title="Valor vendido no período escolhido em cima">Vendido</th><th class="n" data-ord="preco_medio" title="Preço médio praticado no período">P. médio</th><th class="n" data-ord="tabela_media" title="Em que tabela o produto foi vendido: Tabela 2 = 2; Tabela 1 com 7% de desconto = 0,93">Tab. média</th>' : ''}
     </tr></thead><tbody id="tb-corpo"></tbody></table></div>
     <div class="tb-rodape" id="tb-rod"></div>`;
   tbCorpo();
   const re = ()=>{ TB.q = host.querySelector('#tb-q').value; TB.linha = host.querySelector('#tb-linha').value; TB.sit = host.querySelector('#tb-sit').value; tbCorpo(); };
   host.querySelector('#tb-q').addEventListener('input', re); host.querySelector('#tb-linha').addEventListener('change', re); host.querySelector('#tb-sit').addEventListener('change', re);
   host.querySelector('#tb-dias')?.addEventListener('change', e=>{ TB.dias = Number(e.target.value); renderTabelas(true); });
+  host.querySelector('#tb-ir-cat')?.addEventListener('click', ()=>{ CAT.f = 'sem6'; CAT.intel = true; const b = document.querySelector('#rail .nav-btn[data-view="catalogo"]'); if(b) b.click(); });
   host.querySelector('#tb-modo').addEventListener('change', e=>{ TB.modo = e.target.value; if(TB.modo !== 'coluna'){ TB.ord = TB.modo === 'codigo' ? 'codigo' : 'produto'; TB.dir = 1; } renderTabelas(); });
   host.querySelector('#tb-export').addEventListener('click', tbExportar);
   host.querySelector('#tb-modelo')?.addEventListener('click', tbModelo);
@@ -9664,7 +9678,7 @@ function tbFiltradas(){
 }
 function tbCorpo(){
   const g = ehGestao(), pode = tbPode(), L = tbFiltradas();
-  const chip = r=> r.fonte === 'crm' ? '<span class="tb-chip crm">Lançada</span>' : r.fonte === 'facil' ? '<span class="tb-chip facil">Antiga (Fácil123)</span>' : '<span class="tb-chip sem">Sem tabela</span>';
+  const chip = r=> r.fonte === 'crm' ? '<span class="tb-chip crm">Lançada</span>' : r.fonte === 'facil' ? '<span class="tb-chip facil" title="Só existe a tabela antiga do Fácil123">Antiga</span>' : '<span class="tb-chip sem">Sem tabela</span>';
   const agrupa = TB.modo === 'produto' || TB.modo === 'vendido'; let antes = null;
   document.querySelectorAll('#tb th[data-ord]').forEach(th=>{ const rot = th.dataset.rot || th.textContent; th.textContent = rot + (TB.modo !== 'vendido' && TB.ord === th.dataset.ord ? (TB.dir > 0 ? ' ▲' : ' ▼') : ''); });
   document.getElementById('tb-corpo').innerHTML = L.map(r=>{ const b = tbEmb(r.produto).base, novo = agrupa && antes !== null && b !== antes; antes = b; return `<tr class="${pode ? 'edit' : ''} ${novo ? 'tb-grupo-ini' : ''}" data-id="${r.product_id}">
@@ -9673,7 +9687,7 @@ function tbCorpo(){
     ${g ? `<td class="n ${Number(r.qtd_3m) ? '' : 'vazio'}">${tbQtd(r.qtd_3m)}</td><td class="n ${Number(r.qtd_6m) ? '' : 'vazio'}">${tbQtd(r.qtd_6m)}</td><td class="n ${Number(r.qtd_12m) ? '' : 'vazio'}">${tbQtd(r.qtd_12m)}</td><td class="n">${r.valor ? fmtMoney(r.valor) : '—'}</td><td class="n">${tbR(r.preco_medio)}</td><td class="n"><span class="tb-pos ${r.tabela_media > 5 ? 'alto' : ''}">${r.tabela_media == null ? '—' : Number(r.tabela_media).toLocaleString('pt-BR', { maximumFractionDigits:2 })}</span></td>` : ''}
   </tr>`; }).join('') || `<tr><td colspan="17" class="vazio">Nenhum produto com esse filtro.</td></tr>`;
   document.getElementById('tb-rod').textContent = `${L.length} produto${L.length === 1 ? '' : 's'}.` + (pode ? ' Clique numa linha para lançar ou corrigir as tabelas.' : '')
-    + (g ? ' Qtd. 3, 6 e 12 meses: unidades vendidas em cada período (— = nada vendido), para ver se o produto está ativo.' : '')
+    + (g ? ' Colunas 3, 6 e 12: unidades vendidas nos últimos 3, 6 e 12 meses (— = nada vendido).' : '')
     + (g ? ' Tabela média: em que tabela o produto foi vendido (Tabela 2 = 2; Tabela 1 com 7% de desconto = 0,93; acima de 5 = acima da Tabela 5).' : '');
   if(pode) document.querySelectorAll('#tb-corpo tr.edit').forEach(tr=> tr.addEventListener('click', ()=> tbEditar(Number(tr.dataset.id))));
 }
@@ -10033,6 +10047,156 @@ function cmEditar(id, host){
     if(error){ err.textContent = errAmigavel(error); return; }
     dlgClose(); showToast('Regra salva e confirmada.'); cmRegras(host);
   });
+}
+// ---- CATÁLOGO OFICIAL DE PRODUTOS (28/10/2026, pedido do Luiz para a Andrea: o que temos ativo e o que vende) ----
+// Situação oficial mantida pela gestão (crm_catalogo, com histórico) + movimento real das vendas, embalagens do mesmo produto juntas.
+const CAT = { rows:[], carregado:false, todos:false, q:'', linha:'', f:'todos', ord:'produto', sel:new Set(), intel:false };
+const CAT_SIT = { ativo:'Ativo', sob_encomenda:'Sob encomenda', em_teste:'Em teste', fora_de_linha:'Fora de linha', a_classificar:'A classificar' };
+const CAT_MOV = { vendendo:['Vendendo', 'vendeu nos últimos 3 meses'], parado:['Parado', 'vendeu nos últimos 12 meses, mas não nos últimos 3'],
+  parado_12m:['Parado há +12 meses', 'última venda entre 12 e 24 meses atrás'], sem_venda:['Sem venda', 'nenhuma venda nos últimos 24 meses'] };
+async function renderCatalogo(recarregar){
+  const host = document.getElementById('ct'); if(!host) return;
+  if(!CAT.carregado || recarregar){
+    host.innerHTML = '<div class="tb-rodape">Carregando o catálogo…</div>';
+    const { data, error } = await sb.rpc('crm_catalogo', { p_todos:CAT.todos });
+    if(error){ host.innerHTML = `<div class="tb-aviso">Não consegui carregar o catálogo: ${escapeHtml(errAmigavel(error))}</div>`; return; }
+    CAT.rows = data || []; CAT.carregado = true; CAT.sel = new Set();
+  }
+  const g = ehGestao(), R = CAT.rows, n = f=> R.filter(f).length;
+  // curva ABC pelo faturamento de 12 meses: os produtos que somam 80% das vendas
+  const porV = R.filter(r=> Number(r.valor_12m) > 0).sort((a, b)=> b.valor_12m - a.valor_12m), totV = porV.reduce((s, r)=> s + Number(r.valor_12m), 0);
+  let acum = 0; const curvaA = new Set(); for(const r of porV){ if(acum >= .8 * totV) break; acum += Number(r.valor_12m); curvaA.add(r.product_id); }
+  const filtros = { todos:['Todos', ()=> true], vendendo:['Vendendo', r=> r.movimento === 'vendendo'], parados:['Parados', r=> r.movimento === 'parado' || r.movimento === 'parado_12m'],
+    classificar:['A classificar', r=> r.situacao === 'a_classificar'], ativos_parados:['Ativos que pararam', r=> r.situacao === 'ativo' && r.movimento !== 'vendendo'],
+    fora_vendendo:['Fora de linha e vendendo', r=> r.situacao === 'fora_de_linha' && r.movimento === 'vendendo'], sem_tabela:['Vendendo sem tabela', r=> r.movimento === 'vendendo' && !r.tabela_fonte] };
+  if(g) Object.assign(filtros, { sem6:['Sem venda há 6 meses', r=> !Number(r.qtd_6m) && r.situacao !== 'fora_de_linha'], curvaA:['80% das vendas', r=> curvaA.has(r.product_id)],
+    poucos:['Até 2 clientes em 12 meses', r=> Number(r.clientes_12m) > 0 && Number(r.clientes_12m) <= 2 && r.situacao !== 'fora_de_linha'] });
+  if(!filtros[CAT.f]) CAT.f = 'todos';
+  const linhas = [...new Set(R.map(r=> r.linha).filter(Boolean))].sort();
+  const v12 = R.filter(r=> r.movimento === 'vendendo').reduce((s, r)=> s + Number(r.valor_12m || 0), 0);
+  host.innerHTML = `
+    <div class="cm-resumo"><b>${n(r=> r.situacao === 'ativo')}</b> produtos ativos no catálogo · <b>${n(filtros.vendendo[1])}</b> vendendo nos últimos 3 meses${g ? ` (${fmtMoney(v12)} em 12 meses)` : ''} · ${n(filtros.parados[1])} parados · ${n(filtros.classificar[1])} ainda a classificar. ${g ? 'Clique num produto para definir a situação, ou marque vários e classifique de uma vez.' : ''}</div>
+    ${g ? ctIntelHtml(R, filtros, n, curvaA, porV.length, totV) : ''}
+    <div class="tb-bar">
+      <div class="cm-chips">${Object.entries(filtros).map(([k, [t, f]])=> `<button class="cm-chip ${CAT.f === k ? 'on' : ''}" data-ctf="${k}">${t} (${n(f)})</button>`).join('')}</div>
+    </div>
+    <div class="tb-bar">
+      <input type="search" id="ct-q" placeholder="Buscar por código ou produto" value="${escapeHtml(CAT.q)}">
+      <select id="ct-linha"><option value="">Todas as linhas</option>${linhas.map(l=> `<option ${l === CAT.linha ? 'selected' : ''}>${escapeHtml(l)}</option>`).join('')}</select>
+      <label class="tb-ordlab">Ordenar por <select id="ct-ord"><option value="produto" ${CAT.ord === 'produto' ? 'selected' : ''}>Produto (A a Z)</option>${g ? `<option value="vendido" ${CAT.ord === 'vendido' ? 'selected' : ''}>Mais vendidos</option>` : ''}<option value="ultima" ${CAT.ord === 'ultima' ? 'selected' : ''}>Última venda</option></select></label>
+      <label class="tb-ordlab" title="Mostra também os produtos do Fácil123 sem venda em 2 anos e sem tabela"><input type="checkbox" id="ct-todos" ${CAT.todos ? 'checked' : ''}> todos do Fácil123</label>
+      <span class="tb-esp"></span><button class="om-cancel" id="ct-csv">Exportar</button>
+    </div>
+    <div id="ct-lote"></div>
+    <div class="tb-wrap"><table class="tb-tab"><thead><tr>${g ? '<th class="ck"><input type="checkbox" id="ct-all" title="Marcar todos da lista"></th>' : ''}
+      <th>Código</th><th>Produto</th><th>Linha</th><th title="Situação oficial no catálogo">Situação</th><th title="O que as vendas mostram">Movimento</th><th title="Data da última venda (últimos 24 meses)">Últ. venda</th>
+      ${g ? '<th class="n" title="Quantidade vendida nos últimos 3 meses">3</th><th class="n" title="Quantidade vendida nos últimos 6 meses">6</th><th class="n" title="Quantidade vendida nos últimos 12 meses">12</th><th class="n" title="Clientes que compraram nos últimos 12 meses">Clientes</th>' : ''}
+      <th class="n" title="Preço da Tabela 1 à Tabela 5">T1 a T5</th><th>Obs.</th></tr></thead><tbody id="ct-corpo"></tbody></table></div>
+    <div class="tb-rodape" id="ct-rod"></div>`;
+  ctCorpo(filtros);
+  const re = ()=>{ CAT.q = host.querySelector('#ct-q').value; CAT.linha = host.querySelector('#ct-linha').value; ctCorpo(filtros); };
+  host.querySelector('#ct-q').addEventListener('input', re); host.querySelector('#ct-linha').addEventListener('change', re);
+  host.querySelector('#ct-ord').addEventListener('change', e=>{ CAT.ord = e.target.value; ctCorpo(filtros); });
+  host.querySelector('#ct-todos').addEventListener('change', e=>{ CAT.todos = e.target.checked; renderCatalogo(true); });
+  host.querySelectorAll('[data-ctf]').forEach(b=> b.addEventListener('click', ()=>{ CAT.f = b.dataset.ctf; CAT.sel = new Set(); renderCatalogo(); }));
+  host.querySelector('#ct-csv').addEventListener('click', ()=> ctExportar(filtros));
+  const intel = host.querySelector('#ct-intel'); if(intel) intel.addEventListener('toggle', ()=>{ CAT.intel = intel.open; });
+  host.querySelectorAll('[data-ctgo]').forEach(b=> b.addEventListener('click', ()=>{ CAT.f = b.dataset.ctgo; CAT.sel = new Set(); renderCatalogo(); }));
+  host.querySelectorAll('[data-ctmark]').forEach(b=> b.addEventListener('click', ()=>{ CAT.f = b.dataset.ctmark; CAT.sel = new Set(); renderCatalogo();
+    CAT.sel = new Set(ctLista(filtros).map(r=> r.product_id)); ctCorpo(filtros); showToast(`${CAT.sel.size} produtos marcados: escolha a situação na barra acima da lista e clique em Aplicar.`); }));
+  host.querySelector('#ct-all')?.addEventListener('change', e=>{ const L = ctLista(filtros); CAT.sel = e.target.checked ? new Set(L.map(r=> r.product_id)) : new Set(); ctCorpo(filtros); });
+}
+// painel "Inteligência do mix": o que descontinuar, o que revisar e onde está o faturamento
+function ctIntelHtml(R, filtros, n, curvaA, nVend, totV){
+  const ativos = R.filter(r=> r.situacao !== 'fora_de_linha').length, sem6 = n(filtros.sem6[1]), pouco = n(filtros.poucos[1]);
+  const pararam = n(filtros.ativos_parados[1]), semTab = n(filtros.sem_tabela[1]), foraV = n(filtros.fora_vendendo[1]);
+  const pctA = nVend ? Math.round(100 * curvaA.size / nVend) : 0;
+  const item = (txt, k, marcar)=> `<li>${txt} <button class="cm-chip" data-ctgo="${k}">Ver lista</button>${marcar ? ` <button class="cm-chip" data-ctmark="${k}">Marcar para classificar</button>` : ''}</li>`;
+  return `<details class="cm-recado" id="ct-intel" ${CAT.intel ? 'open' : ''}><summary><b>💡 Inteligência do mix:</b> ${sem6} dos ${ativos} produtos que ainda estão na linha não vendem há 6 meses, e ${curvaA.size} produtos fazem 80% do faturamento.</summary>
+    <ol class="cm-recado-txt" style="padding-left:18px;margin-bottom:0">
+      ${item(`<b>Descontinuar ou pôr sob encomenda:</b> ${sem6} produtos sem nenhuma venda nos últimos 6 meses. Cada um ocupa cadastro, tabela de preço, comissão e, às vezes, estoque.`, 'sem6', true)}
+      ${item(`<b>Concentração:</b> ${curvaA.size} produtos (${pctA}% dos ${nVend} vendidos em 12 meses) fazem 80% de ${fmtMoney(totV)}. Os outros ${nVend - curvaA.size} dividem os 20% restantes: são o lugar natural para enxugar a linha.`, 'curvaA', false)}
+      ${item(`<b>Vendem para quase ninguém:</b> ${pouco} produtos tiveram até 2 clientes em 12 meses. Vale ver se é produto de um cliente só (sob encomenda) ou se pode sair.`, 'poucos', true)}
+      ${pararam ? item(`<b>Ativos que pararam:</b> ${pararam} produtos marcados como ativos não vendem há mais de 3 meses.`, 'ativos_parados', false) : ''}
+      ${foraV ? item(`<b>Fora de linha, mas vendendo:</b> ${foraV} produtos. Ou voltam ao catálogo, ou é preciso avisar o comercial.`, 'fora_vendendo', false) : ''}
+      ${semTab ? item(`<b>Vendem sem tabela de preço:</b> ${semTab} produtos ativos não têm tabela 1 a 5 lançada.`, 'sem_tabela', false) : ''}
+    </ol><div class="tb-rodape" style="margin-top:6px">A decisão é da diretoria: o sistema só aponta. "Marcar para classificar" seleciona os produtos da lista; você escolhe a situação na barra e aplica.</div></details>`;
+}
+function ctLista(filtros){
+  const q = CAT.q.trim().toLowerCase(), f = filtros[CAT.f][1];
+  const L = CAT.rows.filter(r=> f(r) && (!CAT.linha || r.linha === CAT.linha) && (!q || (r.codigo + ' ' + r.produto).toLowerCase().includes(q)));
+  const cmp = (x, y)=> String(x).localeCompare(String(y), 'pt-BR', { numeric:true, sensitivity:'base' });
+  const tot = new Map(), ult = new Map(); L.forEach(r=>{ const b = tbEmb(r.produto).base; tot.set(b, (tot.get(b) || 0) + Number(r.valor_12m || 0)); if((r.ultima_venda || '') > (ult.get(b) || '')) ult.set(b, r.ultima_venda); });
+  return L.sort((a, b)=>{ const ea = tbEmb(a.produto), eb = tbEmb(b.produto);
+    if(ea.base !== eb.base) return CAT.ord === 'vendido' ? (tot.get(eb.base) - tot.get(ea.base)) || cmp(ea.base, eb.base)
+      : CAT.ord === 'ultima' ? cmp(ult.get(eb.base) || '', ult.get(ea.base) || '') || cmp(ea.base, eb.base) : cmp(ea.base, eb.base);
+    return ((ea.vol ?? 1e9) - (eb.vol ?? 1e9)) || cmp(a.produto, b.produto); });
+}
+function ctCorpo(filtros){
+  const g = ehGestao(), L = ctLista(filtros); let antes = null;
+  const dt = d=> d ? d.slice(8, 10) + '/' + d.slice(5, 7) + '/' + d.slice(2, 4) : '—';
+  document.getElementById('ct-corpo').innerHTML = L.map(r=>{ const b = tbEmb(r.produto).base, novo = antes !== null && b !== antes; antes = b; const mv = CAT_MOV[r.movimento] || ['', ''];
+    return `<tr class="${g ? 'edit' : ''} ${novo ? 'tb-grupo-ini' : ''}" data-id="${r.product_id}">${g ? `<td class="ck"><input type="checkbox" data-ck="${r.product_id}" ${CAT.sel.has(r.product_id) ? 'checked' : ''}></td>` : ''}
+      <td>${escapeHtml(r.codigo || '')}</td><td class="prod">${escapeHtml(r.produto || '')}</td><td>${escapeHtml(r.linha || '')}</td>
+      <td><span class="ct-sit ${r.situacao}" title="${r.atualizado_por ? escapeHtml('Definido por ' + r.atualizado_por + ' em ' + new Date(r.atualizado_em).toLocaleDateString('pt-BR')) : 'Ainda sem situação oficial'}">${CAT_SIT[r.situacao] || r.situacao}</span></td>
+      <td><span class="ct-mov ${r.movimento}" title="${mv[1]}">${mv[0]}</span></td><td>${dt(r.ultima_venda)}</td>
+      ${g ? `<td class="n ${Number(r.qtd_3m) ? '' : 'vazio'}">${tbQtd(r.qtd_3m)}</td><td class="n ${Number(r.qtd_6m) ? '' : 'vazio'}">${tbQtd(r.qtd_6m)}</td><td class="n ${Number(r.qtd_12m) ? '' : 'vazio'}">${tbQtd(r.qtd_12m)}</td><td class="n ${Number(r.clientes_12m) ? '' : 'vazio'}">${tbQtd(r.clientes_12m)}</td>` : ''}
+      <td class="n ${r.t1 ? '' : 'vazio'}" title="${r.tabela_fonte === 'facil' ? 'Tabela antiga do Fácil123' : r.tabela_fonte === 'crm' ? 'Tabela oficial' : 'Sem tabela de preço'}">${r.t1 ? tbR(r.t1) + ' a ' + tbR(r.t5) + (r.tabela_fonte === 'facil' ? ' *' : '') : 'sem tabela'}</td>
+      <td class="vazio" style="max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${escapeHtml(r.obs || '')}">${escapeHtml(r.obs || '')}</td></tr>`; }).join('')
+    || `<tr><td colspan="14" class="vazio">Nenhum produto com esse filtro.</td></tr>`;
+  document.getElementById('ct-rod').textContent = `${L.length} produto${L.length === 1 ? '' : 's'}. As embalagens do mesmo produto aparecem juntas. * = só a tabela antiga do Fácil123.`;
+  if(g){
+    document.querySelectorAll('#ct-corpo [data-ck]').forEach(c=>{ c.addEventListener('click', e=> e.stopPropagation());
+      c.addEventListener('change', ()=>{ const id = Number(c.dataset.ck); if(c.checked) CAT.sel.add(id); else CAT.sel.delete(id); ctLote(filtros); }); });
+    document.querySelectorAll('#ct-corpo tr.edit').forEach(tr=> tr.addEventListener('click', ()=> ctEditar(Number(tr.dataset.id), filtros)));
+  }
+  ctLote(filtros);
+}
+function ctLote(filtros){
+  const box = document.getElementById('ct-lote'); if(!box) return;
+  if(!CAT.sel.size){ box.innerHTML = ''; return; }
+  box.innerHTML = `<div class="ct-lote"><b>${CAT.sel.size}</b> marcado${CAT.sel.size === 1 ? '' : 's'}: marcar como <select id="ct-lote-sit">${['ativo', 'sob_encomenda', 'em_teste', 'fora_de_linha'].map(k=> `<option value="${k}">${CAT_SIT[k]}</option>`).join('')}</select>
+    <button class="om-save" id="ct-lote-ok">Aplicar</button><button class="om-cancel" id="ct-lote-x">Desmarcar</button></div>`;
+  box.querySelector('#ct-lote-x').addEventListener('click', ()=>{ CAT.sel = new Set(); ctCorpo(filtros); });
+  box.querySelector('#ct-lote-ok').addEventListener('click', async e=>{
+    const sit = box.querySelector('#ct-lote-sit').value; e.target.disabled = true;
+    const { data, error } = await sb.rpc('crm_catalogo_salvar', { p_ids:[...CAT.sel], p_situacao:sit, p_linha:null, p_obs:null });
+    e.target.disabled = false;
+    if(error){ showToast(errAmigavel(error)); return; }
+    showToast(`${data} produto${data === 1 ? '' : 's'} marcado${data === 1 ? '' : 's'} como ${CAT_SIT[sit].toLowerCase()}.`); renderCatalogo(true);
+  });
+}
+function ctEditar(id, filtros){
+  const r = CAT.rows.find(x=> x.product_id === id); if(!r) return;
+  const sug = r.movimento === 'vendendo' ? 'ativo' : r.movimento === 'parado' ? 'ativo ou sob encomenda' : 'fora de linha ou sob encomenda';
+  const linhas = [...new Set(CAT.rows.map(x=> x.linha).filter(Boolean))].sort();
+  const box = dlgOpen(`<div class="om-title"><div><h3>${escapeHtml(r.codigo + ' · ' + r.produto)}</h3><div class="om-sub">${(CAT_MOV[r.movimento] || [''])[0]}${r.ultima_venda ? ' · última venda em ' + new Date(r.ultima_venda + 'T12:00').toLocaleDateString('pt-BR') : ''}${r.qtd_12m ? ' · ' + tbQtd(r.qtd_12m) + ' unidades em 12 meses' : ''}</div></div><button data-close>✕</button></div>
+    <div class="dlg-body">
+      <div class="tb-rodape" style="margin:0 0 6px">Situação no catálogo (pelas vendas, a sugestão é: ${sug})</div>
+      <div class="cm-chips" id="cte-sit">${['ativo', 'sob_encomenda', 'em_teste', 'fora_de_linha'].map(k=> `<button class="cm-chip ${r.situacao === k ? 'on' : ''}" data-sit="${k}">${CAT_SIT[k]}</button>`).join('')}</div>
+      <div class="cm-faixas" style="margin-top:12px"><label>Linha<input id="cte-linha" list="cte-linhas" value="${escapeHtml(r.linha || '')}"><datalist id="cte-linhas">${linhas.map(l=> `<option value="${escapeHtml(l)}">`).join('')}</datalist></label>
+        <label>Observação<input id="cte-obs" maxlength="200" placeholder="Ex.: substituído pelo código 2441" value="${escapeHtml(r.obs || '')}"></label></div>
+      ${r.atualizado_por ? `<div class="tb-rodape">Última alteração: ${escapeHtml(r.atualizado_por)} em ${new Date(r.atualizado_em).toLocaleString('pt-BR')}</div>` : ''}
+    </div>
+    <div class="om-err" id="cte-err"></div>
+    <div class="om-foot"><span style="flex:1"></span><button class="om-cancel" data-close>Cancelar</button><button class="om-save" id="cte-ok">Salvar</button></div>`, true);
+  let sit = r.situacao === 'a_classificar' ? null : r.situacao;
+  box.querySelectorAll('[data-sit]').forEach(b=> b.addEventListener('click', ()=>{ sit = b.dataset.sit; box.querySelectorAll('[data-sit]').forEach(x=> x.classList.toggle('on', x === b)); }));
+  box.querySelector('#cte-ok').addEventListener('click', async e=>{
+    if(!sit){ box.querySelector('#cte-err').textContent = 'Escolha a situação do produto.'; return; }
+    e.target.disabled = true;
+    const { error } = await sb.rpc('crm_catalogo_salvar', { p_ids:[id], p_situacao:sit, p_linha:box.querySelector('#cte-linha').value, p_obs:box.querySelector('#cte-obs').value });
+    e.target.disabled = false;
+    if(error){ box.querySelector('#cte-err').textContent = errAmigavel(error); return; }
+    dlgClose(); showToast('Catálogo atualizado.'); renderCatalogo(true);
+  });
+}
+function ctExportar(filtros){
+  const g = ehGestao(), L = ctLista(filtros), num = v=> v == null ? '' : String(v).replace('.', ',');
+  csvDownload([['Código', 'Produto', 'Linha', 'Situação', 'Movimento', 'Última venda'].concat(g ? ['Qtd. 3 meses', 'Qtd. 6 meses', 'Qtd. 12 meses', 'Clientes 12 meses', 'Vendido 12 meses (R$)'] : []).concat(['Tabela 1', 'Tabela 5', 'Tabela', 'Observação'])]
+    .concat(L.map(r=> [r.codigo, r.produto, r.linha, CAT_SIT[r.situacao], (CAT_MOV[r.movimento] || [''])[0], r.ultima_venda || ''].concat(g ? [num(r.qtd_3m), num(r.qtd_6m), num(r.qtd_12m), num(r.clientes_12m), num(r.valor_12m)] : [])
+      .concat([num(r.t1), num(r.t5), r.tabela_fonte === 'crm' ? 'oficial' : r.tabela_fonte === 'facil' ? 'antiga (Fácil123)' : 'sem tabela', r.obs || '']))),
+    'catalogo-synthetic-' + new Date().toISOString().slice(0, 10) + '.csv');
 }
 async function cmDetalhe(ini, fim){
   const box = document.getElementById('cm-det'); if(!box) return;
