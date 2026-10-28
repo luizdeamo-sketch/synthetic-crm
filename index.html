@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8" />
-<meta name="crm-versao" content="20261028-154855">
+<meta name="crm-versao" content="20261028-161254">
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="theme-color" content="#005071">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -3938,7 +3938,7 @@ const ehGestao = ()=> ['admin','master','gerente','analista'].includes(perfilEfe
 // Sistema zerado (27/10/2026): o menu mostra só o que já foi reconstruído. As telas antigas continuam no código;
 // para trazer uma de volta, inclua a view aqui. MENU_ZERADO = false devolve o menu inteiro.
 const MENU_ZERADO = true;
-const MENU_ATIVO = { sobre:'*', tabelas:'*', tabmedia:'*', prazo:'*', comissoes:'*', sugestoes:'*', equipe:'admin' };   // Sugestões nunca sai do menu (skill balao-e-sugestoes)
+const MENU_ATIVO = { sobre:'*', tabelas:'*', tabmedia:'*', prazo:'*', comissoes:'admin,master', sugestoes:'*', equipe:'admin' };   // Sugestões nunca sai do menu (skill balao-e-sugestoes)
 function menuLiberado(view, p){
   if(!MENU_ZERADO) return true;
   const quem = MENU_ATIVO[view]; return !!quem && (quem === '*' || quem.split(',').includes(p));
