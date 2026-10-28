@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8" />
-<meta name="crm-versao" content="20261028-170028">
+<meta name="crm-versao" content="20261028-182837">
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="theme-color" content="#005071">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -39,17 +39,17 @@
   /* ---------- Tabelas 1 a 5 ---------- */
   #view-tabelas{ overflow-y:auto; overflow-x:hidden; grid-template-columns:minmax(0,1fr);}   /* a view é grid: sem minmax a tabela larga estica a página */
   .tb{ width:100%; min-width:0; padding:clamp(14px, 1.6vw, 34px) var(--pg-pad) 50px;}
-  .tb-kpis{ display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:var(--pg-gap); margin-bottom:14px;}
-  .tb-kpi{ background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-md); padding:14px 16px;}
+  .tb-kpis{ display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:10px; margin-bottom:10px;}
+  .tb-kpi{ background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-md); padding:8px 12px;}
   .tb-kpi small{ display:block; font:600 11px 'IBM Plex Mono',monospace; text-transform:uppercase; letter-spacing:.04em; color:var(--ink-faint);}
-  .tb-kpi b{ display:block; font:700 26px 'Roboto Condensed',sans-serif; margin:4px 0 2px;} .tb-kpi span{ font-size:12.5px; color:var(--ink-soft);}
+  .tb-kpi b{ display:block; font:700 20px 'Roboto Condensed',sans-serif; margin:2px 0 0;} .tb-kpi span{ font-size:12px; color:var(--ink-soft); line-height:1.35;}
   .tb-kpi.alerta b{ color:var(--amber-ink);}
   .tb-aviso{ background:var(--amber-soft); border:1px solid var(--amber-line); color:var(--amber-ink); border-radius:var(--radius-md); padding:10px 14px; font-size:13.5px; line-height:1.5; margin-bottom:14px;}
   .tb-bar{ display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-bottom:10px;}
   .tb-bar input, .tb-bar select{ border:1px solid var(--border); border-radius:var(--radius-sm); padding:8px 10px; font-size:13.5px; background:var(--surface); color:var(--ink);}
   .tb-bar input[type=search]{ flex:1 1 240px;}
   .tb-bar .tb-esp{ flex:1;}
-  .tb-wrap{ background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-md); overflow:auto; max-height:calc(100vh - 330px);}
+  .tb-wrap{ background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-md); overflow:auto; max-height:calc(100vh - 250px); min-height:320px;}
   .tb-tab{ width:100%; border-collapse:collapse; font-size:clamp(12.5px, .75vw, 15px);}
   .tb-tab th{ position:sticky; top:0; background:var(--surface-2); text-align:left; font:600 11px 'IBM Plex Mono',monospace; text-transform:uppercase; color:var(--ink-faint); padding:9px 10px; border-bottom:1px solid var(--border); white-space:nowrap; cursor:pointer;}
   .tb-tab td{ padding:8px 10px; border-bottom:1px solid var(--border-soft); white-space:nowrap;}
@@ -72,7 +72,7 @@
   .tb-form input{ border:1px solid var(--border); border-radius:6px; padding:8px; font-size:14px; width:100%; min-width:0; box-sizing:border-box;}
   .tb-passo{ display:flex; gap:8px; align-items:center; padding:0 22px 8px; font-size:13px; color:var(--ink-soft); flex-wrap:wrap;}
   .tb-passo input{ width:70px; border:1px solid var(--border); border-radius:6px; padding:6px;}
-  @media (max-width:820px){ .tb{ padding:14px 12px 40px;} .tb-kpis{ grid-template-columns:1fr;} .tb-form{ grid-template-columns:repeat(2,1fr);} }
+  @media (max-width:820px){ .tb{ padding:14px 12px 40px;} .tb-kpis{ grid-template-columns:repeat(2, minmax(0, 1fr));} .tb-form{ grid-template-columns:repeat(2,1fr);} }
   /* ---------- Apresentação (Torre de Controle Synthetic) ---------- */
   #view-sobre{ overflow-y:auto;}
   .sb{ padding:clamp(16px, 2vw, 40px) var(--pg-pad) 60px; color:var(--ink);}
@@ -100,11 +100,14 @@
   .sb-prio-l{ display:grid; grid-template-columns:34px 1fr auto; gap:12px; align-items:center; padding:12px 16px; border-top:1px solid var(--border-soft);} .sb-prio-l:first-child{ border-top:0;}
   .sb-prio-n{ width:28px; height:28px; border-radius:50%; background:var(--brand); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:13px;}
   .sb-prio-l b{ font-size:15px;} .sb-prio-l p{ margin:2px 0 0; font-size:13.5px; color:var(--ink-soft);}
-.cm-abas{ display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px;}
+.tb-grupo-ini td{ border-top:2px solid var(--border);}
+  .tb-ordlab{ display:flex; align-items:center; gap:6px; font-size:13px; color:var(--muted, #5b6573);}
+  .cm-abas{ display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px;}
   .cm-aba{ border:1px solid var(--line, #d9dde3); background:var(--surface, #fff); color:inherit; padding:8px 14px; border-radius:999px; font:inherit; font-weight:600; cursor:pointer;}
   .cm-aba.on{ background:var(--brand, #0b5cad); border-color:var(--brand, #0b5cad); color:#fff;}
-  .cm-recado{ border-left:4px solid var(--brand, #0b5cad); background:var(--surface-2, #f4f7fb); padding:14px 16px; border-radius:8px; margin-bottom:12px; line-height:1.5;}
-  .cm-recado b.de{ display:block; margin-bottom:4px;}
+  .cm-recado{ border-left:4px solid var(--brand, #0b5cad); background:var(--surface-2, #f4f7fb); padding:8px 14px; border-radius:8px; margin-bottom:10px; line-height:1.5; font-size:13.5px;}
+  .cm-recado summary{ cursor:pointer;} .cm-recado-txt{ margin-top:6px;}
+  .cm-resumo{ font-size:13px; color:var(--ink-soft); margin:0 0 8px; line-height:1.5;}
   .cm-chips{ display:flex; gap:6px; flex-wrap:wrap;}
   .cm-chip{ border:1px solid var(--line, #d9dde3); background:transparent; color:inherit; padding:5px 11px; border-radius:999px; font:inherit; font-size:13px; cursor:pointer;}
   .cm-chip.on{ background:var(--ink, #1d2733); color:#fff; border-color:transparent;}
@@ -9577,7 +9580,15 @@ function abrirTelaInicial(){
 // ---------- TABELAS 1 A 5 (prioridade 1 do CEO, 27/10/2026) ----------
 // As tabelas ficam no CRM (crm_tabela_precos), porque no Fácil123 só ~100 produtos têm tabela e os preços estão desatualizados.
 // Onde o CRM ainda não tem, mostra a do Fácil123 marcada como tal. Lançam: Administrador, CEO e Analista (o banco confere).
-const TB = { rows:[], dias:90, q:'', linha:'', sit:'', ord:'valor', dir:-1, carregado:false };
+const TB = { rows:[], dias:90, q:'', linha:'', sit:'', modo:'produto', ord:'produto', dir:1, carregado:false };
+// embalagem no fim do nome, ex.: "ATF MULTI VI (20 LITROS)" → base "ATF MULTI VI", 20 litros (para agrupar as embalagens do mesmo produto)
+function tbEmb(nome){
+  const n = String(nome || '').replace(/\s+/g, ' ').trim(), m = n.match(/\(\s*([\d.,]+)\s*(LITROS?|L|KG|ML|G|GAL)?\s*\)\s*$/i);
+  if(!m) return { base:n, vol:null };
+  let v = Number(m[1].replace(',', '.')); if(/^(ml|g)$/i.test(m[2] || '')) v = v / 1000;
+  return { base:n.slice(0, m.index).trim(), vol:isFinite(v) ? v : null };
+}
+const tbQtd = v=> v == null || Number(v) === 0 ? '—' : Number(v).toLocaleString('pt-BR', { maximumFractionDigits:0 });
 const tbR = v=> v==null ? '—' : Number(v).toLocaleString('pt-BR', { minimumFractionDigits:2, maximumFractionDigits:2 });
 const tbPode = ()=> ['admin','master','analista'].includes(perfilEfetivo());
 const tbNum = s=>{ if(s==null) return null; if(typeof s==='number') return s; s = String(s).replace(/[R$\s]/g,''); if(!s) return null;
@@ -9607,7 +9618,8 @@ async function renderTabelas(recarregar){
     <div class="tb-bar">
       <input type="search" id="tb-q" placeholder="Buscar por código ou produto" value="${escapeHtml(TB.q)}">
       <select id="tb-linha"><option value="">Todas as linhas</option>${linhas.map(l=> `<option ${l === TB.linha ? 'selected' : ''}>${escapeHtml(l)}</option>`).join('')}</select>
-      <select id="tb-sit"><option value="">Todas as situações</option><option value="crm" ${TB.sit === 'crm' ? 'selected' : ''}>Lançada no sistema</option><option value="facil" ${TB.sit === 'facil' ? 'selected' : ''}>Só a antiga do Fácil123</option><option value="sem" ${TB.sit === 'sem' ? 'selected' : ''}>Sem tabela</option></select>
+      <select id="tb-sit"><option value="">Todas as situações</option><option value="crm" ${TB.sit === 'crm' ? 'selected' : ''}>Lançada no sistema</option><option value="facil" ${TB.sit === 'facil' ? 'selected' : ''}>Só a antiga do Fácil123</option><option value="sem" ${TB.sit === 'sem' ? 'selected' : ''}>Sem tabela</option>${g ? `<option value="parado" ${TB.sit === 'parado' ? 'selected' : ''}>Sem venda nos últimos 3 meses</option><option value="ativo" ${TB.sit === 'ativo' ? 'selected' : ''}>Vendeu nos últimos 3 meses</option>` : ''}</select>
+      <label class="tb-ordlab">Ordenar por <select id="tb-modo"><option value="produto" ${TB.modo === 'produto' ? 'selected' : ''}>Produto, embalagens juntas (A a Z)</option>${g ? `<option value="vendido" ${TB.modo === 'vendido' ? 'selected' : ''}>Mais vendidos, embalagens juntas</option>` : ''}<option value="codigo" ${TB.modo === 'codigo' ? 'selected' : ''}>Código</option>${TB.modo === 'coluna' ? '<option value="coluna" selected>Coluna clicada</option>' : ''}</select></label>
       ${g ? `<select id="tb-dias">${[30, 90, 365].map(d=> `<option value="${d}" ${d === TB.dias ? 'selected' : ''}>vendas de ${d} dias</option>`).join('')}</select>` : ''}
       <span class="tb-esp"></span>
       ${tbPode() ? '<button class="om-cancel" id="tb-modelo">⬇ Planilha para preencher</button><button class="om-save" id="tb-importar">⬆ Importar planilha</button>' : ''}
@@ -9616,35 +9628,52 @@ async function renderTabelas(recarregar){
     <div class="tb-wrap"><table class="tb-tab"><thead><tr>
       <th data-ord="codigo">Código</th><th data-ord="produto">Produto</th><th data-ord="linha">Linha</th><th>Un.</th>
       ${[1, 2, 3, 4, 5].map(i=> `<th class="n" data-ord="t${i}">Tabela ${i}</th>`).join('')}<th>Situação</th>
-      ${g ? '<th class="n" data-ord="valor">Vendido</th><th class="n" data-ord="preco_medio">Preço médio</th><th class="n" data-ord="tabela_media">Tabela média</th>' : ''}
+      ${g ? '<th class="n" data-ord="qtd_3m" title="Quantidade vendida nos últimos 3 meses">Qtd. 3 meses</th><th class="n" data-ord="qtd_6m" title="Quantidade vendida nos últimos 6 meses">Qtd. 6 meses</th><th class="n" data-ord="qtd_12m" title="Quantidade vendida nos últimos 12 meses">Qtd. 12 meses</th><th class="n" data-ord="valor">Vendido</th><th class="n" data-ord="preco_medio">Preço médio</th><th class="n" data-ord="tabela_media">Tabela média</th>' : ''}
     </tr></thead><tbody id="tb-corpo"></tbody></table></div>
     <div class="tb-rodape" id="tb-rod"></div>`;
   tbCorpo();
   const re = ()=>{ TB.q = host.querySelector('#tb-q').value; TB.linha = host.querySelector('#tb-linha').value; TB.sit = host.querySelector('#tb-sit').value; tbCorpo(); };
   host.querySelector('#tb-q').addEventListener('input', re); host.querySelector('#tb-linha').addEventListener('change', re); host.querySelector('#tb-sit').addEventListener('change', re);
   host.querySelector('#tb-dias')?.addEventListener('change', e=>{ TB.dias = Number(e.target.value); renderTabelas(true); });
+  host.querySelector('#tb-modo').addEventListener('change', e=>{ TB.modo = e.target.value; if(TB.modo !== 'coluna'){ TB.ord = TB.modo === 'codigo' ? 'codigo' : 'produto'; TB.dir = 1; } renderTabelas(); });
   host.querySelector('#tb-export').addEventListener('click', tbExportar);
   host.querySelector('#tb-modelo')?.addEventListener('click', tbModelo);
   host.querySelector('#tb-importar')?.addEventListener('click', tbImportar);
-  host.querySelectorAll('th[data-ord]').forEach(th=> th.addEventListener('click', ()=>{ const o = th.dataset.ord; TB.dir = TB.ord === o ? -TB.dir : (['codigo','produto','linha'].includes(o) ? 1 : -1); TB.ord = o; tbCorpo(); }));
+  host.querySelectorAll('th[data-ord]').forEach(th=>{ th.dataset.rot = th.textContent; th.style.cursor = 'pointer'; if(!th.title) th.title = 'Clique para ordenar';
+    th.addEventListener('click', ()=>{ const o = th.dataset.ord; TB.dir = TB.ord === o ? -TB.dir : (['codigo','produto','linha'].includes(o) ? 1 : -1); TB.ord = o;
+      // Produto e Código pelo título mantêm as embalagens juntas; as outras colunas ordenam linha a linha
+      TB.modo = o === 'produto' ? 'produto' : o === 'codigo' ? 'codigo' : 'coluna'; const sel = host.querySelector('#tb-modo');
+      if(sel){ if(TB.modo === 'coluna' && !sel.querySelector('option[value="coluna"]')) sel.insertAdjacentHTML('beforeend', '<option value="coluna">Coluna clicada</option>'); sel.value = TB.modo; }
+      tbCorpo(); }); });
 }
 function tbFiltradas(){
   const q = TB.q.trim().toLowerCase();
-  return TB.rows.filter(r=> (!q || (r.codigo + ' ' + r.produto).toLowerCase().includes(q)) && (!TB.linha || r.linha === TB.linha)
-    && (!TB.sit || (TB.sit === 'sem' ? !r.fonte : r.fonte === TB.sit)))
-    .sort((a, b)=>{ const x = a[TB.ord], y = b[TB.ord]; if(x == null && y == null) return 0; if(x == null) return 1; if(y == null) return -1;   // vazios sempre no fim
-      const numerico = ['valor','preco_medio','tabela_media','t1','t2','t3','t4','t5'].includes(TB.ord);
-      return (numerico ? Number(x) - Number(y) : String(x).localeCompare(String(y), 'pt-BR', { numeric:true })) * TB.dir; });
+  const sitOk = r=> !TB.sit || (TB.sit === 'sem' ? !r.fonte : TB.sit === 'parado' ? !Number(r.qtd_3m) : TB.sit === 'ativo' ? Number(r.qtd_3m) > 0 : r.fonte === TB.sit);
+  const L = TB.rows.filter(r=> (!q || (r.codigo + ' ' + r.produto).toLowerCase().includes(q)) && (!TB.linha || r.linha === TB.linha) && sitOk(r));
+  const cmpTxt = (x, y)=> String(x).localeCompare(String(y), 'pt-BR', { numeric:true, sensitivity:'base' });
+  if(TB.modo === 'produto' || TB.modo === 'vendido'){
+    // embalagens do mesmo produto juntas, da menor para a maior; os grupos em ordem alfabética ou pelo total vendido
+    const tot = new Map(); L.forEach(r=>{ const b = tbEmb(r.produto).base; tot.set(b, (tot.get(b) || 0) + Number(r.valor || 0)); });
+    return L.sort((a, b)=>{ const ea = tbEmb(a.produto), eb = tbEmb(b.produto);
+      if(ea.base !== eb.base) return TB.modo === 'vendido' ? (tot.get(eb.base) - tot.get(ea.base)) || cmpTxt(ea.base, eb.base) : cmpTxt(ea.base, eb.base) * TB.dir;
+      return ((ea.vol ?? 1e9) - (eb.vol ?? 1e9)) || cmpTxt(a.produto, b.produto); });
+  }
+  return L.sort((a, b)=>{ const x = a[TB.ord], y = b[TB.ord]; if(x == null && y == null) return 0; if(x == null) return 1; if(y == null) return -1;   // vazios sempre no fim
+    const numerico = ['valor','preco_medio','tabela_media','t1','t2','t3','t4','t5','qtd_3m','qtd_6m','qtd_12m'].includes(TB.ord);
+    return (numerico ? Number(x) - Number(y) : cmpTxt(x, y)) * TB.dir; });
 }
 function tbCorpo(){
   const g = ehGestao(), pode = tbPode(), L = tbFiltradas();
   const chip = r=> r.fonte === 'crm' ? '<span class="tb-chip crm">Lançada</span>' : r.fonte === 'facil' ? '<span class="tb-chip facil">Antiga (Fácil123)</span>' : '<span class="tb-chip sem">Sem tabela</span>';
-  document.getElementById('tb-corpo').innerHTML = L.map(r=> `<tr class="${pode ? 'edit' : ''}" data-id="${r.product_id}">
+  const agrupa = TB.modo === 'produto' || TB.modo === 'vendido'; let antes = null;
+  document.querySelectorAll('#tb th[data-ord]').forEach(th=>{ const rot = th.dataset.rot || th.textContent; th.textContent = rot + (TB.modo !== 'vendido' && TB.ord === th.dataset.ord ? (TB.dir > 0 ? ' ▲' : ' ▼') : ''); });
+  document.getElementById('tb-corpo').innerHTML = L.map(r=>{ const b = tbEmb(r.produto).base, novo = agrupa && antes !== null && b !== antes; antes = b; return `<tr class="${pode ? 'edit' : ''} ${novo ? 'tb-grupo-ini' : ''}" data-id="${r.product_id}">
     <td>${escapeHtml(r.codigo || '')}</td><td class="prod">${escapeHtml(r.produto || '')}</td><td>${escapeHtml(r.linha || '')}</td><td>${escapeHtml(r.unidade || '')}</td>
     ${[1, 2, 3, 4, 5].map(i=> `<td class="n ${r['t' + i] == null ? 'vazio' : ''}">${tbR(r['t' + i])}</td>`).join('')}<td>${chip(r)}</td>
-    ${g ? `<td class="n">${r.valor ? fmtMoney(r.valor) : '—'}</td><td class="n">${tbR(r.preco_medio)}</td><td class="n"><span class="tb-pos ${r.tabela_media > 5 ? 'alto' : ''}">${r.tabela_media == null ? '—' : Number(r.tabela_media).toLocaleString('pt-BR', { maximumFractionDigits:2 })}</span></td>` : ''}
-  </tr>`).join('') || `<tr><td colspan="14" class="vazio">Nenhum produto com esse filtro.</td></tr>`;
+    ${g ? `<td class="n ${Number(r.qtd_3m) ? '' : 'vazio'}">${tbQtd(r.qtd_3m)}</td><td class="n ${Number(r.qtd_6m) ? '' : 'vazio'}">${tbQtd(r.qtd_6m)}</td><td class="n ${Number(r.qtd_12m) ? '' : 'vazio'}">${tbQtd(r.qtd_12m)}</td><td class="n">${r.valor ? fmtMoney(r.valor) : '—'}</td><td class="n">${tbR(r.preco_medio)}</td><td class="n"><span class="tb-pos ${r.tabela_media > 5 ? 'alto' : ''}">${r.tabela_media == null ? '—' : Number(r.tabela_media).toLocaleString('pt-BR', { maximumFractionDigits:2 })}</span></td>` : ''}
+  </tr>`; }).join('') || `<tr><td colspan="17" class="vazio">Nenhum produto com esse filtro.</td></tr>`;
   document.getElementById('tb-rod').textContent = `${L.length} produto${L.length === 1 ? '' : 's'}.` + (pode ? ' Clique numa linha para lançar ou corrigir as tabelas.' : '')
+    + (g ? ' Qtd. 3, 6 e 12 meses: unidades vendidas em cada período (— = nada vendido), para ver se o produto está ativo.' : '')
     + (g ? ' Tabela média: em que tabela o produto foi vendido (Tabela 2 = 2; Tabela 1 com 7% de desconto = 0,93; acima de 5 = acima da Tabela 5).' : '');
   if(pode) document.querySelectorAll('#tb-corpo tr.edit').forEach(tr=> tr.addEventListener('click', ()=> tbEditar(Number(tr.dataset.id))));
 }
@@ -9670,10 +9699,10 @@ function tbEditar(id){
 }
 function tbExportar(){
   const g = ehGestao(), L = tbFiltradas();
-  const cab = ['Código','Produto','Linha','Unidade','Tabela 1','Tabela 2','Tabela 3','Tabela 4','Tabela 5','Situação'].concat(g ? ['Vendido (R$)','Preço médio','Tabela média'] : []);
+  const cab = ['Código','Produto','Linha','Unidade','Tabela 1','Tabela 2','Tabela 3','Tabela 4','Tabela 5','Situação'].concat(g ? ['Qtd. 3 meses','Qtd. 6 meses','Qtd. 12 meses','Vendido (R$)','Preço médio','Tabela média'] : []);
   const num = v=> v == null ? '' : String(v).replace('.', ',');
   const linhas = L.map(r=> [r.codigo, r.produto, r.linha, r.unidade, num(r.t1), num(r.t2), num(r.t3), num(r.t4), num(r.t5),
-    r.fonte === 'crm' ? 'Lançada' : r.fonte === 'facil' ? 'Antiga (Fácil123)' : 'Sem tabela'].concat(g ? [num(r.valor), num(r.preco_medio), num(r.tabela_media)] : []));
+    r.fonte === 'crm' ? 'Lançada' : r.fonte === 'facil' ? 'Antiga (Fácil123)' : 'Sem tabela'].concat(g ? [num(r.qtd_3m), num(r.qtd_6m), num(r.qtd_12m), num(r.valor), num(r.preco_medio), num(r.tabela_media)] : []));
   const csv = '﻿' + [cab].concat(linhas).map(l=> l.map(c=> '"' + String(c ?? '').replace(/"/g, '""') + '"').join(';')).join('\r\n');
   const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], { type:'text/csv;charset=utf-8' }));
   a.download = 'tabelas-synthetic-' + new Date().toISOString().slice(0, 10) + '.csv'; a.click(); setTimeout(()=> URL.revokeObjectURL(a.href), 2000);
@@ -9912,13 +9941,14 @@ const cmRegraTxt = r=> r.c0 == null ? '<span class="vazio">sem regra</span>'
   : `<b>${cmP(r.c0)}%</b> sem desconto · até ${cmP(r.d2)}%: ${cmP(r.c2)}% · até ${cmP(r.d3)}%: ${cmP(r.c3)}% · até ${cmP(r.d4)}%: ${cmP(r.c4)}% · acima: ${cmP(r.c5)}%`;
 const cmDiverge = r=> r.origem === 'planilha' && r.facil_pct != null && Math.abs(Number(r.facil_pct) - Number(r.c0)) > 1e-6;
 function cmRecadoHtml(){
+  // aberto na primeira visita de quem foi liberado (o Will); recolhido para o Luiz e depois do "Entendi"
   let visto = false; try{ visto = localStorage.getItem('cm_recado_luiz') === '1'; }catch(_){}
-  if(visto) return `<div class="tb-rodape" style="margin:0 0 10px"><a href="#" id="cm-recado-ver">Ver o recado do Luiz sobre a tabela oficial</a></div>`;
-  return `<div class="cm-recado"><b class="de">Recado do Luiz Amo para o Will</b>
-    Will, a proposta é que esta seja a <b>tabela oficial de comissão da Synthetic</b>. Hoje a regra está dividida entre a sua planilha (as faixas de desconto) e o campo "Percentual Comissão" do Fácil, e as duas nem sempre batem. Eu já juntei as duas aqui: os produtos da planilha com as faixas, e os outros com o % que está no Fácil. Conferi a conta com o relatório de agosto do Daniel e bateu centavo a centavo.
-    <br><br><b>Por onde começar:</b> 1) os <b>produtos em que a planilha e o Fácil discordam</b> (botão "Divergências"): escolha a regra certa e salve; 2) os <b>produtos que vendem sem regra</b>; 3) confira o resto e clique em "Confirmar" quando estiver certo. Tudo o que você muda fica registrado (quem, quando, antes e depois), e a tela "Comissão por vendedor" já recalcula na hora.
-    <br><br>A <b>equipe interna</b> tem um cálculo diferente: por enquanto ela usa a mesma regra dos externos; quando a gente conversar, eu monto a regra dela aqui também. A partir daqui, a ideia é você mexer só nesta tela, e não mais na planilha nem no Fácil.
-    <div style="margin-top:10px"><button class="om-save" id="cm-recado-ok">Entendi, vamos começar</button></div></div>`;
+  const aberto = !visto && !ehMaster();
+  return `<details class="cm-recado" id="cm-recado" ${aberto ? 'open' : ''}><summary><b>Recado do Luiz Amo para o Will:</b> a proposta é que esta seja a tabela oficial de comissão da Synthetic.</summary>
+    <div class="cm-recado-txt">Hoje a regra está dividida entre a sua planilha (as faixas de desconto) e o campo "Percentual Comissão" do Fácil, e as duas nem sempre batem. Eu já juntei as duas aqui: os produtos da planilha com as faixas, e os outros com o % que está no Fácil. Conferi a conta com o relatório de agosto do Daniel e bateu centavo a centavo.
+    <br><b>Por onde começar:</b> 1) os <b>produtos em que a planilha e o Fácil discordam</b> (filtro "Divergências"): escolha a regra certa e salve; 2) os <b>produtos que vendem sem regra</b>; 3) confira o resto e clique em "Confirmar" quando estiver certo. Tudo o que você muda fica registrado (quem, quando, antes e depois), e a aba "Comissão por vendedor" recalcula na hora.
+    <br>A <b>equipe interna</b> tem um cálculo diferente: por enquanto ela usa a mesma regra dos externos; quando a gente conversar, eu monto a regra dela aqui também. A partir daqui, a ideia é você mexer só nesta tela, e não mais na planilha nem no Fácil.
+    ${aberto ? '<div style="margin-top:8px"><button class="om-save" id="cm-recado-ok">Entendi, vamos começar</button></div>' : ''}</div></details>`;
 }
 async function cmRegras(host){
   host.innerHTML = cmRecadoHtml() + '<div class="tb-rodape">Carregando a tabela de comissão…</div>';
@@ -9932,12 +9962,7 @@ async function cmRegras(host){
   const busca = CM.busca.toLowerCase();
   const V = L.filter(filtros[CM.filtro][1]).filter(r=> !busca || (r.codigo + ' ' + r.produto).toLowerCase().includes(busca));
   host.innerHTML = cmRecadoHtml() + `
-    <div class="tb-kpis">
-      <div class="tb-kpi"><small>Produtos na tabela oficial</small><b>${n(r=> r.c0 != null)}</b><span>${n(r=> r.d2 != null)} com faixas de desconto (planilha) · ${n(r=> r.c0 != null && r.d2 == null)} com % fixo (Fácil)</span></div>
-      <div class="tb-kpi ${n(cmDiverge) ? 'alerta' : ''}"><small>Planilha e Fácil discordam</small><b>${n(cmDiverge)}</b><span>vale a planilha até você decidir</span></div>
-      <div class="tb-kpi ${n(r=> r.c0 == null) ? 'alerta' : ''}"><small>Vendem sem regra</small><b>${n(r=> r.c0 == null)}</b><span>${fmtMoney(somaV(r=> r.c0 == null))} vendidos em 12 meses sem comissão definida</span></div>
-      <div class="tb-kpi"><small>Confirmadas pelo Will</small><b>${n(r=> r.confirmado)} de ${n(r=> r.c0 != null)}</b><span>${vend.length} produtos venderam nos últimos 12 meses</span></div>
-    </div>
+    <div class="cm-resumo"><b>${n(r=> r.c0 != null)}</b> produtos na tabela oficial: ${n(r=> r.d2 != null)} com faixas de desconto (planilha) e ${n(r=> r.c0 != null && r.d2 == null)} com % fixo (Fácil). ${n(r=> r.c0 == null) ? `<span class="cm-pend">${fmtMoney(somaV(r=> r.c0 == null))} vendidos em 12 meses sem regra.</span>` : ''} ${vend.length} produtos venderam nos últimos 12 meses.</div>
     <div class="tb-bar">
       <div class="cm-chips">${Object.entries(filtros).map(([k, [t, f]])=> `<button class="cm-chip ${CM.filtro === k ? 'on' : ''}" data-cmf="${k}">${t} (${n(f)})</button>`).join('')}</div>
       <span class="tb-esp"></span>
@@ -9958,7 +9983,7 @@ async function cmRegras(host){
 }
 function cmRegrasEventos(host){
   const ok = host.querySelector('#cm-recado-ok'); if(ok) ok.addEventListener('click', ()=>{ try{ localStorage.setItem('cm_recado_luiz', '1'); }catch(_){} CM.filtro = 'diverg'; cmRegras(host); });
-  const ver = host.querySelector('#cm-recado-ver'); if(ver) ver.addEventListener('click', e=>{ e.preventDefault(); try{ localStorage.removeItem('cm_recado_luiz'); }catch(_){} cmRegras(host); });
+  const rec = host.querySelector('#cm-recado'); if(rec) rec.addEventListener('toggle', ()=>{ if(!rec.open){ try{ localStorage.setItem('cm_recado_luiz', '1'); }catch(_){} } });
   host.querySelectorAll('[data-cmf]').forEach(b=> b.addEventListener('click', ()=>{ CM.filtro = b.dataset.cmf; cmRegras(host); }));
   const bu = host.querySelector('#cm-busca'); if(bu){ let t; bu.addEventListener('input', ()=>{ clearTimeout(t); t = setTimeout(()=>{ CM.busca = bu.value; cmRegras(host).then(()=>{ const x = host.querySelector('#cm-busca'); if(x){ x.focus(); x.setSelectionRange(x.value.length, x.value.length); } }); }, 350); }); }
   host.querySelectorAll('[data-cmed]').forEach(b=> b.addEventListener('click', ()=> cmEditar(Number(b.dataset.cmed), host)));
