@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8" />
-<meta name="crm-versao" content="20261028-183537">
+<meta name="crm-versao" content="20261028-183928">
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="theme-color" content="#005071">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -108,6 +108,11 @@
   .ct-mov{ font-size:12.5px; white-space:nowrap;} .ct-mov.vendendo{ color:var(--green); font-weight:600;} .ct-mov.parado, .ct-mov.parado_12m{ color:var(--amber-ink);} .ct-mov.sem_venda{ color:var(--ink-faint);}
   .ct-lote{ display:flex; gap:8px; align-items:center; flex-wrap:wrap; background:var(--surface-2); border:1px solid var(--border); border-radius:var(--radius-md); padding:6px 10px; margin-bottom:8px; font-size:13px;}
   .tb-tab td.ck, .tb-tab th.ck{ width:28px; padding-right:0;}
+  .ct-promo{ font-size:11px; font-weight:700; padding:1px 7px; border-radius:999px; background:var(--accent-soft, #fde7d3); color:var(--accent-ink, #9a4a00); margin-left:4px; white-space:nowrap;}
+  .pr-card{ background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-md); padding:10px 14px; margin-bottom:8px;}
+  .pr-card.ativa{ border-left:4px solid var(--green);} .pr-card.programada{ border-left:4px solid var(--brand, #0b5cad);} .pr-card.encerrada, .pr-card.cancelada{ opacity:.85;}
+  .pr-top{ display:flex; gap:10px; align-items:baseline; flex-wrap:wrap;} .pr-top b{ font-size:15px;} .pr-res{ font-size:13px; color:var(--ink-soft); margin-top:4px;}
+  .pr-itens{ font-size:12.5px; color:var(--ink-soft); margin-top:4px; line-height:1.5;}
   .cm-abas{ display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px;}
   .cm-aba{ border:1px solid var(--line, #d9dde3); background:var(--surface, #fff); color:inherit; padding:8px 14px; border-radius:999px; font:inherit; font-weight:600; cursor:pointer;}
   .cm-aba.on{ background:var(--brand, #0b5cad); border-color:var(--brand, #0b5cad); color:#fff;}
@@ -9940,8 +9945,8 @@ async function renderComissoes(){
     e.target.disabled = false;
     if(er){ showToast(errAmigavel(er)); return; }
     const n = v=> v == null ? '' : String(v).replace('.', ',');
-    csvDownload([['Vendedor', 'Venda', 'Data', 'Código', 'Produto', 'Quantidade', 'Valor no cadastro', 'Valor na venda', '% desconto', 'Faixa', '% comissão', 'Comissão']]
-      .concat((it || []).map(r=> [r.vendedor, r.venda, r.data, r.codigo, r.produto, n(r.quantidade), n(r.valor_cadastro), n(r.valor_venda), n(r.desconto), r.faixa ?? 'sem regra', n(r.pct), n(r.comissao)])),
+    csvDownload([['Vendedor', 'Venda', 'Data', 'Código', 'Produto', 'Quantidade', 'Valor no cadastro', 'Valor na venda', '% desconto', 'Faixa', '% comissão', 'Comissão', 'Promoção']]
+      .concat((it || []).map(r=> [r.vendedor, r.venda, r.data, r.codigo, r.produto, n(r.quantidade), n(r.valor_cadastro), n(r.valor_venda), n(r.desconto), r.faixa === 6 ? 'promoção' : r.faixa ?? 'sem regra', n(r.pct), n(r.comissao), r.promocao || ''])),
       'comissoes-synthetic-' + fim + '.csv');
   });
   if(CM.sel != null) cmDetalhe(ini, fim);
@@ -10050,18 +10055,24 @@ function cmEditar(id, host){
 }
 // ---- CATÁLOGO OFICIAL DE PRODUTOS (28/10/2026, pedido do Luiz para a Andrea: o que temos ativo e o que vende) ----
 // Situação oficial mantida pela gestão (crm_catalogo, com histórico) + movimento real das vendas, embalagens do mesmo produto juntas.
-const CAT = { rows:[], carregado:false, todos:false, q:'', linha:'', f:'todos', ord:'produto', sel:new Set(), intel:false };
+const CAT = { rows:[], carregado:false, todos:false, q:'', linha:'', f:'todos', ord:'produto', sel:new Set(), intel:false, aba:'produtos', promos:[], pf:'vigentes' };
 const CAT_SIT = { ativo:'Ativo', sob_encomenda:'Sob encomenda', em_teste:'Em teste', fora_de_linha:'Fora de linha', a_classificar:'A classificar' };
 const CAT_MOV = { vendendo:['Vendendo', 'vendeu nos últimos 3 meses'], parado:['Parado', 'vendeu nos últimos 12 meses, mas não nos últimos 3'],
   parado_12m:['Parado há +12 meses', 'última venda entre 12 e 24 meses atrás'], sem_venda:['Sem venda', 'nenhuma venda nos últimos 24 meses'] };
 async function renderCatalogo(recarregar){
-  const host = document.getElementById('ct'); if(!host) return;
+  const fora = document.getElementById('ct'); if(!fora) return;
   if(!CAT.carregado || recarregar){
-    host.innerHTML = '<div class="tb-rodape">Carregando o catálogo…</div>';
-    const { data, error } = await sb.rpc('crm_catalogo', { p_todos:CAT.todos });
-    if(error){ host.innerHTML = `<div class="tb-aviso">Não consegui carregar o catálogo: ${escapeHtml(errAmigavel(error))}</div>`; return; }
-    CAT.rows = data || []; CAT.carregado = true; CAT.sel = new Set();
+    fora.innerHTML = '<div class="tb-rodape">Carregando o catálogo…</div>';
+    const [a, b] = await Promise.all([sb.rpc('crm_catalogo', { p_todos:CAT.todos }), sb.rpc('crm_promocoes_lista')]);
+    if(a.error){ fora.innerHTML = `<div class="tb-aviso">Não consegui carregar o catálogo: ${escapeHtml(errAmigavel(a.error))}</div>`; return; }
+    CAT.rows = a.data || []; CAT.promos = b.error ? [] : (b.data || []); CAT.carregado = true; CAT.sel = new Set();
   }
+  const vig = CAT.promos.filter(x=> x.situacao === 'ativa');
+  CAT.emPromo = new Map(); vig.forEach(pr=> (pr.itens || []).forEach(it=> CAT.emPromo.set(it.product_id, pr)));
+  fora.innerHTML = `<div class="cm-abas"><button class="cm-aba ${CAT.aba !== 'promos' ? 'on' : ''}" data-ctaba="produtos">Produtos</button><button class="cm-aba ${CAT.aba === 'promos' ? 'on' : ''}" data-ctaba="promos">Promoções${vig.length ? ` (${vig.length} ativa${vig.length === 1 ? '' : 's'})` : ''}</button></div><div id="ct-in"></div>`;
+  fora.querySelectorAll('[data-ctaba]').forEach(b=> b.addEventListener('click', ()=>{ CAT.aba = b.dataset.ctaba; renderCatalogo(); }));
+  const host = document.getElementById('ct-in');
+  if(CAT.aba === 'promos') return ctPromos(host);
   const g = ehGestao(), R = CAT.rows, n = f=> R.filter(f).length;
   // curva ABC pelo faturamento de 12 meses: os produtos que somam 80% das vendas
   const porV = R.filter(r=> Number(r.valor_12m) > 0).sort((a, b)=> b.valor_12m - a.valor_12m), totV = porV.reduce((s, r)=> s + Number(r.valor_12m), 0);
@@ -10122,6 +10133,82 @@ function ctIntelHtml(R, filtros, n, curvaA, nVend, totV){
       ${semTab ? item(`<b>Vendem sem tabela de preço:</b> ${semTab} produtos ativos não têm tabela 1 a 5 lançada.`, 'sem_tabela', false) : ''}
     </ol><div class="tb-rodape" style="margin-top:6px">A decisão é da diretoria: o sistema só aponta. "Marcar para classificar" seleciona os produtos da lista; você escolhe a situação na barra e aplica.</div></details>`;
 }
+// ---- PROMOÇÕES (28/10/2026): nome, início e fim, produtos em bloco ou um a um, preço ou % de desconto, comissão própria opcional ----
+const PR_SIT = { ativa:'Ativa', programada:'Programada', encerrada:'Encerrada', cancelada:'Cancelada' };
+const prData = d=> d ? new Date(d + 'T12:00').toLocaleDateString('pt-BR') : '';
+function ctPromos(host){
+  const g = ehGestao(), P = CAT.promos;
+  const filtros = { vigentes:['Ativas e programadas', x=> x.situacao === 'ativa' || x.situacao === 'programada'], encerradas:['Encerradas', x=> x.situacao === 'encerrada'],
+    canceladas:['Canceladas', x=> x.situacao === 'cancelada'], todas:['Todas', ()=> true] };
+  const L = P.filter(filtros[CAT.pf][1]);
+  const enc = P.filter(x=> x.situacao === 'encerrada' && Number(x.valor_antes) > 0);
+  const melhor = enc.length ? enc.reduce((a, b)=> (b.valor_durante / b.valor_antes) > (a.valor_durante / a.valor_antes) ? b : a) : null;
+  const card = x=>{ const it = x.itens || [], dias = Math.round((Date.parse(x.fim) - Date.parse(x.inicio)) / 864e5) + 1;
+    const varQ = Number(x.qtd_antes) > 0 ? Math.round(100 * (x.qtd_durante / x.qtd_antes - 1)) : null;
+    const desc = it.map(i=> `${escapeHtml(i.codigo)} ${escapeHtml(i.produto)}${i.preco ? ' a R$ ' + tbR(i.preco) : i.desconto ? ' com ' + cmP(i.desconto) + '% off' : ''}`);
+    return `<div class="pr-card ${x.situacao}"><div class="pr-top"><b>${escapeHtml(x.nome)}</b><span class="ct-sit ${x.situacao === 'ativa' ? 'ativo' : 'sob_encomenda'}">${PR_SIT[x.situacao]}</span>
+      <span>${prData(x.inicio)} a ${prData(x.fim)} (${dias} dia${dias === 1 ? '' : 's'})</span><span>${it.length} produto${it.length === 1 ? '' : 's'}</span>
+      ${x.comissao_pct != null ? `<span title="Nas vendas destes produtos durante a promoção, vale esta comissão no lugar da regra do produto">comissão ${cmP(x.comissao_pct)}%</span>` : '<span class="vazio">comissão pela regra normal</span>'}
+      <span class="tb-esp"></span>${g && x.situacao !== 'cancelada' ? `<button class="cm-chip" data-pred="${x.id}">Editar</button>${x.situacao === 'ativa' ? `<button class="cm-chip" data-prfim="${x.id}">Encerrar hoje</button>` : ''}<button class="cm-chip" data-prcan="${x.id}">Cancelar</button>` : ''}</div>
+      ${g && x.situacao !== 'programada' && x.situacao !== 'cancelada' ? `<div class="pr-res">Durante: <b>${tbQtd(x.qtd_durante)}</b> unidades, ${x.valor_durante ? fmtMoney(x.valor_durante) : 'R$ 0'}, ${tbQtd(x.clientes_durante)} clientes · nos ${dias} dias antes: ${tbQtd(x.qtd_antes)} unidades${varQ != null ? ` · <b class="${varQ >= 0 ? 'cm-ok' : 'cm-pend'}">${varQ >= 0 ? '+' : ''}${varQ}% em unidades</b>` : ''}</div>` : ''}
+      <div class="pr-itens">${desc.slice(0, 6).join(' · ')}${desc.length > 6 ? ` · e mais ${desc.length - 6}` : ''}${x.obs ? `<br><i>${escapeHtml(x.obs)}</i>` : ''}<br><span class="vazio">criada por ${escapeHtml(x.criado_por || '—')}</span></div></div>`; };
+  host.innerHTML = `
+    <div class="cm-resumo">${(()=>{ const a = P.filter(x=> x.situacao === 'ativa').length, q = CAT.emPromo.size; return `<b>${a}</b> ${a === 1 ? 'promoção ativa' : 'promoções ativas'} hoje com <b>${q}</b> ${q === 1 ? 'produto' : 'produtos'}`; })()} · ${P.filter(x=> x.situacao === 'programada').length} programadas · ${P.filter(x=> x.situacao === 'encerrada').length} encerradas no histórico.
+      ${melhor ? ` Melhor resultado até aqui: <b>${escapeHtml(melhor.nome)}</b>, ${Math.round(100 * (melhor.valor_durante / melhor.valor_antes - 1))}% de vendas a mais que no período antes.` : ''}
+      ${g ? ' Para criar: na aba Produtos, marque os produtos (um ou vários) e clique em "Colocar em promoção", ou use o botão abaixo.' : ''}</div>
+    <div class="tb-bar"><div class="cm-chips">${Object.entries(filtros).map(([k, [t, f]])=> `<button class="cm-chip ${CAT.pf === k ? 'on' : ''}" data-prf="${k}">${t} (${P.filter(f).length})</button>`).join('')}</div>
+      <span class="tb-esp"></span>${g ? '<button class="om-save" id="pr-nova">Nova promoção</button>' : ''}</div>
+    ${L.map(card).join('') || '<div class="tb-rodape">Nenhuma promoção neste filtro.</div>'}
+    <div class="tb-rodape">Durante x antes: unidades vendidas dos produtos da promoção no período dela, comparadas com o mesmo número de dias logo antes. A venda feita dentro da promoção aparece marcada na tela de Comissões.</div>`;
+  host.querySelectorAll('[data-prf]').forEach(b=> b.addEventListener('click', ()=>{ CAT.pf = b.dataset.prf; ctPromos(host); }));
+  host.querySelector('#pr-nova')?.addEventListener('click', ()=> ctPromoEditar(null, []));
+  host.querySelectorAll('[data-pred]').forEach(b=> b.addEventListener('click', ()=> ctPromoEditar(Number(b.dataset.pred))));
+  const acao = async (id, cancelar)=>{ if(!confirm(cancelar ? 'Cancelar esta promoção? Ela fica no histórico como cancelada e deixa de valer na comissão.' : 'Encerrar a promoção hoje? O fim passa a ser ontem.')) return;
+    const { error } = await sb.rpc('crm_promocao_encerrar', { p_id:id, p_cancelar:cancelar }); if(error){ showToast(errAmigavel(error)); return; }
+    showToast(cancelar ? 'Promoção cancelada.' : 'Promoção encerrada.'); renderCatalogo(true); };
+  host.querySelectorAll('[data-prfim]').forEach(b=> b.addEventListener('click', ()=> acao(Number(b.dataset.prfim), false)));
+  host.querySelectorAll('[data-prcan]').forEach(b=> b.addEventListener('click', ()=> acao(Number(b.dataset.prcan), true)));
+}
+// cria (ids = produtos marcados) ou edita uma promoção; um % para todos ou preço/desconto por produto
+function ctPromoEditar(promoId, ids){
+  const pr = promoId ? CAT.promos.find(x=> x.id === promoId) : null;
+  const itens = pr ? pr.itens.map(i=> ({ ...i })) : (ids || []).map(id=>{ const r = CAT.rows.find(x=> x.product_id === id) || {}; return { product_id:id, codigo:r.codigo, produto:r.produto, t1:r.t1, preco:null, desconto:null }; });
+  const hoje = new Date().toISOString().slice(0, 10);
+  const linha = (i, k)=> `<tr><td>${escapeHtml(i.codigo || '')} · ${escapeHtml(i.produto || '')}</td><td class="n">${i.t1 ? tbR(i.t1) : '—'}</td>
+    <td><input data-prp="${k}" inputmode="decimal" placeholder="preço" style="width:90px" value="${i.preco ? tbR(i.preco) : ''}"></td><td><input data-prd="${k}" inputmode="decimal" placeholder="%" style="width:60px" value="${i.desconto ? cmP(i.desconto) : ''}"></td>
+    <td><button class="cm-chip" data-prx="${k}" title="Tirar da promoção">✕</button></td></tr>`;
+  const box = dlgOpen(`<div class="om-title"><div><h3>${pr ? 'Editar promoção' : 'Nova promoção'}</h3><div class="om-sub">Registre o período e os produtos. O histórico fica guardado e a comissão do período usa estas datas.</div></div><button data-close>✕</button></div>
+    <div class="dlg-body">
+      <div class="cm-faixas"><label>Nome<input id="pr-nome" maxlength="80" placeholder="Ex.: Semana do ATF" value="${escapeHtml(pr ? pr.nome : '')}"></label>
+        <label>Início<input id="pr-ini" type="date" value="${pr ? pr.inicio : hoje}"></label><label>Fim<input id="pr-fim" type="date" value="${pr ? pr.fim : ''}"></label>
+        <label title="Deixe em branco para manter a regra normal de comissão de cada produto">Comissão na promoção (%)<input id="pr-com" inputmode="decimal" placeholder="regra normal" value="${pr && pr.comissao_pct != null ? cmP(pr.comissao_pct) : ''}"></label></div>
+      <div class="tb-passo" style="margin:10px 0">Aplicar a todos: <input id="pr-todos" inputmode="decimal" placeholder="%" style="width:60px"> % de desconto <button class="cm-chip" id="pr-todos-ok">Aplicar</button>
+        <span style="margin-left:12px">Incluir produto: <input id="pr-busca" list="pr-lista" placeholder="código ou nome" style="width:220px"><datalist id="pr-lista">${CAT.rows.slice(0, 2000).map(r=> `<option value="${escapeHtml(r.codigo + ' · ' + r.produto)}">`).join('')}</datalist></span></div>
+      <div class="tb-wrap" style="max-height:300px;min-height:0"><table class="tb-tab"><thead><tr><th>Produto</th><th class="n" title="Preço da Tabela 1">T1</th><th title="Preço promocional (R$)">Preço</th><th title="Desconto sobre o preço de tabela">% off</th><th></th></tr></thead><tbody id="pr-itens"></tbody></table></div>
+      <label style="display:block;margin-top:10px">Observação<input id="pr-obs" maxlength="200" style="width:100%" value="${escapeHtml(pr && pr.obs ? pr.obs : '')}"></label>
+    </div>
+    <div class="om-err" id="pr-err"></div>
+    <div class="om-foot"><span style="flex:1"></span><button class="om-cancel" data-close>Cancelar</button><button class="om-save" id="pr-ok">Salvar promoção</button></div>`, true);
+  const corpo = ()=>{ box.querySelector('#pr-itens').innerHTML = itens.map(linha).join('') || '<tr><td colspan="5" class="vazio">Nenhum produto ainda: inclua pela busca acima.</td></tr>';
+    box.querySelectorAll('[data-prx]').forEach(b=> b.addEventListener('click', ()=>{ ler(); itens.splice(Number(b.dataset.prx), 1); corpo(); })); };
+  const ler = ()=>{ itens.forEach((i, k)=>{ const p = box.querySelector(`[data-prp="${k}"]`), d = box.querySelector(`[data-prd="${k}"]`); if(p) i.preco = tbNum(p.value); if(d){ const v = cmNum(d.value); i.desconto = v == null || isNaN(v) ? null : v; } if(i.preco) i.desconto = null; }); };   // preço promocional vale sobre o %
+  corpo();
+  box.querySelector('#pr-todos-ok').addEventListener('click', ()=>{ ler(); const v = cmNum(box.querySelector('#pr-todos').value); if(!(v > 0 && v < 1)) return; itens.forEach(i=>{ i.desconto = v; i.preco = null; }); corpo(); });
+  box.querySelector('#pr-busca').addEventListener('change', e=>{ const cod = e.target.value.split(' · ')[0].trim(); const r = CAT.rows.find(x=> x.codigo === cod);
+    if(r && !itens.some(i=> i.product_id === r.product_id)){ ler(); itens.push({ product_id:r.product_id, codigo:r.codigo, produto:r.produto, t1:r.t1, preco:null, desconto:null }); corpo(); } e.target.value = ''; });
+  box.querySelector('#pr-ok').addEventListener('click', async e=>{
+    ler(); const err = box.querySelector('#pr-err'), com = cmNum(box.querySelector('#pr-com').value);
+    if(com != null && (isNaN(com) || com < 0 || com > .2)){ err.textContent = 'Comissão entre 0 e 20%, ou em branco para a regra normal.'; return; }
+    if(!itens.length){ err.textContent = 'Inclua ao menos um produto.'; return; }
+    e.target.disabled = true;
+    const { error } = await sb.rpc('crm_promocao_salvar', { p_id:pr ? pr.id : null, p_nome:box.querySelector('#pr-nome').value, p_inicio:box.querySelector('#pr-ini').value || null,
+      p_fim:box.querySelector('#pr-fim').value || null, p_obs:box.querySelector('#pr-obs').value, p_comissao:com,
+      p_itens:itens.map(i=> ({ product_id:i.product_id, preco:i.preco, desconto:i.desconto })) });
+    e.target.disabled = false;
+    if(error){ err.textContent = errAmigavel(error); return; }
+    dlgClose(); showToast('Promoção salva.'); CAT.aba = 'promos'; CAT.sel = new Set(); renderCatalogo(true);
+  });
+}
 function ctLista(filtros){
   const q = CAT.q.trim().toLowerCase(), f = filtros[CAT.f][1];
   const L = CAT.rows.filter(r=> f(r) && (!CAT.linha || r.linha === CAT.linha) && (!q || (r.codigo + ' ' + r.produto).toLowerCase().includes(q)));
@@ -10137,7 +10224,7 @@ function ctCorpo(filtros){
   const dt = d=> d ? d.slice(8, 10) + '/' + d.slice(5, 7) + '/' + d.slice(2, 4) : '—';
   document.getElementById('ct-corpo').innerHTML = L.map(r=>{ const b = tbEmb(r.produto).base, novo = antes !== null && b !== antes; antes = b; const mv = CAT_MOV[r.movimento] || ['', ''];
     return `<tr class="${g ? 'edit' : ''} ${novo ? 'tb-grupo-ini' : ''}" data-id="${r.product_id}">${g ? `<td class="ck"><input type="checkbox" data-ck="${r.product_id}" ${CAT.sel.has(r.product_id) ? 'checked' : ''}></td>` : ''}
-      <td>${escapeHtml(r.codigo || '')}</td><td class="prod">${escapeHtml(r.produto || '')}</td><td>${escapeHtml(r.linha || '')}</td>
+      <td>${escapeHtml(r.codigo || '')}</td><td class="prod">${escapeHtml(r.produto || '')}${CAT.emPromo && CAT.emPromo.has(r.product_id) ? ` <span class="ct-promo" title="${escapeHtml(CAT.emPromo.get(r.product_id).nome)}, até ${new Date(CAT.emPromo.get(r.product_id).fim + 'T12:00').toLocaleDateString('pt-BR')}">promoção</span>` : ''}</td><td>${escapeHtml(r.linha || '')}</td>
       <td><span class="ct-sit ${r.situacao}" title="${r.atualizado_por ? escapeHtml('Definido por ' + r.atualizado_por + ' em ' + new Date(r.atualizado_em).toLocaleDateString('pt-BR')) : 'Ainda sem situação oficial'}">${CAT_SIT[r.situacao] || r.situacao}</span></td>
       <td><span class="ct-mov ${r.movimento}" title="${mv[1]}">${mv[0]}</span></td><td>${dt(r.ultima_venda)}</td>
       ${g ? `<td class="n ${Number(r.qtd_3m) ? '' : 'vazio'}">${tbQtd(r.qtd_3m)}</td><td class="n ${Number(r.qtd_6m) ? '' : 'vazio'}">${tbQtd(r.qtd_6m)}</td><td class="n ${Number(r.qtd_12m) ? '' : 'vazio'}">${tbQtd(r.qtd_12m)}</td><td class="n ${Number(r.clientes_12m) ? '' : 'vazio'}">${tbQtd(r.clientes_12m)}</td>` : ''}
@@ -10156,7 +10243,8 @@ function ctLote(filtros){
   const box = document.getElementById('ct-lote'); if(!box) return;
   if(!CAT.sel.size){ box.innerHTML = ''; return; }
   box.innerHTML = `<div class="ct-lote"><b>${CAT.sel.size}</b> marcado${CAT.sel.size === 1 ? '' : 's'}: marcar como <select id="ct-lote-sit">${['ativo', 'sob_encomenda', 'em_teste', 'fora_de_linha'].map(k=> `<option value="${k}">${CAT_SIT[k]}</option>`).join('')}</select>
-    <button class="om-save" id="ct-lote-ok">Aplicar</button><button class="om-cancel" id="ct-lote-x">Desmarcar</button></div>`;
+    <button class="om-save" id="ct-lote-ok">Aplicar</button><span style="color:var(--border)">|</span><button class="om-save" id="ct-lote-promo">Colocar em promoção</button><button class="om-cancel" id="ct-lote-x">Desmarcar</button></div>`;
+  box.querySelector('#ct-lote-promo').addEventListener('click', ()=> ctPromoEditar(null, [...CAT.sel]));
   box.querySelector('#ct-lote-x').addEventListener('click', ()=>{ CAT.sel = new Set(); ctCorpo(filtros); });
   box.querySelector('#ct-lote-ok').addEventListener('click', async e=>{
     const sit = box.querySelector('#ct-lote-sit').value; e.target.disabled = true;
@@ -10179,7 +10267,8 @@ function ctEditar(id, filtros){
       ${r.atualizado_por ? `<div class="tb-rodape">Última alteração: ${escapeHtml(r.atualizado_por)} em ${new Date(r.atualizado_em).toLocaleString('pt-BR')}</div>` : ''}
     </div>
     <div class="om-err" id="cte-err"></div>
-    <div class="om-foot"><span style="flex:1"></span><button class="om-cancel" data-close>Cancelar</button><button class="om-save" id="cte-ok">Salvar</button></div>`, true);
+    <div class="om-foot"><button class="om-cancel" id="cte-promo">Colocar em promoção</button><span style="flex:1"></span><button class="om-cancel" data-close>Cancelar</button><button class="om-save" id="cte-ok">Salvar</button></div>`, true);
+  box.querySelector('#cte-promo').addEventListener('click', ()=>{ dlgClose(); ctPromoEditar(null, [id]); });
   let sit = r.situacao === 'a_classificar' ? null : r.situacao;
   box.querySelectorAll('[data-sit]').forEach(b=> b.addEventListener('click', ()=>{ sit = b.dataset.sit; box.querySelectorAll('[data-sit]').forEach(x=> x.classList.toggle('on', x === b)); }));
   box.querySelector('#cte-ok').addEventListener('click', async e=>{
@@ -10203,12 +10292,12 @@ async function cmDetalhe(ini, fim){
   box.innerHTML = '<div class="tb-rodape" style="margin:8px 12px">Carregando os itens…</div>';
   const { data, error } = await sb.rpc('crm_comissoes_itens', { p_ini:ini, p_fim:fim, p_seller:CM.sel });
   if(error){ box.innerHTML = `<div class="tb-aviso">${escapeHtml(errAmigavel(error))}</div>`; return; }
-  const fx = ['', 'sem desconto', 'faixa 2', 'faixa 3', 'faixa 4', 'faixa 5'];
+  const fx = ['', 'sem desconto', 'faixa 2', 'faixa 3', 'faixa 4', 'faixa 5', 'promoção'];
   const dt = s=> s ? s.slice(8, 10) + '/' + s.slice(5, 7) : '';
   box.innerHTML = `<div style="max-height:420px;overflow:auto;background:var(--surface-2, #f7f8fa)"><table class="tb-tab"><thead><tr><th>Venda</th><th>Data</th><th>Produto</th><th class="n">Qtd.</th><th class="n">Cadastro</th><th class="n">Vendido</th><th class="n">Desconto</th><th>Faixa</th><th class="n">%</th><th class="n">Comissão</th></tr></thead><tbody>
     ${(data || []).map(r=> `<tr><td>${r.venda}</td><td>${dt(r.data)}</td><td class="prod">${escapeHtml(r.codigo)} · ${escapeHtml(r.produto)}</td><td class="n">${Number(r.quantidade).toLocaleString('pt-BR')}</td>
       <td class="n">${cmR(r.valor_cadastro)}</td><td class="n">${cmR(r.valor_venda)}</td><td class="n">${cmPctFmt(r.desconto)}</td>
-      <td class="${r.faixa ? '' : 'vazio'}">${r.faixa ? fx[r.faixa] : 'sem regra'}</td><td class="n">${cmPctFmt(r.pct)}</td><td class="n">${cmR(r.comissao)}</td></tr>`).join('') || '<tr><td colspan="10" class="vazio">Nenhum item.</td></tr>'}
+      <td class="${r.faixa ? '' : 'vazio'}" title="${r.promocao ? escapeHtml('Venda dentro da promoção ' + r.promocao) : ''}">${r.faixa ? fx[r.faixa] : 'sem regra'}${r.promocao && r.faixa !== 6 ? ' <span class="ct-promo">promo</span>' : ''}</td><td class="n">${cmPctFmt(r.pct)}</td><td class="n">${cmR(r.comissao)}</td></tr>`).join('') || '<tr><td colspan="10" class="vazio">Nenhum item.</td></tr>'}
   </tbody></table></div>`;
 }
 
