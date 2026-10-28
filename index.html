@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8" />
-<meta name="crm-versao" content="20261028-120559">
+<meta name="crm-versao" content="20261028-154855">
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="theme-color" content="#005071">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -410,6 +410,7 @@
     <button data-perfis="vendedor,supervisor,gerente,master" class="nav-btn" data-view="tabelas" title="Tabelas de preço 1 a 5 de cada produto"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="3" y1="15" x2="21" y2="15"></line><line x1="9" y1="9" x2="9" y2="21"></line></svg><span>Tabelas</span></button>
     <button data-perfis="vendedor,supervisor,gerente,master" class="nav-btn" data-view="tabmedia" title="Tabela média: em que tabela cada vendedor está vendendo, contra a meta de 2,3"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="4" y1="20" x2="20" y2="20"></line><rect x="5" y="11" width="3" height="9"></rect><rect x="10.5" y="7" width="3" height="13"></rect><rect x="16" y="13" width="3" height="7"></rect><line x1="3" y1="10" x2="21" y2="10" stroke-dasharray="2 2"></line></svg><span>Tab. média</span></button>
     <button data-perfis="vendedor,supervisor,gerente,master" class="nav-btn" data-view="prazo" title="Prazo médio: em quantos dias a Synthetic recebe, por vendedor e por gerência"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13" r="8"></circle><path d="M12 9v4l2.5 2.5"></path><path d="M9 2h6"></path></svg><span>Prazo</span></button>
+    <button data-perfis="vendedor,supervisor,gerente,master" class="nav-btn" data-view="comissoes" title="Comissões: quanto cada vendedor ganha no ciclo, item a item, pela regra de desconto de cada produto"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg><span>Comissões</span></button>
     <button data-perfis="vendedor,supervisor,gerente,master" class="nav-btn" data-view="sugestoes" title="Sugestões: ideias, problemas e dúvidas sobre o sistema, e o que foi feito com cada uma"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6"></path><path d="M10 22h4"></path><path d="M12 2a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2z"></path></svg><span>Sugestões</span></button>
     <button data-perfis="vendedor,supervisor,gerente,master" class="nav-btn nav-atender" data-view="atender" title="Atender um cliente: inteligência, abordagem, conversa e proposta, passo a passo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg><span>Atender</span></button>
     <button data-perfis="vendedor,supervisor,gerente,master" class="nav-btn active" data-view="hoje" title="Hoje: quem ligar agora, em ordem de prioridade"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"></path></svg><span>Hoje</span></button>
@@ -430,6 +431,7 @@
     <div id="view-tabelas" class="view"><div class="tb" id="tb"></div></div>
     <div id="view-tabmedia" class="view"><div class="tb" id="tm"></div></div>
     <div id="view-prazo" class="view"><div class="tb" id="pz"></div></div>
+    <div id="view-comissoes" class="view"><div class="tb" id="cm"></div></div>
     <div id="view-ajustes" class="view"><div class="pg">
       <div class="pg-head"><h2>Ajustes</h2><span class="sub">Ferramentas de administração do CRM. Só o Master vê este menu.</span></div>
       <div class="aj-grade">
@@ -3862,6 +3864,7 @@ document.querySelectorAll('.nav-btn').forEach(btn=>{
     if(v === 'tabelas') renderTabelas();
     if(v === 'tabmedia') renderTabMedia();
     if(v === 'prazo') renderPrazo();
+    if(v === 'comissoes') renderComissoes();
     if(v === 'operacao') renderOperacao();
     if(v === 'hoje') renderHoje();
     if(v === 'atender') renderAtender();
@@ -3935,7 +3938,7 @@ const ehGestao = ()=> ['admin','master','gerente','analista'].includes(perfilEfe
 // Sistema zerado (27/10/2026): o menu mostra só o que já foi reconstruído. As telas antigas continuam no código;
 // para trazer uma de volta, inclua a view aqui. MENU_ZERADO = false devolve o menu inteiro.
 const MENU_ZERADO = true;
-const MENU_ATIVO = { sobre:'*', tabelas:'*', tabmedia:'*', prazo:'*', sugestoes:'*', equipe:'admin' };   // Sugestões nunca sai do menu (skill balao-e-sugestoes)
+const MENU_ATIVO = { sobre:'*', tabelas:'*', tabmedia:'*', prazo:'*', comissoes:'*', sugestoes:'*', equipe:'admin' };   // Sugestões nunca sai do menu (skill balao-e-sugestoes)
 function menuLiberado(view, p){
   if(!MENU_ZERADO) return true;
   const quem = MENU_ATIVO[view]; return !!quem && (quem === '*' || quem.split(',').includes(p));
@@ -9756,9 +9759,11 @@ async function renderTabMedia(){
     <div class="tb-kpis">
       <div class="tb-kpi ${media != null && media < TM.META ? 'alerta' : ''}"><small>Tabela média · ${rot}</small><b>${tmFmt(media)}</b><span>meta ${tmFmt(TM.META)} · quanto maior, mais perto da Tabela 5</span></div>
       <div class="tb-kpi ${abaixo / (tot || 1) > .05 ? 'alerta' : ''}"><small>Vendido abaixo do limite</small><b>${tmPct(abaixo, tot)}</b><span>${fmtMoney(abaixo)} abaixo da Tabela 1 −7%, que precisa de aprovação</span></div>
-      <div class="tb-kpi ${provisorio ? 'alerta' : ''}"><small>Vendas com tabela lançada</small><b>${tmPct(crm, tot)}</b><span>${provisorio ? 'número provisório até as tabelas 1 a 5 serem lançadas' : 'base confiável para a tabela média'}</span></div>
+      <div class="tb-kpi ${provisorio ? 'alerta' : ''}"><small>Vendas com tabela lançada</small><b>${tmPct(crm, tot)}</b><span>${provisorio ? 'parte dos produtos vendidos ainda sem tabela lançada' : 'base confiável para a tabela média'}</span></div>
     </div>
-    ${provisorio ? `<div class="tb-aviso"><b>Número ainda provisório.</b> As tabelas 1 a 5 ainda não foram lançadas no sistema; por isso a conta usa as tabelas antigas do Fácil123, que estão abaixo do preço praticado, e a média sai perto de 5. Assim que as tabelas forem lançadas na tela Tabelas, este número passa a valer.</div>` : ''}
+    ${provisorio ? (crm / (tot || 1) < .3
+      ? `<div class="tb-aviso"><b>Número ainda provisório.</b> As tabelas 1 a 5 ainda não foram lançadas no sistema; por isso a conta usa as tabelas antigas do Fácil123, que estão abaixo do preço praticado, e a média sai perto de 5. Assim que as tabelas forem lançadas na tela Tabelas, este número passa a valer.</div>`
+      : `<div class="tb-aviso"><b>Quase completo.</b> ${tmPct(crm, tot)} do que foi vendido já tem as tabelas 1 a 5 lançadas. O resto (por exemplo, embalagens de 5 e 20 litros que não estão na tabela atual) usa a tabela antiga do Fácil123. Lance esses produtos na tela Tabelas para fechar a conta.</div>`) : ''}
     <div class="tb-bar">
       <select id="tm-per"><option value="mes" ${TM.per === 'mes' ? 'selected' : ''}>Mês atual</option><option value="ant" ${TM.per === 'ant' ? 'selected' : ''}>Mês passado</option><option value="90" ${TM.per === '90' ? 'selected' : ''}>Últimos 90 dias</option></select>
       <span class="tb-esp"></span>${ehGestao() && !varias ? '<span class="tb-rodape" style="margin:0">Gerências: cadastre as equipes em Acessos para ver a média por gerência.</span>' : ''}
@@ -9813,6 +9818,80 @@ async function renderPrazo(){
   host.querySelector('#pz-per').addEventListener('change', e=>{ PZ.per = e.target.value; renderPrazo(); });
 }
 
+// ---------- COMISSÕES POR VENDEDOR (prioridade 4 do CEO, 28/10/2026) ----------
+// Regra da planilha do Will (aba "produtos e comissões"), por produto: desconto sobre o preço de cadastro → faixa → %.
+// Ciclo de comissão: dia 26 do mês anterior ao dia 25. Conferido contra o relatório do Daniel de agosto (centavo a centavo).
+const CM = { ciclo:1, sel:null };   // abre no último ciclo fechado
+function cmCiclo(n){   // n = 0 ciclo atual, 1 o anterior...
+  const h = new Date(), d = x=> x.toISOString().slice(0, 10);
+  const fimMes = h.getDate() > 25 ? h.getMonth() + 1 : h.getMonth();    // ciclo "de outubro" vai de 26/09 a 25/10
+  const ini = new Date(h.getFullYear(), fimMes - 1 - n, 26), fim = new Date(h.getFullYear(), fimMes - n, 25);
+  const mes = fim.toLocaleDateString('pt-BR', { month:'long', year:'numeric' });
+  const dm = x=> x.toLocaleDateString('pt-BR', { day:'2-digit', month:'2-digit' });
+  return [d(ini), d(fim), `${mes} (${dm(ini)} a ${dm(fim)})${n === 0 ? ', em andamento' : ''}`];
+}
+const cmR = v=> v == null ? '—' : Number(v).toLocaleString('pt-BR', { style:'currency', currency:'BRL' });
+const cmPctFmt = v=> v == null ? '—' : (Number(v) * 100).toLocaleString('pt-BR', { minimumFractionDigits:1, maximumFractionDigits:2 }) + '%';
+async function renderComissoes(){
+  const host = document.getElementById('cm'); if(!host) return;
+  const [ini, fim, rot] = cmCiclo(CM.ciclo);
+  host.innerHTML = '<div class="tb-rodape">Calculando as comissões…</div>';
+  const { data, error } = await sb.rpc('crm_comissoes', { p_ini:ini, p_fim:fim });
+  if(error){ host.innerHTML = `<div class="tb-aviso">Não consegui calcular: ${escapeHtml(errAmigavel(error))}</div>`; return; }
+  const L = data || [], soma = k=> L.reduce((s, r)=> s + Number(r[k] || 0), 0);
+  const tot = soma('valor'), comRegra = soma('valor_com_regra'), com = soma('comissao'), semRegra = soma('itens_sem_regra');
+  const grupos = new Map(); L.forEach(r=>{ const g = r.gerencia || 'Sem gerência definida'; if(!grupos.has(g)) grupos.set(g, []); grupos.get(g).push(r); });
+  const varias = grupos.size > 1 || !grupos.has('Sem gerência definida');
+  const linha = (r, grupo)=> `<tr class="${grupo ? 'tm-grupo' : 'cm-lin'}" ${grupo ? '' : `data-sid="${r.seller_id}" style="cursor:pointer" title="Ver item a item"`}>
+      <td class="prod">${escapeHtml(r.vendedor)}${!grupo && CM.sel === r.seller_id ? ' ▾' : ''}</td><td class="n">${fmtMoney(r.valor)}</td>
+      <td class="n"><b>${cmR(r.comissao)}</b></td><td class="n">${cmPctFmt(r.pct_medio)}</td>
+      <td class="n">${grupo ? '' : r.vendas}</td><td class="n">${grupo ? '' : r.itens}</td>
+      <td class="n ${Number(r.itens_sem_regra) ? '' : 'vazio'}">${grupo ? '' : r.itens_sem_regra}</td></tr>`;
+  const agrega = (nome, rs)=>{ const vr = rs.reduce((s, r)=> s + Number(r.valor_com_regra || 0), 0), c = rs.reduce((s, r)=> s + Number(r.comissao || 0), 0);
+    return { vendedor:nome, valor:rs.reduce((s, r)=> s + Number(r.valor), 0), comissao:c, pct_medio: vr ? c / vr : null }; };
+  const opc = [0, 1, 2, 3, 4, 5].map(n=> `<option value="${n}" ${CM.ciclo === n ? 'selected' : ''}>Ciclo de ${cmCiclo(n)[2]}</option>`).join('');
+  host.innerHTML = `
+    <div class="tb-kpis">
+      <div class="tb-kpi"><small>Comissão do ciclo</small><b>${cmR(com)}</b><span>${rot}</span></div>
+      <div class="tb-kpi"><small>% médio de comissão</small><b>${cmPctFmt(comRegra ? com / comRegra : null)}</b><span>3% sem desconto, até 0,5% com desconto acima da faixa 4</span></div>
+      <div class="tb-kpi ${semRegra ? 'alerta' : ''}"><small>Itens sem regra de comissão</small><b>${semRegra}</b><span>${semRegra ? fmtMoney(tot - comRegra) + ' vendidos em produtos fora da planilha de comissões' : 'todos os produtos vendidos têm regra'}</span></div>
+    </div>
+    <div class="tb-bar">
+      <select id="cm-ciclo">${opc}</select>
+      <span class="tb-esp"></span>
+      <button class="om-cancel" id="cm-csv" title="Baixar todos os itens do ciclo, com desconto, faixa e comissão">Baixar itens (CSV)</button>
+    </div>
+    <div class="tb-wrap"><table class="tb-tab"><thead><tr><th>${varias ? 'Gerência / vendedor' : 'Vendedor'}</th><th class="n">Vendido</th><th class="n">Comissão</th><th class="n">% médio</th><th class="n">Vendas</th><th class="n">Itens</th><th class="n">Sem regra</th></tr></thead>
+    <tbody>${L.length ? [...grupos.entries()].map(([g, rs])=> (varias ? linha(agrega(g, rs), true) : '') + rs.map(r=> linha(r) + (CM.sel === r.seller_id ? '<tr><td colspan="7" id="cm-det" style="padding:0"></td></tr>' : '')).join('')).join('') : '<tr><td colspan="7" class="vazio">Nenhuma venda no ciclo.</td></tr>'}</tbody></table></div>
+    <div class="tb-rodape">Para cada item: desconto = quanto o preço vendido ficou abaixo do preço de cadastro (já descontado o desconto dado no total da nota). Sem desconto, 3%; até o limite da faixa 2 do produto, 2%; faixa 3, 1,5%; faixa 4, 1%; acima, 0,5%. Os limites de cada produto vêm da planilha de comissões da Synthetic. Clique no vendedor para ver item a item.</div>`;
+  host.querySelector('#cm-ciclo').addEventListener('change', e=>{ CM.ciclo = Number(e.target.value); CM.sel = null; renderComissoes(); });
+  host.querySelectorAll('.cm-lin').forEach(tr=> tr.addEventListener('click', ()=>{ const s = Number(tr.dataset.sid); CM.sel = CM.sel === s ? null : s; renderComissoes(); }));
+  host.querySelector('#cm-csv').addEventListener('click', async e=>{
+    e.target.disabled = true;
+    const { data: it, error: er } = await sb.rpc('crm_comissoes_itens', { p_ini:ini, p_fim:fim });
+    e.target.disabled = false;
+    if(er){ showToast(errAmigavel(er)); return; }
+    const n = v=> v == null ? '' : String(v).replace('.', ',');
+    csvDownload([['Vendedor', 'Venda', 'Data', 'Código', 'Produto', 'Quantidade', 'Valor no cadastro', 'Valor na venda', '% desconto', 'Faixa', '% comissão', 'Comissão']]
+      .concat((it || []).map(r=> [r.vendedor, r.venda, r.data, r.codigo, r.produto, n(r.quantidade), n(r.valor_cadastro), n(r.valor_venda), n(r.desconto), r.faixa ?? 'sem regra', n(r.pct), n(r.comissao)])),
+      'comissoes-synthetic-' + fim + '.csv');
+  });
+  if(CM.sel != null) cmDetalhe(ini, fim);
+}
+async function cmDetalhe(ini, fim){
+  const box = document.getElementById('cm-det'); if(!box) return;
+  box.innerHTML = '<div class="tb-rodape" style="margin:8px 12px">Carregando os itens…</div>';
+  const { data, error } = await sb.rpc('crm_comissoes_itens', { p_ini:ini, p_fim:fim, p_seller:CM.sel });
+  if(error){ box.innerHTML = `<div class="tb-aviso">${escapeHtml(errAmigavel(error))}</div>`; return; }
+  const fx = ['', 'sem desconto', 'faixa 2', 'faixa 3', 'faixa 4', 'faixa 5'];
+  const dt = s=> s ? s.slice(8, 10) + '/' + s.slice(5, 7) : '';
+  box.innerHTML = `<div style="max-height:420px;overflow:auto;background:var(--surface-2, #f7f8fa)"><table class="tb-tab"><thead><tr><th>Venda</th><th>Data</th><th>Produto</th><th class="n">Qtd.</th><th class="n">Cadastro</th><th class="n">Vendido</th><th class="n">Desconto</th><th>Faixa</th><th class="n">%</th><th class="n">Comissão</th></tr></thead><tbody>
+    ${(data || []).map(r=> `<tr><td>${r.venda}</td><td>${dt(r.data)}</td><td class="prod">${escapeHtml(r.codigo)} · ${escapeHtml(r.produto)}</td><td class="n">${Number(r.quantidade).toLocaleString('pt-BR')}</td>
+      <td class="n">${cmR(r.valor_cadastro)}</td><td class="n">${cmR(r.valor_venda)}</td><td class="n">${cmPctFmt(r.desconto)}</td>
+      <td class="${r.faixa ? '' : 'vazio'}">${r.faixa ? fx[r.faixa] : 'sem regra'}</td><td class="n">${cmPctFmt(r.pct)}</td><td class="n">${cmR(r.comissao)}</td></tr>`).join('') || '<tr><td colspan="10" class="vazio">Nenhum item.</td></tr>'}
+  </tbody></table></div>`;
+}
+
 // ---------- APRESENTAÇÃO: o que é a Torre de Controle Synthetic (1ª tela de quem entra) ----------
 function renderSobre(){
   const host = document.getElementById('sb'); if(!host || host.dataset.ok) return;
@@ -9823,10 +9902,10 @@ function renderSobre(){
     ['🧭', 'Informação do negócio', 'O que acontece na carteira, para agir antes de perder o cliente.', ['Clientes que pararam de comprar', 'Produtos que cada cliente deixou de levar', 'Visitas e próximos passos', 'Carteira por vendedor e região']]];
   // ordem definida pelo Luis Antônio no grupo de WhatsApp em 27/10/2026
   const prio = [
-    ['Tabelas de preço 1 a 5', 'Os preços de cada produto nas 5 tabelas, lançados aqui (planilha ou à mão).', 'tela pronta · falta lançar as tabelas'],
-    ['Tabela média por vendedor e por gerência', 'Em que tabela cada um está vendendo, comparado com a meta de 2,3.', 'tela pronta · vale após lançar as tabelas'],
+    ['Tabelas de preço 1 a 5', 'Os preços de cada produto nas 5 tabelas, lançados aqui (planilha ou à mão).', 'tela pronta · tabela atual lançada'],
+    ['Tabela média por vendedor e por gerência', 'Em que tabela cada um está vendendo, comparado com a meta de 2,3.', 'tela pronta · 3/4 das vendas com tabela'],
     ['Prazo médio por vendedor e por gerência', 'Quantos dias a Synthetic leva para receber, de quem vende e de cada equipe.', 'tela pronta · boletos das 5 empresas do grupo'],
-    ['Comissões por vendedor', 'O cálculo da comissão de cada um, com as condições próprias de cada vendedor.', 'em construção']];
+    ['Comissões por vendedor', 'A comissão de cada um no ciclo (26 a 25), item a item, pela faixa de desconto de cada produto.', 'tela pronta · conferida com a planilha de agosto']];
   const depois = ['Margem de contribuição', 'CRM de visitas', 'Performance de vendedor', 'Rastreamento de entrega (transportadora RC)'];
   // padrão Capacity Case (skill apresentacao-torre): como a torre foi montada nesta empresa, nos 3 verbos do site
   const jlc = [
