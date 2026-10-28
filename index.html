@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8" />
-<meta name="crm-versao" content="20261028-161254">
+<meta name="crm-versao" content="20261028-165400">
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="theme-color" content="#005071">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -3939,9 +3939,16 @@ const ehGestao = ()=> ['admin','master','gerente','analista'].includes(perfilEfe
 // para trazer uma de volta, inclua a view aqui. MENU_ZERADO = false devolve o menu inteiro.
 const MENU_ZERADO = true;
 const MENU_ATIVO = { sobre:'*', tabelas:'*', tabmedia:'*', prazo:'*', comissoes:'admin,master', sugestoes:'*', equipe:'admin' };   // Sugestões nunca sai do menu (skill balao-e-sugestoes)
+let VE_COMISSOES = false;   // pessoa liberada pelo e-mail em crm_comissao_acesso (ex.: o Will); o banco confere de novo em cada consulta
 function menuLiberado(view, p){
   if(!MENU_ZERADO) return true;
+  if(view === 'comissoes' && VE_COMISSOES && !(window._perfil && perfilEfetivo() !== window._perfil.role)) return true;
   const quem = MENU_ATIVO[view]; return !!quem && (quem === '*' || quem.split(',').includes(p));
+}
+async function comissoesLiberadas(){
+  if(window._perfil && perfilEfetivo() !== window._perfil.role) return;   // Administrador vendo como outro perfil: vale o perfil escolhido
+  const { data } = await sb.rpc('crm_ve_comissoes'); if(!data || VE_COMISSOES) return;
+  VE_COMISSOES = true; const b = document.querySelector('#rail .nav-btn[data-view="comissoes"]'); if(b) b.hidden = false;
 }
 function aplicarPerfil(){
   const p = perfilEfetivo();
@@ -3950,6 +3957,7 @@ function aplicarPerfil(){
   document.querySelectorAll('[data-perfis]').forEach(el=>{ el.hidden = !el.dataset.perfis.split(',').some(x=> equivale.includes(x)); });
   document.querySelectorAll('#rail .nav-btn').forEach(el=>{ if(!menuLiberado(el.dataset.view, p)) el.hidden = true; });
   if(MENU_ZERADO){ const sy = document.getElementById('btn-sync'); if(sy) sy.hidden = true; }
+  comissoesLiberadas();
   const bk = document.getElementById('btn-backup'); if(bk) bk.hidden = p !== 'admin';
   // Administrador vendo como outro perfil: mantém um atalho para voltar
   const real = window._perfil && window._perfil.role;
