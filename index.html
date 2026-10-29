@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8" />
-<meta name="crm-versao" content="20261028-183928">
+<meta name="crm-versao" content="20261029-161353">
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="theme-color" content="#005071">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -113,6 +113,11 @@
   .pr-card.ativa{ border-left:4px solid var(--green);} .pr-card.programada{ border-left:4px solid var(--brand, #0b5cad);} .pr-card.encerrada, .pr-card.cancelada{ opacity:.85;}
   .pr-top{ display:flex; gap:10px; align-items:baseline; flex-wrap:wrap;} .pr-top b{ font-size:15px;} .pr-res{ font-size:13px; color:var(--ink-soft); margin-top:4px;}
   .pr-itens{ font-size:12.5px; color:var(--ink-soft); margin-top:4px; line-height:1.5;}
+  .rs-kpis .tb-kpi{ cursor:pointer;} .rs-kpis .tb-kpi:hover{ border-color:var(--brand, #0b5cad);}
+  .rs-kpi-ok b{ color:var(--green);} .rs-var{ font-weight:600;} .rs-var.up{ color:var(--green);} .rs-var.down{ color:var(--amber-ink);}
+  .rs-lista{ list-style:none; margin:0; padding:0; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-md);}
+  .rs-lista li{ display:flex; gap:10px; align-items:center; padding:9px 14px; border-bottom:1px solid var(--border-soft); font-size:14px; line-height:1.45;}
+  .rs-lista li:last-child{ border-bottom:none;} .rs-lista li span.t{ flex:1;} .rs-ic{ width:22px; text-align:center;}
   .cm-abas{ display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px;}
   .cm-aba{ border:1px solid var(--line, #d9dde3); background:var(--surface, #fff); color:inherit; padding:8px 14px; border-radius:999px; font:inherit; font-weight:600; cursor:pointer;}
   .cm-aba.on{ background:var(--brand, #0b5cad); border-color:var(--brand, #0b5cad); color:#fff;}
@@ -431,6 +436,7 @@
   <nav id="rail">
     <img class="rail-logo" src="assets/logo-synthetic.png" alt="Synthetic">
     <button data-perfis="vendedor,supervisor,gerente,master" class="nav-btn" data-view="sobre" title="Apresentação: o que é a Torre de Controle Synthetic e para que ela serve"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l3 7h-6z"></path><path d="M9 9h6l1 13H8z"></path><line x1="4" y1="22" x2="20" y2="22"></line></svg><span>Apresentação</span></button>
+    <button data-perfis="gerente,master" class="nav-btn" data-view="resumo" title="Resumo: as prioridades da diretoria num relance e o que pede atenção hoje"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="3" width="7" height="7" rx="1"></rect><rect x="3" y="14" width="7" height="7" rx="1"></rect><rect x="14" y="14" width="7" height="7" rx="1"></rect></svg><span>Resumo</span></button>
     <button data-perfis="vendedor,supervisor,gerente,master" class="nav-btn" data-view="tabelas" title="Tabelas de preço 1 a 5 de cada produto"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="3" y1="15" x2="21" y2="15"></line><line x1="9" y1="9" x2="9" y2="21"></line></svg><span>Tabelas</span></button>
     <button data-perfis="vendedor,supervisor,gerente,master" class="nav-btn" data-view="catalogo" title="Catálogo oficial: quais produtos estão ativos e o que de fato está vendendo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path><line x1="9" y1="7" x2="16" y2="7"></line><line x1="9" y1="11" x2="14" y2="11"></line></svg><span>Catálogo</span></button>
     <button data-perfis="vendedor,supervisor,gerente,master" class="nav-btn" data-view="tabmedia" title="Tabela média: em que tabela cada vendedor está vendendo, contra a meta de 2,3"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="4" y1="20" x2="20" y2="20"></line><rect x="5" y="11" width="3" height="9"></rect><rect x="10.5" y="7" width="3" height="13"></rect><rect x="16" y="13" width="3" height="7"></rect><line x1="3" y1="10" x2="21" y2="10" stroke-dasharray="2 2"></line></svg><span>Tab. média</span></button>
@@ -453,6 +459,7 @@
   <div class="view-container">
 
     <div id="view-sobre" class="view"><div class="sb" id="sb"></div></div>
+    <div id="view-resumo" class="view"><div class="tb" id="rs"></div></div>
     <div id="view-tabelas" class="view"><div class="tb" id="tb"></div></div>
     <div id="view-catalogo" class="view"><div class="tb" id="ct"></div></div>
     <div id="view-tabmedia" class="view"><div class="tb" id="tm"></div></div>
@@ -1926,12 +1933,12 @@ async function boot(){
   aplicarPerfil();
   if(ehGestao()) mtPctCarrega();
   usoLiga(); acompMonta();
-  ensureUserName(user);
+  window._userEmail = user && user.email; ensureUserName(user);
   if(perfilEfetivo()==='admin') backupReminder();
   loadSyncInfo();
   await loadSellers();
   renderCalendar();
-  if(!abrirTelaInicial()){ renderHoje(); document.querySelector('.nav-btn[data-view="sobre"]')?.click(); }
+  if(!abrirTelaInicial()){ renderHoje(); abrirEntrada(); }
   sgRetornoCarrega(); setInterval(sgRetornoCarrega, 5 * 60000);   // respostas às sugestões de quem está logado
   eqBadgePedidos(); setInterval(()=>{ EQ.pedidos = null; eqBadgePedidos(); }, 5 * 60000);   // pedidos de acesso esperando o Administrador
 }
@@ -3886,8 +3893,10 @@ document.querySelectorAll('.nav-btn').forEach(btn=>{
     document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
     document.getElementById('view-'+btn.dataset.view).classList.add('active');
     const v = btn.dataset.view;
+    if(v !== 'sobre') ultimaTelaGrava(v);
     if(v === 'sobre') renderSobre();
     if(v === 'tabelas') renderTabelas();
+    if(v === 'resumo') renderResumo();
     if(v === 'catalogo') renderCatalogo();
     if(v === 'tabmedia') renderTabMedia();
     if(v === 'prazo') renderPrazo();
@@ -3965,7 +3974,7 @@ const ehGestao = ()=> ['admin','master','gerente','analista'].includes(perfilEfe
 // Sistema zerado (27/10/2026): o menu mostra só o que já foi reconstruído. As telas antigas continuam no código;
 // para trazer uma de volta, inclua a view aqui. MENU_ZERADO = false devolve o menu inteiro.
 const MENU_ZERADO = true;
-const MENU_ATIVO = { sobre:'*', tabelas:'*', catalogo:'*', tabmedia:'*', prazo:'*', comissoes:'admin,master', sugestoes:'*', equipe:'admin' };   // Sugestões nunca sai do menu (skill balao-e-sugestoes)
+const MENU_ATIVO = { sobre:'*', resumo:'admin,master,gerente,analista', tabelas:'*', catalogo:'*', tabmedia:'*', prazo:'*', comissoes:'admin,master', sugestoes:'*', equipe:'admin' };   // Sugestões nunca sai do menu (skill balao-e-sugestoes)
 let VE_COMISSOES = false;   // pessoa liberada pelo e-mail em crm_comissao_acesso (ex.: o Will); o banco confere de novo em cada consulta
 function menuLiberado(view, p){
   if(!MENU_ZERADO) return true;
@@ -9577,6 +9586,18 @@ function tourRodar(passos, chave, forcar){
 // tela inicial de cada usuário (definida em Acessos; ex.: CEO cai direto nas Margens)
 const PAINEL_TITULOS = { comercial:'Painel · metas', vendedores:'Painel · vendedores e clientes', regioes:'Painel · regiões', margens:'Painel · margens', concorrentes:'Painel · concorrentes', estoque:'Painel · estoque' };
 const TELAS_INICIAIS = [['', 'Hoje (padrão)'], ['margens', 'Painel · margens'], ['comercial', 'Painel · metas'], ['vendedores', 'Painel · vendedores e clientes'], ['indicadores', 'Painel · visão do mês'], ['mapa', 'Estratégia'], ['operacao', 'Carteira'], ['atender', 'Atender']];
+// Entrada (29/10/2026, pelo uso real: quem volta caía sempre na Apresentação e saía). A Apresentação é a porta de quem é novo;
+// quem já entrou antes abre no Resumo (CEO e gestão) ou na última tela que usou. A tela inicial definida em Acessos tem prioridade.
+const ultimaTelaChave = ()=> 'torre_ultima_tela:' + (window._userEmail || '');
+function ultimaTelaGrava(v){ try{ localStorage.setItem(ultimaTelaChave(), v); }catch(_){} }
+function abrirEntrada(){
+  // "já entrou antes" = o banco de uso tem visita anterior desta pessoa (vale em qualquer computador); sem isso, vale o que o navegador lembra
+  let ult = null; try{ ult = localStorage.getItem(ultimaTelaChave()); }catch(_){}
+  const veio = !!ult || !!(window._perfil && window._perfil.ja_entrou);
+  const botao = v=>{ const b = document.querySelector(`#rail .nav-btn[data-view="${v}"]`); return b && !b.hidden ? b : null; };
+  const destino = !veio ? 'sobre' : ehMaster() && botao('resumo') ? 'resumo' : (ult && botao(ult) ? ult : (botao('resumo') ? 'resumo' : 'sobre'));
+  (botao(destino) || botao('sobre'))?.click();
+}
 function abrirTelaInicial(){
   const t = window._perfil && window._perfil.tela_inicial; if(!t || t === 'hoje') return false;
   if(!menuLiberado(t, perfilEfetivo())) return false;   // tela ainda não reconstruída: cai na Apresentação
@@ -10286,6 +10307,68 @@ function ctExportar(filtros){
     .concat(L.map(r=> [r.codigo, r.produto, r.linha, CAT_SIT[r.situacao], (CAT_MOV[r.movimento] || [''])[0], r.ultima_venda || ''].concat(g ? [num(r.qtd_3m), num(r.qtd_6m), num(r.qtd_12m), num(r.clientes_12m), num(r.valor_12m)] : [])
       .concat([num(r.t1), num(r.t5), r.tabela_fonte === 'crm' ? 'oficial' : r.tabela_fonte === 'facil' ? 'antiga (Fácil123)' : 'sem tabela', r.obs || '']))),
     'catalogo-synthetic-' + new Date().toISOString().slice(0, 10) + '.csv');
+}
+// ---- RESUMO DA DIRETORIA (29/10/2026): as 4 prioridades do CEO e as vendas do mês num relance + o que pede atenção ----
+// Nasceu do uso real: o CEO percorreu o menu em 3 minutos sem abrir nada; aqui a resposta vem pronta e cada item leva ao detalhe.
+async function renderResumo(){
+  const host = document.getElementById('rs'); if(!host) return;
+  host.innerHTML = '<div class="tb-rodape">Montando o resumo…</div>';
+  const d = x=> x.toISOString().slice(0, 10), h = new Date();
+  const iniMes = d(new Date(h.getFullYear(), h.getMonth(), 1)), hoje = d(h);
+  const iniAnt = d(new Date(h.getFullYear(), h.getMonth() - 1, 1)), fimAnt = d(new Date(h.getFullYear(), h.getMonth() - 1, Math.min(h.getDate(), new Date(h.getFullYear(), h.getMonth(), 0).getDate())));
+  const [ciIni, ciFim, ciRot] = cmCiclo(1), veCom = ehMaster() || VE_COMISSOES;
+  const [tmA, tmB, pz, tb, cat, pr, cm] = await Promise.all([
+    sb.rpc('crm_tabela_media', { p_ini:iniMes, p_fim:hoje }), sb.rpc('crm_tabela_media', { p_ini:iniAnt, p_fim:fimAnt }),
+    sb.rpc('crm_prazo_medio', { p_ini:d(new Date(h - 90 * 864e5)), p_fim:hoje }), sb.rpc('crm_tabelas_precos', { p_dias:90 }),
+    sb.rpc('crm_catalogo', { p_todos:false }), sb.rpc('crm_promocoes_lista'),
+    veCom ? sb.rpc('crm_comissoes', { p_ini:ciIni, p_fim:ciFim }) : Promise.resolve({ data:null }) ]);
+  const erro = [tmA, pz, tb, cat].find(x=> x.error);
+  if(erro){ host.innerHTML = `<div class="tb-aviso">Não consegui montar o resumo: ${escapeHtml(errAmigavel(erro.error))}</div>`; return; }
+  const soma = (L, k)=> (L || []).reduce((a, r)=> a + Number(r[k] || 0), 0);
+  const pond = (L, peso, v)=>{ const w = soma(L, peso); return w ? (L || []).reduce((a, r)=> a + Number(r[peso] || 0) * Number(r[v] || 0), 0) / w : null; };
+  const A = tmA.data || [], B = tmB.data || [], P = pz.data || [], T = tb.data || [], C = cat.data || [], PR = pr.data || [], CM = cm.data || [];
+  const vMes = soma(A, 'valor'), vAnt = soma(B, 'valor'), varMes = vAnt ? vMes / vAnt - 1 : null;
+  const tmMes = pond(A, 'valor_com_tabela', 'tabela_media'), pzMed = pond(P, 'valor_com_prazo', 'prazo_medio');
+  const vend90 = T.filter(r=> Number(r.valor) > 0), cob = soma(vend90, 'valor') ? soma(vend90.filter(r=> r.fonte === 'crm'), 'valor') / soma(vend90, 'valor') : 0;
+  const sem6 = C.filter(r=> !Number(r.qtd_6m) && r.situacao !== 'fora_de_linha').length, aClass = C.filter(r=> r.situacao === 'a_classificar').length;
+  const semTab = C.filter(r=> r.movimento === 'vendendo' && !r.tabela_fonte).length;
+  const promAt = PR.filter(x=> x.situacao === 'ativa'), promFim = promAt.filter(x=> (Date.parse(x.fim) - Date.parse(hoje)) / 864e5 <= 3);
+  const comTot = soma(CM, 'comissao'), semRegra = soma(CM, 'itens_sem_regra');
+  const fmtTm = v=> v == null ? '—' : v.toLocaleString('pt-BR', { maximumFractionDigits:2 });
+  const pct = v=> (v >= 0 ? '+' : '') + Math.round(v * 100) + '%';
+  const kpi = (ir, rot, val, sub, cls)=> `<div class="tb-kpi ${cls || ''}" data-ir="${ir}" title="Abrir ${rot.toLowerCase()}"><small>${rot}</small><b>${val}</b><span>${sub}</span></div>`;
+  // o que pede atenção: frases prontas, da mais importante para a menos
+  const tmBaixo = A.filter(r=> r.tabela_media != null && Number(r.tabela_media) < 2.3 && Number(r.valor_com_tabela) > 0).sort((a, b)=> b.valor - a.valor);
+  const pzAlto = P.filter(r=> r.prazo_medio != null && Number(r.prazo_medio) > 60 && Number(r.valor_com_prazo) > 0).sort((a, b)=> b.valor - a.valor);
+  const nomes = L=> L.slice(0, 3).map(r=> escapeHtml(String(r.vendedor).split(' ').slice(0, 2).join(' '))).join(', ') + (L.length > 3 ? ` e mais ${L.length - 3}` : '');
+  const att = [];
+  if(tmBaixo.length) att.push(['📉', `<b>${tmBaixo.length} vendedor${tmBaixo.length === 1 ? '' : 'es'} abaixo da tabela média 2,3</b> neste mês: ${nomes(tmBaixo)}.`, 'tabmedia']);
+  if(pzAlto.length) att.push(['⏳', `<b>${pzAlto.length} vendedor${pzAlto.length === 1 ? '' : 'es'} com prazo médio acima de 60 dias</b> (90 dias): ${nomes(pzAlto)}.`, 'prazo']);
+  if(semTab) att.push(['🏷️', `<b>${semTab} produtos vendem sem tabela 1 a 5 lançada.</b> Sem tabela, a venda não entra na tabela média.`, 'tabelas']);
+  if(sem6) att.push(['📦', `<b>${sem6} produtos sem venda há 6 meses</b> ainda estão na linha: candidatos a descontinuar ou a ficar sob encomenda.`, 'catalogo:sem6']);
+  if(aClass) att.push(['🗂️', `<b>${aClass} produtos ainda sem situação no catálogo</b> (ativo, sob encomenda ou fora de linha). A Andrea e o Will classificam em lote.`, 'catalogo:classificar']);
+  if(veCom && semRegra) att.push(['💰', `<b>${semRegra} itens vendidos no ciclo de ${escapeHtml(ciRot.split(' (')[0])} sem regra de comissão.</b> O Will completa na tabela oficial.`, 'comissoes:regras']);
+  promFim.forEach(x=> att.push(['⏰', `A promoção <b>${escapeHtml(x.nome)}</b> termina em ${prData(x.fim)}.`, 'catalogo:promos']));
+  host.innerHTML = `
+    <div class="cm-resumo">Resumo de ${h.toLocaleDateString('pt-BR', { day:'numeric', month:'long' })}. Clique em qualquer número para abrir o detalhe.</div>
+    <div class="tb-kpis rs-kpis">
+      ${kpi('tabmedia', 'Vendido no mês', fmtMoney(vMes), varMes == null ? 'até hoje' : `<span class="rs-var ${varMes >= 0 ? 'up' : 'down'}">${pct(varMes)}</span> contra o mesmo período do mês passado`)}
+      ${kpi('tabmedia', 'Tabela média do mês', fmtTm(tmMes), 'meta 2,3 · quanto maior, mais perto da Tabela 5', tmMes != null && tmMes < 2.3 ? 'alerta' : 'rs-kpi-ok')}
+      ${kpi('prazo', 'Prazo médio (90 dias)', pzMed == null ? '—' : Math.round(pzMed) + ' dias', 'meta 60 dias', pzMed != null && pzMed > 60 ? 'alerta' : 'rs-kpi-ok')}
+      ${kpi('tabelas', 'Vendas com tabela lançada', Math.round(cob * 100) + '%', `nos últimos 90 dias · ${semTab} produtos vendendo sem tabela`, cob < .9 ? 'alerta' : '')}
+      ${veCom ? kpi('comissoes', 'Comissão do ciclo', cmR(comTot), escapeHtml(ciRot)) : ''}
+      ${kpi('catalogo', 'Produtos vendendo', String(C.filter(r=> r.movimento === 'vendendo').length), `nos últimos 3 meses · ${sem6} sem venda há 6 meses${promAt.length ? ` · ${promAt.length} em promoção` : ''}`)}
+    </div>
+    <h3 style="font-size:15px;margin:14px 0 8px">O que pede atenção</h3>
+    <ul class="rs-lista">${att.map(([ic, t, ir])=> `<li><span class="rs-ic">${ic}</span><span class="t">${t}</span><button class="cm-chip" data-ir="${ir}">Abrir ›</button></li>`).join('') || '<li><span class="t">Nada fora do esperado hoje.</span></li>'}</ul>
+    <div class="tb-rodape">Vendas pela mesma regra da Tab. média (sem orçamentos, canceladas e devoluções). Prazo pelos boletos das empresas do grupo.</div>`;
+  host.querySelectorAll('[data-ir]').forEach(b=> b.addEventListener('click', ()=> rsIr(b.dataset.ir)));
+}
+function rsIr(alvo){
+  const [view, sub] = alvo.split(':');
+  if(view === 'catalogo'){ if(sub === 'promos') CAT.aba = 'promos'; else { CAT.aba = 'produtos'; if(sub) CAT.f = sub; if(sub === 'sem6') CAT.intel = true; } }
+  if(view === 'comissoes' && sub === 'regras') CM.aba = 'regras';
+  const b = document.querySelector(`#rail .nav-btn[data-view="${view}"]`); if(b && !b.hidden) b.click();
 }
 async function cmDetalhe(ini, fim){
   const box = document.getElementById('cm-det'); if(!box) return;
